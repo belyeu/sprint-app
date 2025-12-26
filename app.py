@@ -10,8 +10,6 @@ st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 st.markdown("""
     <style>
     .main { background-color: #013220; color: #ffffff; }
-    
-    /* Massive Drill Headers */
     .drill-header {
         font-size: 32px !important;
         font-weight: 900 !important;
@@ -23,21 +21,17 @@ st.markdown("""
         border-left: 8px solid #FFD700;
         padding-left: 20px;
     }
-    
-    /* Massive Timer Display */
     .timer-text {
-        font-size: 75px !important;
+        font-size: 85px !important;
         font-weight: bold !important;
         color: #FFD700 !important;
         text-align: center;
         font-family: 'Courier New', Courier, monospace;
         background: #004d26;
         border-radius: 12px;
-        border: 3px solid #FFD700;
-        padding: 10px;
-        margin: 10px 0;
+        border: 4px solid #FFD700;
+        padding: 15px;
     }
-    
     .stButton>button { 
         background-color: #FFD700; 
         color: #013220; 
@@ -46,66 +40,59 @@ st.markdown("""
         border: 2px solid #DAA520; 
         width: 100%; 
         height: 60px;
-        font-size: 20px;
+        font-size: 22px;
     }
-    
     .stMetric { 
         background-color: #004d26; 
-        padding: 15px; 
+        padding: 20px; 
         border-radius: 12px; 
         border: 3px solid #FFD700; 
     }
-    
     h1 { color: #FFD700 !important; font-size: 52px !important; text-align: center; border-bottom: 5px solid #FFD700; padding-bottom: 15px; text-transform: uppercase; }
-    
-    .stExpander { 
-        border: 2px solid #FFD700 !important; 
-        background-color: #01411c !important; 
-    }
     </style>
     """, unsafe_allow_html=True)
 
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
-            {"ex": "POUND SERIES (STATIONARY)", "base": 30, "inc": 10, "unit": "seconds", "rest": "30s", "vid": "—"},
-            {"ex": "FIGURE 8 SERIES (WRAPS)", "base": 45, "inc": 15, "unit": "seconds", "rest": "30s", "vid": "—"},
-            {"ex": "STATIONARY CROSSOVER SERIES", "base": 50, "inc": 10, "unit": "reps", "rest": "45s", "vid": "https://wattsbasketball.com/blog/crossover-dribble-in-basketball"},
-            {"ex": "MOVING CROSSOVER SERIES", "base": 4, "inc": 1, "unit": "trips", "rest": "1m", "vid": "https://www.online-basketball-drills.com/in-out-with-crossover-drill"},
-            {"ex": "LATERAL DEFENSIVE SLIDE SERIES", "base": 4, "inc": 1, "unit": "trips", "rest": "90s", "vid": "—"},
-            {"ex": "FLOAT DRIBBLE SERIES (HANG)", "base": 20, "inc": 5, "unit": "reps", "rest": "1m", "vid": "https://www.youtube.com/watch?v=G-ylr5AQExw"},
-            {"ex": "SLIDE TO FLOAT TRANSITION", "base": 10, "inc": 2, "unit": "reps", "rest": "1m", "vid": "—"},
-            {"ex": "MIKAN SERIES (TOUCH)", "base": 20, "inc": 5, "unit": "makes", "rest": "1m", "vid": "—"}
+            {"ex": "POUND SERIES (STATIONARY)", "base": 60, "inc": 15, "unit": "seconds", "rest": 30, "type": "cond"},
+            {"ex": "FIGURE 8 SERIES (WRAPS)", "base": 90, "inc": 20, "unit": "seconds", "rest": 30, "type": "cond"},
+            {"ex": "STATIONARY CROSSOVER SERIES", "base": 100, "inc": 25, "unit": "reps", "rest": 45, "type": "power"},
+            {"ex": "MOVING CROSSOVER SERIES", "base": 10, "inc": 2, "unit": "trips", "rest": 60, "type": "power"},
+            {"ex": "LATERAL DEFENSIVE SLIDE SERIES", "base": 8, "inc": 2, "unit": "trips", "rest": 90, "type": "power"},
+            {"ex": "FLOAT DRIBBLE SERIES (HANG)", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power"},
+            {"ex": "SLIDE TO FLOAT TRANSITION", "base": 30, "inc": 5, "unit": "reps", "rest": 60, "type": "power"},
+            {"ex": "MIKAN SERIES (TOUCH)", "base": 50, "inc": 10, "unit": "makes", "rest": 60, "type": "power"}
         ],
         "Track": [
-            {"ex": "ANKLE DRIBBLE SERIES", "base": 20, "inc": 5, "unit": "meters", "rest": "30s", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw"},
-            {"ex": "A-SERIES MARCH (POSTURE)", "base": 30, "inc": 5, "unit": "meters", "rest": "45s", "vid": "https://marathonhandbook.com/a-skips/"},
-            {"ex": "A-SERIES SKIP (RHYTHM)", "base": 30, "inc": 5, "unit": "meters", "rest": "1m", "vid": "https://dlakecreates.com/how-to-do-askips-drill-for-distance-runners/"},
-            {"ex": "WICKET RHYTHM SERIES", "base": 6, "inc": 1, "unit": "reps", "rest": "3m", "vid": "—"},
-            {"ex": "BLOCK START EXPLOSION SERIES", "base": 4, "inc": 1, "unit": "reps", "rest": "4m", "vid": "—"},
-            {"ex": "MAX VELOCITY FLY SERIES", "base": 3, "inc": 1, "unit": "reps", "rest": "5m", "vid": "—"},
-            {"ex": "POWER SKIP SERIES (HEIGHT)", "base": 30, "inc": 5, "unit": "meters", "rest": "1m", "vid": "—"},
-            {"ex": "SPEED ENDURANCE SERIES", "base": 2, "inc": 1, "unit": "reps", "rest": "2m", "vid": "—"}
+            {"ex": "ANKLE DRIBBLE SERIES", "base": 40, "inc": 10, "unit": "meters", "rest": 30, "type": "cond"},
+            {"ex": "A-SERIES MARCH (POSTURE)", "base": 50, "inc": 10, "unit": "meters", "rest": 45, "type": "cond"},
+            {"ex": "A-SERIES SKIP (RHYTHM)", "base": 60, "inc": 10, "unit": "meters", "rest": 60, "type": "power"},
+            {"ex": "WICKET RHYTHM SERIES", "base": 12, "inc": 2, "unit": "reps", "rest": 180, "type": "power"},
+            {"ex": "BLOCK START EXPLOSION SERIES", "base": 8, "inc": 2, "unit": "reps", "rest": 240, "type": "power"},
+            {"ex": "MAX VELOCITY FLY SERIES", "base": 6, "inc": 1, "unit": "reps", "rest": 300, "type": "power"},
+            {"ex": "POWER SKIP SERIES (HEIGHT)", "base": 50, "inc": 10, "unit": "meters", "rest": 60, "type": "power"},
+            {"ex": "SPEED ENDURANCE SERIES", "base": 5, "inc": 1, "unit": "reps", "rest": 120, "type": "cond"}
         ],
         "Softball": [
-            {"ex": "TEE SERIES (BALANCE/RHYTHM)", "base": 20, "inc": 5, "unit": "swings", "rest": "1m", "vid": "https://probaseballinsider.com/pregame-1-batting-drills/"},
-            {"ex": "FRONT TOSS POWER SERIES", "base": 15, "inc": 5, "unit": "swings", "rest": "2m", "vid": "—"},
-            {"ex": "INFIELD GLOVE WORK (KNEES)", "base": 15, "inc": 5, "unit": "reps", "rest": "1m", "vid": "https://www.littleleague.org/university/articles/infield-drill-progression/"},
-            {"ex": "INFIELD CHARGING SERIES", "base": 10, "inc": 2, "unit": "reps", "rest": "90s", "vid": "—"},
-            {"ex": "BACKHAND/FOREHAND SERIES", "base": 10, "inc": 2, "unit": "reps", "rest": "90s", "vid": "—"},
-            {"ex": "BASERUNNING SPRINT SERIES", "base": 5, "inc": 1, "unit": "sprints", "rest": "2m", "vid": "—"},
-            {"ex": "LATERAL AGILITY SLIDE SERIES", "base": 4, "inc": 1, "unit": "sets", "rest": "1m", "vid": "—"},
-            {"ex": "FLY BALL TRACKING SERIES", "base": 10, "inc": 2, "unit": "reps", "rest": "1m", "vid": "—"}
+            {"ex": "TEE SERIES (BALANCE/RHYTHM)", "base": 50, "inc": 15, "unit": "swings", "rest": 60, "type": "power"},
+            {"ex": "FRONT TOSS POWER SERIES", "base": 40, "inc": 10, "unit": "swings", "rest": 120, "type": "power"},
+            {"ex": "INFIELD GLOVE WORK (KNEES)", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power"},
+            {"ex": "INFIELD CHARGING SERIES", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power"},
+            {"ex": "BACKHAND/FOREHAND SERIES", "base": 30, "inc": 5, "unit": "reps", "rest": 90, "type": "power"},
+            {"ex": "BASERUNNING SPRINT SERIES", "base": 12, "inc": 2, "unit": "sprints", "rest": 120, "type": "power"},
+            {"ex": "LATERAL AGILITY SLIDE SERIES", "base": 10, "inc": 2, "unit": "sets", "rest": 60, "type": "cond"},
+            {"ex": "FLY BALL TRACKING SERIES", "base": 20, "inc": 5, "unit": "reps", "rest": 60, "type": "cond"}
         ],
         "General Workout": [
-            {"ex": "SQUAT PATTERN SERIES", "base": 8, "inc": 2, "unit": "reps", "rest": "2m", "vid": "—"},
-            {"ex": "PUSHUP PROGRESSION SERIES", "base": 10, "inc": 2, "unit": "reps", "rest": "90s", "vid": "—"},
-            {"ex": "PULL/ROW SERIES", "base": 8, "inc": 2, "unit": "reps/arm", "rest": "90s", "vid": "—"},
-            {"ex": "UNILATERAL LUNGE SERIES", "base": 10, "inc": 2, "unit": "reps", "rest": "90s", "vid": "—"},
-            {"ex": "CORE ISOMETRIC SERIES", "base": 30, "inc": 10, "unit": "seconds", "rest": "60s", "vid": "—"},
-            {"ex": "BALLISTIC SLAM SERIES", "base": 10, "inc": 2, "unit": "reps", "rest": "60s", "vid": "—"},
-            {"ex": "PLYOMETRIC JUMP SERIES", "base": 5, "inc": 1, "unit": "reps", "rest": "2m", "vid": "—"},
-            {"ex": "DYNAMIC CONDITIONING SERIES", "base": 30, "inc": 10, "unit": "seconds", "rest": "60s", "vid": "—"}
+            {"ex": "SQUAT PATTERN SERIES", "base": 15, "inc": 3, "unit": "reps", "rest": 120, "type": "power"},
+            {"ex": "PUSHUP PROGRESSION SERIES", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power"},
+            {"ex": "PULL/ROW SERIES", "base": 12, "inc": 2, "unit": "reps/arm", "rest": 90, "type": "power"},
+            {"ex": "UNILATERAL LUNGE SERIES", "base": 15, "inc": 2, "unit": "reps", "rest": 90, "type": "power"},
+            {"ex": "CORE ISOMETRIC SERIES", "base": 60, "inc": 15, "unit": "seconds", "rest": 60, "type": "cond"},
+            {"ex": "BALLISTIC SLAM SERIES", "base": 20, "inc": 5, "unit": "reps", "rest": 60, "type": "power"},
+            {"ex": "PLYOMETRIC JUMP SERIES", "base": 12, "inc": 2, "unit": "reps", "rest": 120, "type": "power"},
+            {"ex": "DYNAMIC CONDITIONING SERIES", "base": 60, "inc": 15, "unit": "seconds", "rest": 60, "type": "cond"}
         ]
     }
     return workouts.get(sport, [])
@@ -113,47 +100,53 @@ def get_workout_template(sport):
 # --- Sidebar ---
 st.sidebar.header("🥇 ATHLETE PROFILE")
 sport = st.sidebar.selectbox("Choose Sport", ["Basketball", "Track", "Softball", "General Workout"])
+difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
 week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
 session_num = st.sidebar.number_input("Session Number", min_value=1, value=1)
 
-# --- 1. Readiness Check ---
-st.header("📋 Readiness Check")
-r_col1, r_col2, r_col3 = st.columns(3)
-with r_col1: sleep = st.slider("Sleep Quality (1-5)", 1, 5, 4)
-with r_col2: soreness = st.slider("Soreness (1=Fresh, 5=Sore)", 1, 5, 2)
-with r_col3: energy = st.slider("Energy (1-5)", 1, 5, 4)
+# Logic Multipliers
+target_mult = 1.0 if difficulty == "Standard" else 1.5 if difficulty == "Elite" else 2.0
+# Rest Multiplier: Pro athletes take SHORTER rest for conditioning, LONGER for max power
+rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
-# --- 2. Dynamic Workout ---
-st.divider()
-st.header(f"🔥 {sport} | Session {session_num}")
+# --- Workout UI ---
+st.header(f"🔥 {sport} | Level: {difficulty}")
 drills = get_workout_template(sport)
 
 for i, item in enumerate(drills):
-    target_val = item['base'] + ((week_num - 1) * item['inc'])
+    # Calculate Dynamic Target
+    target_val = int((item['base'] + ((week_num - 1) * item['inc'])) * target_mult)
+    
+    # Calculate Dynamic Rest
+    if item['type'] == 'power':
+        # More rest for elite power production
+        final_rest = int(item['rest'] * rest_mult)
+    else:
+        # Less rest for elite conditioning (inverse the multiplier)
+        final_rest = int(item['rest'] / rest_mult)
+        
     st.markdown(f'<p class="drill-header">{i+1}. {item["ex"]}</p>', unsafe_allow_html=True)
     
     with st.expander("DRILL DETAILS & LOGGING", expanded=True):
         c1, c2, c3 = st.columns([1, 1, 1])
         with c1:
             st.metric("Target", f"{target_val} {item['unit']}")
-            if item['vid'] != "—": st.link_button("📺 Watch Form", item['vid'])
         with c2:
-            st.write(f"**Rest:** {item['rest']}")
+            mins, secs = divmod(final_rest, 60)
+            rest_display = f"{mins}m {secs}s" if mins > 0 else f"{secs}s"
+            st.write(f"**Optimal Rest:** {rest_display}")
+            
             if st.button(f"⏱️ Start Timer", key=f"timer_{i}"):
-                time_match = re.search(r'\d+', item['rest'])
-                seconds = int(time_match.group()) * (60 if 'm' in item['rest'] else 1)
                 ph = st.empty()
-                for t in range(seconds, -1, -1):
-                    mins, secs = divmod(t, 60)
-                    ph.markdown(f'<p class="timer-text">{mins:02d}:{secs:02d}</p>', unsafe_allow_html=True)
+                for t in range(final_rest, -1, -1):
+                    m, s = divmod(t, 60)
+                    ph.markdown(f'<p class="timer-text">{m:02d}:{s:02d}</p>', unsafe_allow_html=True)
                     time.sleep(1)
                 st.success("NEXT SET!")
         with c3:
-            st.text_input("Log Result", key=f"log_{i}", placeholder="Actual score...")
-            st.select_slider("Intensity (RPE)", options=range(1, 11), value=7, key=f"rpe_{i}")
+            st.text_input("Log Result", key=f"log_{i}")
+            st.select_slider("RPE", options=range(1, 11), value=8, key=f"rpe_{i}")
 
-# --- 3. Final Save ---
-st.divider()
 if st.button("💾 SAVE SESSION DATA"):
     st.balloons()
-    st.success(f"Session {session_num} Successfully Logged!")
+    st.success("Session Saved!")
