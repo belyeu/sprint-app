@@ -1,1 +1,3 @@
-streamlit, pandas, and plotly
+streamlit
+pandas
+plotly
