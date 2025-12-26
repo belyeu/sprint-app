@@ -6,178 +6,141 @@ import os
 from datetime import datetime
 import plotly.express as px
 
-# --- App Configuration ---
-st.set_page_config(page_title="Sprint & Strength Pro", layout="wide")
+# --- Theme & Style Configuration ---
+st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
-# --- Workout Data (Complete 5-Day Program) ---
-workout_data = {
-    "Monday (Track - Acc.)": [
-        ["Ankle dribbles", "2×20m", "2×20m", "30s", "https://youtu.be/1eX7v7S7eP0"],
-        ["A-march", "2×20m", "2×20m", "30s", "https://youtu.be/83W7_9-m0Gg"],
-        ["A-skips", "2×30m", "2×30m", "45s", "https://youtu.be/bk7Vp8u7XmY"],
-        ["Wicket walkovers", "2×8", "3×8", "60s", "https://youtu.be/lS69U9Zp4rI"],
-        ["Low-speed wickets", "2×8", "3×8", "90s", "https://youtu.be/u88Xv7z9_kI"],
-        ["Speed skips (height)", "3×30m", "3×30m", "60s", "https://youtu.be/39-S6S7H-pM"],
-        ["Speed skips (dist)", "3×30m", "3×30m", "60s", "—"],
-        ["Wall drive accels", "3×10 ea", "3×10 ea", "60s", "—"],
-        ["Hill sprints (short)", "6×20m", "7×20m", "3m", "≤3.30 / ≤3.00"],
-        ["Falling starts", "4×20m", "4×20m", "2m", "3.10–3.30 / 2.85–3.00"],
-        ["3-point starts", "5×30m", "5×30m", "4m", "4.00–4.25 / 3.65–3.85"],
-        ["Light sled push", "5×20m", "5×20m", "2m", "≤3.60 / ≤3.20"]
-    ],
-    "Tuesday (Weights - Max)": [
-        ["Power clean", "5×3 @70-75%", "5×3 @75-80%", "3m", "https://youtu.be/TywpOndL7LY"],
-        ["Back squat", "5×5 @75-80%", "5×5 @80-85%", "4m", "https://youtu.be/ultWZbUMPL8"],
-        ["Nordic curls", "3×5", "3×5", "2m", "https://youtu.be/HXT3SshP-vM"],
-        ["Single-leg squats", "3×6 ea", "4×6 ea", "90s", "—"],
-        ["Skater squats", "3×6 ea", "4×6 ea", "90s", "—"],
-        ["RDL", "3×6", "3×6", "2m", "—"],
-        ["Walking lunges", "3×8 ea", "3×8 ea", "90s", "—"],
-        ["Hip thrusts", "3×8", "3×8", "2m", "—"],
-        ["Standing calf raise", "3×12", "3×12", "60s", "—"],
-        ["Tibialis raises", "3×15", "3×15", "45s", "—"],
-        ["Hanging knee raise", "3×12", "3×12", "60s", "—"],
-        ["Farmer carries", "3×30 yd", "3×30 yd", "60s", "—"]
-    ],
-    "Wednesday (Track - Max V)": [
-        ["Ankle dribbles", "2×25m", "2×25m", "30s", "—"],
-        ["Fast A-skips", "2×30m", "2×30m", "45s", "—"],
-        ["Straight-leg bounds", "3×30m", "3×30m", "2m", "—"],
-        ["Progressive wickets", "3×10h", "4×10h", "3m", "—"],
-        ["Wicket flys", "3 reps", "3 reps", "5m", "—"],
-        ["Flying 30s", "4 reps", "5 reps", "5m", "3.10–3.30 / 2.80–3.00"],
-        ["Ins-and-outs", "3 reps", "3 reps", "5m", "—"],
-        ["Gradual hill sprint", "4×40m", "4×40m", "3m", "≤5.15 / ≤4.65"],
-        ["Moderate sled push", "4×25m", "4×25m", "3m", "≤3.80 / ≤3.40"],
-        ["Power skips", "3×30m", "3×30m", "90s", "—"],
-        ["Sprint-float-sprint", "3×60m", "3×60m", "5m", "—"],
-        ["Strides", "2×120m", "2×130m", "90s", "16–17s / 15–16s"]
-    ],
-    "Thursday (Weights - Explo)": [
-        ["Snatch", "5×2", "5×2 (Heavy)", "3m", "—"],
-        ["Front squat", "4×4", "4×4 (Heavy)", "3m", "—"],
-        ["Bulgarian split sq", "3×6 ea", "4×6 ea", "90s", "—"],
-        ["Single-leg RDL", "3×6 ea", "3×6 ea", "90s", "—"],
-        ["Nordic curls", "3×4", "3×4", "2m", "—"],
-        ["Box jumps", "4×3", "5×3", "90s", "—"],
-        ["Lateral bounds", "3×5 ea", "4×5 ea", "90s", "—"],
-        ["MB overhead throws", "3×6", "4×6", "60s", "—"],
-        ["MB rotational throws", "3×6 ea", "4×6 ea", "60s", "—"],
-        ["Standing calf raise", "3×12", "3×12", "60s", "—"],
-        ["Tibialis raises", "3×15", "3×15", "45s", "—"],
-        ["Plank holds", "3×45s", "3×45s", "45s", "—"]
-    ],
-    "Friday (Track - Endur)": [
-        ["A-skips", "2×30m", "2×30m", "45s", "—"],
-        ["Speed skips (height)", "3×30m", "3×30m", "60s", "—"],
-        ["Speed skips (dist)", "3×30m", "3×30m", "60s", "—"],
-        ["Wicket rhythm runs", "2×12h", "3×12h", "3m", "—"],
-        ["Curve wicket runs", "2×8h", "2×8h", "3m", "—"],
-        ["Sprint reps (120m)", "3×120m", "4×120m", "8m", "14.5–15.5 / 13.2–14.0"],
-        ["Sprint rep (150m)", "1×150m", "2×150m", "8m", "18.0–19.5 / 16.5–17.5"],
-        ["Sprint-float-sprint", "2×90m", "2×90m", "6m", "—"],
-        ["Hill sprints (long)", "3×40m", "3×40m", "3m", "—"],
-        ["Heavy sled push", "4×20m", "4×20m", "3m", "—"],
-        ["Bounds", "3×30m", "3×30m", "2m", "—"],
-        ["Tempo strides", "2×150m", "2×160m", "90s", "23–26s / 21–24s"]
-    ]
-}
+# Green and Gold Varsity Styling
+st.markdown("""
+    <style>
+    .main { background-color: #013220; color: #ffffff; }
+    .stButton>button { background-color: #FFD700; color: #013220; border-radius: 8px; font-weight: bold; border: 2px solid #DAA520; width: 100%; transition: 0.3s; }
+    .stButton>button:hover { background-color: #DAA520; color: #ffffff; }
+    .stMetric { background-color: #004d26; padding: 15px; border-radius: 10px; border: 1px solid #FFD700; }
+    h1, h2, h3 { color: #FFD700 !important; font-family: 'Arial Black', sans-serif; text-transform: uppercase; }
+    .stExpander { border: 1px solid #FFD700 !important; background-color: #01411c !important; color: white !important; }
+    .stSlider label { color: #FFD700 !important; font-weight: bold; }
+    </style>
+    """, unsafe_allow_html=True)
 
-# --- Helper Functions ---
-def get_personal_records():
-    if os.path.isfile("workout_history.csv"):
-        df = pd.read_csv("workout_history.csv")
-        df['Value'] = df['Actual'].str.extract(r'(\d+\.?\d*)').astype(float)
-        pr_list = {}
-        for exercise in df['Exercise'].unique():
-            ex_data = df[df['Exercise'] == exercise].dropna(subset=['Value'])
-            if ex_data.empty: continue
-            if any(word in exercise.lower() for word in ['sprint', 'fly', 'start', '30m', 'hill']):
-                pr_val = ex_data['Value'].min()
-                unit = "s"
-            else:
-                pr_val = ex_data['Value'].max()
-                unit = "kg/lb"
-            pr_list[exercise] = f"{pr_val}{unit}"
-        return pr_list
-    return {}
+# --- Sport-Specific Data with Progressive Logic ---
+def get_workout_template(sport):
+    # base = Week 1 reps, inc = how many to add each week
+    workouts = {
+        "Basketball": [
+            {"ex": "Mikan Drill (Finishing)", "base": 20, "inc": 5, "unit": "makes", "rest": "1m", "vid": "https://youtu.be/akSJjN8UIj0"},
+            {"ex": "Perfects (Form Shooting)", "base": 10, "inc": 3, "unit": "swishes", "rest": "1m", "vid": "https://www.basketballforcoaches.com/basketball-drills-for-guards/"},
+            {"ex": "Zig-Zag Defensive Slides", "base": 4, "inc": 1, "unit": "full court trips", "rest": "2m", "vid": "https://www.basketballforcoaches.com/basketball-drills-and-games-for-kids/"},
+            {"ex": "Plus/Minus 3-Point Shooting", "base": 2, "inc": 0.5, "unit": "minutes", "rest": "2m", "vid": "—"},
+            {"ex": "Figure 8 Dribbling", "base": 60, "inc": 15, "unit": "seconds", "rest": "1m", "vid": "—"},
+            {"ex": "Kyrie Finishing Drill", "base": 15, "inc": 5, "unit": "reps", "rest": "90s", "vid": "—"}
+        ],
+        "Track": [
+            {"ex": "Block Starts", "base": 4, "inc": 1, "unit": "reps", "rest": "4m", "vid": "https://youtu.be/1eX7v7S7eP0"},
+            {"ex": "Wicket Runs", "base": 4, "inc": 2, "unit": "reps", "rest": "3m", "vid": "https://youtu.be/lS69U9Zp4rI"},
+            {"ex": "Flying 30s", "base": 3, "inc": 1, "unit": "reps", "rest": "5m", "vid": "—"}
+        ],
+        "Softball": [
+            {"ex": "Front Toss (Batting)", "base": 20, "inc": 10, "unit": "swings", "rest": "2m", "vid": "—"},
+            {"ex": "Infield Charging Drills", "base": 12, "inc": 3, "unit": "reps", "rest": "90s", "vid": "—"},
+            {"ex": "60ft Baserunning Sprints", "base": 5, "inc": 1, "unit": "reps", "rest": "2m", "vid": "—"}
+        ],
+        "General Workout": [
+            {"ex": "Bulgarian Split Squats", "base": 6, "inc": 2, "unit": "reps/leg", "rest": "2m", "vid": "—"},
+            {"ex": "Med Ball Slams", "base": 10, "inc": 2, "unit": "reps", "rest": "60s", "vid": "—"}
+        ]
+    }
+    return workouts.get(sport, [])
 
-# --- UI Header & PRs ---
-st.title("🏃‍♂️ Elite Performance Tracker")
-prs = get_personal_records()
-if prs:
-    st.subheader("🏆 Personal Records")
-    cols = st.columns(min(len(prs), 4))
-    for idx, (ex, val) in enumerate(list(prs.items())[:4]):
-        cols[idx].metric(ex, val)
+# --- Sidebar Configuration ---
+st.sidebar.header("🥇 ATHLETE PROFILE")
+sport = st.sidebar.selectbox("Choose Sport", ["Basketball", "Track", "Softball", "General Workout"])
+env = st.sidebar.radio("Setting", ["Indoor", "Outdoor", "Combination"])
+week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
+session_num = st.sidebar.number_input("Session Number", min_value=1, value=1)
 
-# --- Navigation ---
-day = st.sidebar.selectbox("Select Training Day", list(workout_data.keys()))
-week = st.sidebar.radio("Select Week", ["Week 1", "Week 2"])
+# --- 1. Pre-Workout Readiness Score ---
+st.header("📋 Readiness Check")
+r_col1, r_col2, r_col3 = st.columns(3)
+with r_col1:
+    sleep = st.slider("Sleep Quality (1-5)", 1, 5, 4)
+with r_col2:
+    soreness = st.slider("Soreness (1=Fresh, 5=Sore)", 1, 5, 2)
+with r_col3:
+    energy = st.slider("Energy (1-5)", 1, 5, 4)
 
-# --- Exercise Display ---
-st.header(f"Session: {day}")
-for i, exercise in enumerate(workout_data[day]):
-    with st.expander(f"{i+1}. {exercise[0]}", expanded=True):
-        col1, col2, col3 = st.columns([1, 1, 1])
-        target = exercise[1] if week == "Week 1" else exercise[2]
+ready_score = (sleep + (6 - soreness) + energy) / 3
+status = "🟢 GO" if ready_score > 3.5 else "🟡 CAUTION" if ready_score > 2.5 else "🔴 RECOVER"
+st.subheader(f"Status: {status}")
+
+# --- 2. Dynamic Workout Session ---
+st.divider()
+st.header(f"🔥 {sport} | Session {session_num}")
+drills = get_workout_template(sport)
+
+for i, item in enumerate(drills):
+    # Progressive Overload Calculation
+    target_val = item['base'] + ((week_num - 1) * item['inc'])
+    
+    with st.expander(f"DRILL {i+1}: {item['ex']}", expanded=True):
+        c1, c2, c3 = st.columns([1, 1, 1])
         
-        with col1:
-            st.metric("Target", target)
-            if len(exercise) > 4 and "http" in exercise[4]:
-                st.link_button("📺 Watch Form", exercise[4])
+        with c1:
+            st.metric("Target", f"{target_val} {item['unit']}")
+            if item['vid'] != "—":
+                st.link_button("📺 Watch Form", item['vid'])
         
-        with col2:
-            st.write(f"**Rest:** {exercise[3]}")
-            if st.button(f"⏱️ Start Timer", key=f"t_{i}"):
-                match = re.search(r'\d+', exercise[3])
-                sec = int(match.group()) * 60 if 'm' in exercise[3] else int(match.group())
-                ph = st.empty()
-                for t in range(sec, -1, -1):
-                    m, s = divmod(t, 60)
-                    ph.metric("Rest Remaining", f"{m:02d}:{s:02d}")
+        with c2:
+            st.write(f"**Rest:** {item['rest']}")
+            if st.button(f"⏱️ Start Timer", key=f"timer_{i}"):
+                time_match = re.search(r'\d+', item['rest'])
+                seconds = int(time_match.group()) * 60 if 'm' in item['rest'] else int(time_match.group())
+                
+                t_placeholder = st.empty()
+                for t in range(seconds, -1, -1):
+                    mins, secs = divmod(t, 60)
+                    t_placeholder.metric("Rest Remaining", f"{mins:02d}:{secs:02d}")
                     time.sleep(1)
-                st.success("Time to Go!")
+                st.success("NEXT SET!")
                 st.audio("https://www.soundjay.com/buttons/beep-01a.mp3")
 
-        with col3:
-            st.text_input("Log Result", key=f"log_{day}_{i}", placeholder="e.g. 3.12s or 100kg")
+        with c3:
+            st.text_input("Log Result", key=f"log_{i}", placeholder="Actual reps/time")
+            st.select_slider("Intensity (RPE)", options=range(1, 11), value=7, key=f"rpe_{i}")
 
-# --- Save Session ---
-if st.button("💾 Complete & Save Session"):
-    session_results = []
-    for i, exercise in enumerate(workout_data[day]):
-        res = st.session_state.get(f"log_{day}_{i}", "")
-        if res:
-            session_results.append({
-                "Date": datetime.now().strftime("%Y-%m-%d"),
-                "Day": day, "Exercise": exercise[0], "Week": week, "Actual": res
-            })
+# --- 3. Save History ---
+st.divider()
+if st.button("💾 SAVE SESSION DATA"):
+    # Create the record
+    log_data = []
+    for i, item in enumerate(drills):
+        res = st.session_state.get(f"log_{i}", "")
+        rpe_val = st.session_state.get(f"rpe_{i}", 7)
+        log_data.append({
+            "Date": datetime.now().strftime("%Y-%m-%d"),
+            "Sport": sport, "Session": session_num, "Week": week_num,
+            "Drill": item['ex'], "Result": res, "RPE": rpe_val
+        })
     
-    if session_results:
-        df_new = pd.DataFrame(session_results)
-        if os.path.isfile("workout_history.csv"):
-            df_old = pd.read_csv("workout_history.csv")
-            pd.concat([df_old, df_new]).to_csv("workout_history.csv", index=False)
-        else:
-            df_new.to_csv("workout_history.csv", index=False)
-        st.balloons()
-        st.success("Session Saved!")
+    # Save to CSV
+    df = pd.DataFrame(log_data)
+    file = "athlete_history.csv"
+    if os.path.isfile(file):
+        df.to_csv(file, mode='a', header=False, index=False)
+    else:
+        df.to_csv(file, index=False)
+        
+    st.balloons()
+    st.success(f"Session {session_num} Successfully Logged!")
 
-# --- Analytics Section ---
-if os.path.isfile("workout_history.csv"):
-    st.divider()
-    st.header("📈 Weekly Analytics")
-    df_an = pd.read_csv("workout_history.csv")
-    df_an['Vol'] = df_an['Actual'].str.extract(r'(\d+)').astype(float)
-    df_an['Date'] = pd.to_datetime(df_an['Date'])
+# --- 4. Performance History & Progress ---
+if os.path.isfile("athlete_history.csv"):
+    st.header("📈 Progress Tracking")
+    history_df = pd.read_csv("athlete_history.csv")
     
-    c1, c2 = st.columns(2)
-    with c1:
-        st.write("Sprinting Volume (Meters)")
-        track_v = df_an[df_an['Day'].str.contains("Track")].groupby('Date')['Vol'].sum().reset_index()
-        st.plotly_chart(px.bar(track_v, x='Date', y='Vol'), use_container_width=True)
-    with c2:
-        st.write("Lifting Intensity (Sets)")
-        lift_v = df_an[df_an['Day'].str.contains("Weights")].groupby('Date')['Vol'].count().reset_index()
-        st.plotly_chart(px.line(lift_v, x='Date', y='Vol'), use_container_width=True)
+    # Filter by specific drill for chart
+    drill_choice = st.selectbox("Select Drill to View History", history_df['Drill'].unique())
+    drill_stats = history_df[history_df['Drill'] == drill_choice]
+    
+    fig = px.line(drill_stats, x='Date', y='RPE', title=f"Intensity (RPE) Over Time: {drill_choice}",
+                 color_discrete_sequence=['#FFD700'])
+    st.plotly_chart(fig, use_container_width=True)
