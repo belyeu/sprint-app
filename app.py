@@ -1,16 +1,9 @@
-To add a **Dark Mode** toggle to your sports performance tracker, we need to implement a mechanism that dynamically changes the CSS variables for the background and text colors.
-
-In Streamlit, the most reliable way to do this is by using a sidebar checkbox or toggle to switch between two sets of CSS rules. Below is the complete code, including the new toggle logic and all your previous sport databases and styling.
-
-### `app.py`
-
-```python
 import streamlit as st
 import pandas as pd
 import time
 from datetime import datetime
 
-# --- 1. Theme Configuration & Dark Mode Toggle ---
+# --- 1. Theme Configuration & Dynamic Mode Toggle ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 # Initialize Dark Mode in session state
@@ -22,74 +15,78 @@ st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
 dark_mode = st.sidebar.toggle("Dark Mode", value=st.session_state.dark_mode)
 st.session_state.dark_mode = dark_mode
 
-# Define Color Schemes
+# Define Blue & Gray Color Schemes
 if dark_mode:
-    bg_color = "#012115"        # Darker Green
-    card_bg = "#003d1e"         # Deep Forest Green
-    text_color = "#FFFFFF"      # White
-    header_bg = "#004d26"       # Dark Green Header
-    timer_bg = "#001a0d"        # Deepest Green for Timer
+    bg_color = "#0F172A"        # Deep Navy Slate
+    card_bg = "#1E293B"         # Slate Gray
+    text_color = "#F8FAFC"      # Off White
+    accent_color = "#38BDF8"    # Sky Blue (for high visibility)
+    header_bg = "#1E293B"       # Slate Blue
+    timer_bg = "#020617"        # Darkest Navy
 else:
-    bg_color = "#013220"        # Your Original Green
-    card_bg = "#004d26"         # Original Card Green
-    text_color = "#FFFFFF"      # White
-    header_bg = "#004d26"       # Original Header
-    timer_bg = "#002d16"        # Original Timer
+    bg_color = "#F1F5F9"        # Light Gray-Blue
+    card_bg = "#FFFFFF"         # Pure White
+    text_color = "#0F172A"      # Deep Navy Text
+    accent_color = "#0284C7"    # Strong Ocean Blue
+    header_bg = "#E2E8F0"       # Soft Steel Gray
+    timer_bg = "#F8FAFC"        # Bright White-Gray
 
 st.markdown(f"""
     <style>
     /* Dynamic Theme Injection */
     .main {{ background-color: {bg_color} !important; color: {text_color} !important; }}
     
+    /* DRILL HEADER - Blue & Gray Bold Look */
     .drill-header {{
         font-size: 32px !important;
         font-weight: 900 !important;
-        color: #FFD700 !important;
+        color: {accent_color} !important;
         text-transform: uppercase;
         margin-bottom: 10px;
         margin-top: 35px;
         font-family: 'Arial Black', sans-serif;
-        border-left: 12px solid #FFD700;
+        border-left: 12px solid {accent_color};
         padding-left: 20px;
         background-color: {header_bg};
         border-radius: 0 10px 10px 0;
     }}
     
-    .stat-label {{ font-size: 18px !important; font-weight: 800 !important; color: #FFD700 !important; text-transform: uppercase; }}
-    .stat-value {{ font-size: 40px !important; font-weight: 900 !important; color: #FFFFFF !important; }}
+    .stat-label {{ font-size: 18px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
+    .stat-value {{ font-size: 40px !important; font-weight: 900 !important; color: {text_color} !important; }}
 
+    /* Timer Text - High Contrast for Gym Use */
     .timer-text {{
         font-size: 85px !important;
         font-weight: bold !important;
-        color: #FFD700 !important;
+        color: {accent_color} !important;
         text-align: center;
         font-family: 'Courier New', monospace;
         background: {timer_bg};
         border-radius: 12px;
-        border: 4px solid #FFD700;
+        border: 4px solid {accent_color};
         padding: 15px;
     }}
 
+    /* Buttons - Solid Blue */
     .stButton>button {{ 
-        background-color: #FFD700 !important; 
-        color: #013220 !important; 
+        background-color: {accent_color} !important; 
+        color: white !important; 
         border-radius: 12px !important; 
         font-weight: 900 !important; 
         width: 100%; 
         height: 75px !important;
         font-size: 24px !important;
-        border: 3px solid #DAA520 !important;
+        border: none !important;
     }}
 
-    .coach-notes {{ background-color: #ffd70022; padding: 15px; border-radius: 8px; border-left: 5px solid #FFD700; margin-bottom: 15px; color: #FFFFFF; }}
-    .recovery-card {{ background-color: {card_bg}; border: 3px solid #FFD700; padding: 25px; border-radius: 15px; margin-top: 30px; }}
+    .coach-notes {{ background-color: {accent_color}22; padding: 15px; border-radius: 8px; border-left: 5px solid {accent_color}; margin-bottom: 15px; color: {text_color}; }}
+    .recovery-card {{ background-color: {card_bg}; border: 3px solid {accent_color}; padding: 25px; border-radius: 15px; margin-top: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }}
 
     .sidebar-card {{
-        background-color: #FFD700;
+        background-color: {accent_color};
         padding: 20px;
         border-radius: 15px;
         text-align: center;
-        border: 4px solid #DAA520;
         margin-bottom: 20px;
     }}
 
@@ -100,7 +97,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Multi-Sport Drill Database (All Codes Retained) ---
+# --- 2. Multi-Sport Drill Database (Full Integrity Retained) ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
@@ -127,8 +124,8 @@ def get_workout_template(sport):
 # --- 3. Sidebar Profile ---
 st.sidebar.markdown('<div class="sidebar-card">', unsafe_allow_html=True)
 if 'streak' not in st.session_state: st.session_state.streak = 1
-st.sidebar.markdown(f'<p style="color:#013220; margin:0; font-weight:800; font-size:16px;">STREAK</p>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<p style="color:#013220; font-size:44px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<p style="color:white; margin:0; font-weight:800; font-size:16px;">STREAK</p>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<p style="color:white; font-size:44px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 st.sidebar.divider()
@@ -140,7 +137,7 @@ target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
 # --- 4. Main App UI ---
-st.markdown(f"<h1>{sport_choice} | {difficulty}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1>{sport_choice} Tracker</h1>", unsafe_allow_html=True)
 drills = get_workout_template(sport_choice)
 
 if 'session_saved' not in st.session_state: st.session_state.session_saved = False
@@ -158,15 +155,15 @@ for i, item in enumerate(drills):
     with c2:
         st.markdown(f'<p class="stat-label">Set Progress</p><p class="stat-value">{st.session_state[drill_key]}</p>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="coach-notes"><b>Coach\'s Notes:</b> {item["desc"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="coach-notes"><b>Goal:</b> {item["desc"]}</div>', unsafe_allow_html=True)
 
     col_a, col_b = st.columns(2)
     with col_a:
-        if st.button(f"SET DONE ✅", key=f"done_{i}"):
+        if st.button(f"DONE ✅", key=f"done_{i}"):
             st.session_state[drill_key] += 1
             st.rerun()
     with col_b:
-        if st.button(f"START REST ⏱️", key=f"rest_{i}"):
+        if st.button(f"REST ⏱️", key=f"rest_{i}"):
             final_rest = int(item['rest'] * rest_mult) if item['type'] == 'power' else int(item['rest'] / rest_mult)
             ph = st.empty()
             for t in range(final_rest, -1, -1):
@@ -205,14 +202,3 @@ if st.session_state.session_saved:
             </ul>
         </div>
     """, unsafe_allow_html=True)
-
-```
-
-### How it Works:
-
-* **The Toggle:** I used `st.sidebar.toggle` to create a switch.
-* **Dynamic CSS Variables:** When the toggle is active, the Python script changes the hex code variables (e.g., `bg_color` and `card_bg`) before the CSS is injected.
-* **Contrast Preservation:** I ensured that the **Gold (#FFD700)** text remains consistent, as it provides high visibility against both the standard dark green and the ultra-dark mode background.
-* **State Management:** Using `st.session_state.dark_mode` ensures that the choice is remembered even as you click through different drills.
-
-Would you like me to add a **"Save to CSV"** button that downloads your entire training history for the week?
