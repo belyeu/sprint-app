@@ -152,7 +152,7 @@ difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "E
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
-# --- 3. Master Database ---
+# --- 3. Master Database (8 Drills Per Sport + Descriptions) ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
@@ -267,20 +267,9 @@ with c_reset:
         st.session_state.session_saved = False
         st.rerun()
 
-# --- 5. Post-Workout Analytics & Recovery ---
+# --- 5. Post-Workout Analytics ---
 if st.session_state.session_saved:
     st.success("Session saved!")
-    
-    # Recovery Checklist
-    st.markdown('<div class="drill-header">⚡ POST-SESSION RECOVERY</div>', unsafe_allow_html=True)
-    rec_c1, rec_c2 = st.columns(2)
-    with rec_c1:
-        st.checkbox("Hydration (20oz+ Water/Electrolytes)")
-        st.checkbox("Protein Intake (20-40g)")
-    with rec_c2:
-        st.checkbox("Static Stretching (10 min)")
-        st.checkbox("Log Sleep Quality")
-
     summary_data = []
     for i in range(len(drills)):
         drill_key = f"{sport_choice}_{i}"
