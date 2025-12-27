@@ -45,14 +45,13 @@ st.markdown(f"""
         -webkit-text-fill-color: {sidebar_text} !important;
     }}
 
-    /* Input Field Visibility (Week Number / Selectbox) */
+    /* Input Field Visibility */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {{
         background-color: {input_bg} !important;
         color: {input_text} !important;
         border: 2px solid {accent_color} !important;
     }}
     
-    /* Force input text color for iPhone */
     input {{ 
         color: {input_text} !important; 
         -webkit-text-fill-color: {input_text} !important; 
@@ -102,7 +101,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Sidebar Date, Time, and Profile ---
+# --- 2. Sidebar Date, Time, and Streak ---
 now = datetime.now()
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
@@ -122,8 +121,8 @@ st.sidebar.markdown(f"""
 st.sidebar.divider()
 sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
-week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
 
+# Logic: Calculation based on difficulty multiplier only
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
@@ -131,44 +130,44 @@ rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" el
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
-            {"ex": "POUND SERIES", "sets": 3, "base": 60, "inc": 10, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "eval": ["Low Stance", "Eyes Up"]},
-            {"ex": "MIKAN SERIES", "sets": 4, "base": 20, "inc": 2, "unit": "reps", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "eval": ["Soft Touch", "High Finish"]},
-            {"ex": "FIGURE 8", "sets": 3, "base": 45, "inc": 5, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0", "eval": ["Ball Control", "Quick Hands"]},
-            {"ex": "FREE THROWS", "sets": 5, "base": 10, "inc": 2, "unit": "makes", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=R4-fR8_mXAc", "eval": ["Routine", "Follow Through"]},
-            {"ex": "DEFENSIVE SLIDES", "sets": 4, "base": 30, "inc": 5, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=pAnVmqk-G9I", "eval": ["Low Hips", "No Cross"]},
-            {"ex": "BOX JUMPS", "sets": 3, "base": 10, "inc": 2, "unit": "reps", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=52r6I-z6r-I", "eval": ["Soft Landing", "Full Extension"]},
-            {"ex": "V-DRIBBLE", "sets": 3, "base": 40, "inc": 5, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E", "eval": ["Wide Dribble", "Rhythm"]},
-            {"ex": "WALL SITS", "sets": 3, "base": 45, "inc": 10, "unit": "sec", "rest": 60, "type": "cond", "vid": "https://www.youtube.com/watch?v=y-wV4Venusw", "eval": ["90 Degree Angle", "Back Flat"]}
+            {"ex": "POUND SERIES", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "eval": ["Low Stance", "Eyes Up"]},
+            {"ex": "MIKAN SERIES", "sets": 4, "base": 20, "unit": "reps", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "eval": ["Soft Touch", "High Finish"]},
+            {"ex": "FIGURE 8", "sets": 3, "base": 45, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0", "eval": ["Ball Control", "Quick Hands"]},
+            {"ex": "FREE THROWS", "sets": 5, "base": 10, "unit": "makes", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=R4-fR8_mXAc", "eval": ["Routine", "Follow Through"]},
+            {"ex": "DEFENSIVE SLIDES", "sets": 4, "base": 30, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=pAnVmqk-G9I", "eval": ["Low Hips", "No Cross"]},
+            {"ex": "BOX JUMPS", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=52r6I-z6r-I", "eval": ["Soft Landing", "Full Extension"]},
+            {"ex": "V-DRIBBLE", "sets": 3, "base": 40, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E", "eval": ["Wide Dribble", "Rhythm"]},
+            {"ex": "WALL SITS", "sets": 3, "base": 45, "unit": "sec", "rest": 60, "type": "cond", "vid": "https://www.youtube.com/watch?v=y-wV4Venusw", "eval": ["90 Degree Angle", "Back Flat"]}
         ],
         "Track": [
-            {"ex": "ANKLE DRIBBLES", "sets": 3, "base": 30, "inc": 5, "unit": "meters", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw", "eval": ["Toes Up", "Quiet Hips"]},
-            {"ex": "A-SKIPS", "sets": 4, "base": 40, "inc": 5, "unit": "meters", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y", "eval": ["Aggressive Strike", "Arm Drive"]},
-            {"ex": "BOUNDING", "sets": 3, "base": 30, "inc": 5, "unit": "meters", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=8V75e58P7oY", "eval": ["Hang Time", "Active Arms"]},
-            {"ex": "HIGH KNEES", "sets": 3, "base": 20, "inc": 5, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=ZZpDqXitvJ0", "eval": ["Parallel Thighs", "Midfoot Strike"]},
-            {"ex": "ACCELERATIONS", "sets": 6, "base": 20, "inc": 5, "unit": "meters", "rest": 120, "type": "power", "vid": "https://www.youtube.com/watch?v=9_p5_1q6-vM", "eval": ["Low Start", "Drive Phase"]},
-            {"ex": "SINGLE LEG HOPS", "sets": 3, "base": 10, "inc": 2, "unit": "reps/leg", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=rI9XkU_o1f0", "eval": ["Elasticity", "Stable Ankle"]},
-            {"ex": "RUSSIAN TWISTS", "sets": 3, "base": 30, "inc": 5, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=wkD8rjkodUI", "eval": ["Controlled", "Feet Up"]},
-            {"ex": "HILL SPRINTS", "sets": 5, "base": 10, "inc": 1, "unit": "sec", "rest": 90, "type": "cond", "vid": "https://www.youtube.com/watch?v=fXvYw0iSAn4", "eval": ["Lean Forward", "High Effort"]}
+            {"ex": "ANKLE DRIBBLES", "sets": 3, "base": 30, "unit": "meters", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw", "eval": ["Toes Up", "Quiet Hips"]},
+            {"ex": "A-SKIPS", "sets": 4, "base": 40, "unit": "meters", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y", "eval": ["Aggressive Strike", "Arm Drive"]},
+            {"ex": "BOUNDING", "sets": 3, "base": 30, "unit": "meters", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=8V75e58P7oY", "eval": ["Hang Time", "Active Arms"]},
+            {"ex": "HIGH KNEES", "sets": 3, "base": 20, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=ZZpDqXitvJ0", "eval": ["Parallel Thighs", "Midfoot Strike"]},
+            {"ex": "ACCELERATIONS", "sets": 6, "base": 20, "unit": "meters", "rest": 120, "type": "power", "vid": "https://www.youtube.com/watch?v=9_p5_1q6-vM", "eval": ["Low Start", "Drive Phase"]},
+            {"ex": "SINGLE LEG HOPS", "sets": 3, "base": 10, "unit": "reps/leg", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=rI9XkU_o1f0", "eval": ["Elasticity", "Stable Ankle"]},
+            {"ex": "RUSSIAN TWISTS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=wkD8rjkodUI", "eval": ["Controlled", "Feet Up"]},
+            {"ex": "HILL SPRINTS", "sets": 5, "base": 10, "unit": "sec", "rest": 90, "type": "cond", "vid": "https://www.youtube.com/watch?v=fXvYw0iSAn4", "eval": ["Lean Forward", "High Effort"]}
         ],
         "Softball": [
-            {"ex": "TEE WORK", "sets": 4, "base": 25, "inc": 5, "unit": "swings", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact"]},
-            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "inc": 5, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Clean Pull", "Fast Grip"]},
-            {"ex": "FRONT TOSS", "sets": 4, "base": 20, "inc": 5, "unit": "swings", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=vV0I2uC_n68", "eval": ["Weight Transfer", "Short Path"]},
-            {"ex": "LATERAL SHUFFLES", "sets": 3, "base": 30, "inc": 5, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=uK48_lK-n5w", "eval": ["Stay Low", "Ready Position"]},
-            {"ex": "LONG TOSS", "sets": 3, "base": 15, "inc": 3, "unit": "throws", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=4y-iP_N9eE8", "eval": ["Full Extension", "Accuracy"]},
-            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "inc": 5, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=M57O_4wJq0I", "eval": ["Quick Snap", "Follow Through"]},
-            {"ex": "SQUAT JUMPS", "sets": 3, "base": 12, "inc": 2, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=72BSZupb-1I", "eval": ["Explosive Up", "Soft Landing"]},
-            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "inc": 0, "unit": "sprint", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=B70FfBInA3w", "eval": ["Turn Corner", "Finish Strong"]}
+            {"ex": "TEE WORK", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact"]},
+            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Clean Pull", "Fast Grip"]},
+            {"ex": "FRONT TOSS", "sets": 4, "base": 20, "unit": "swings", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=vV0I2uC_n68", "eval": ["Weight Transfer", "Short Path"]},
+            {"ex": "LATERAL SHUFFLES", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=uK48_lK-n5w", "eval": ["Stay Low", "Ready Position"]},
+            {"ex": "LONG TOSS", "sets": 3, "base": 15, "unit": "throws", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=4y-iP_N9eE8", "eval": ["Full Extension", "Accuracy"]},
+            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=M57O_4wJq0I", "eval": ["Quick Snap", "Follow Through"]},
+            {"ex": "SQUAT JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=72BSZupb-1I", "eval": ["Explosive Up", "Soft Landing"]},
+            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "unit": "sprint", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=B70FfBInA3w", "eval": ["Turn Corner", "Finish Strong"]}
         ],
         "General Workout": [
-            {"ex": "GOBLET SQUATS", "sets": 4, "base": 12, "inc": 2, "unit": "reps", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I", "eval": ["Depth", "Chest Up"]},
-            {"ex": "PUSHUPS", "sets": 3, "base": 15, "inc": 3, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4", "eval": ["Core Tight", "Full Lockout"]},
-            {"ex": "LUNGES", "sets": 3, "base": 10, "inc": 2, "unit": "reps/leg", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=L8fvypPrzzs", "eval": ["Balance", "Upright"]},
-            {"ex": "PLANK", "sets": 3, "base": 45, "inc": 10, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=pSHjTRCQxIw", "eval": ["Flat Back", "Glutes Engaged"]},
-            {"ex": "DUMBBELL ROW", "sets": 4, "base": 12, "inc": 1, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=6KA7SFr8P4E", "eval": ["Elbow High", "Still Torso"]},
-            {"ex": "MOUNTAIN CLIMBERS", "sets": 3, "base": 30, "inc": 5, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=nmwgirgXLYM", "eval": ["Fast Pace", "Knees High"]},
-            {"ex": "GLUTE BRIDGES", "sets": 3, "base": 15, "inc": 2, "unit": "reps", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=wPM8icPu6H8", "eval": ["Squeeze Glutes", "Heels Down"]},
-            {"ex": "BURPEES", "sets": 3, "base": 10, "inc": 2, "unit": "reps", "rest": 90, "type": "cond", "vid": "https://www.youtube.com/watch?v=dZfeV_pL3fE", "eval": ["Full Jump", "Fast Tempo"]}
+            {"ex": "GOBLET SQUATS", "sets": 4, "base": 12, "unit": "reps", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I", "eval": ["Depth", "Chest Up"]},
+            {"ex": "PUSHUPS", "sets": 3, "base": 15, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4", "eval": ["Core Tight", "Full Lockout"]},
+            {"ex": "LUNGES", "sets": 3, "base": 10, "unit": "reps/leg", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=L8fvypPrzzs", "eval": ["Balance", "Upright"]},
+            {"ex": "PLANK", "sets": 3, "base": 45, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=pSHjTRCQxIw", "eval": ["Flat Back", "Glutes Engaged"]},
+            {"ex": "DUMBBELL ROW", "sets": 4, "base": 12, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=6KA7SFr8P4E", "eval": ["Elbow High", "Still Torso"]},
+            {"ex": "MOUNTAIN CLIMBERS", "sets": 3, "base": 30, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=nmwgirgXLYM", "eval": ["Fast Pace", "Knees High"]},
+            {"ex": "GLUTE BRIDGES", "sets": 3, "base": 15, "unit": "reps", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=wPM8icPu6H8", "eval": ["Squeeze Glutes", "Heels Down"]},
+            {"ex": "BURPEES", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "type": "cond", "vid": "https://www.youtube.com/watch?v=dZfeV_pL3fE", "eval": ["Full Jump", "Fast Tempo"]}
         ]
     }
     return workouts.get(sport, [])
@@ -187,7 +186,7 @@ for i, item in enumerate(drills):
     with c1:
         st.markdown(f'<p class="stat-label">Target Sets</p><p class="stat-value">{item["sets"]}</p>', unsafe_allow_html=True)
     with c2:
-        reps_val = int((item['base'] + ((week_num - 1) * item['inc'])) * target_mult)
+        reps_val = int(item['base'] * target_mult)
         st.markdown(f'<p class="stat-label">Reps/Time</p><p class="stat-value">{reps_val} {item["unit"]}</p>', unsafe_allow_html=True)
     with c3:
         st.markdown(f'<p class="stat-label">Completed</p><p class="stat-value">{st.session_state[drill_key]}</p>', unsafe_allow_html=True)
