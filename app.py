@@ -30,7 +30,7 @@ if dark_mode:
     sidebar_bg = "#1E293B"
     sidebar_text = "#FFFFFF"
     input_bg = "#1E293B" 
-    sport_text_color = "#000000" # Forced Black in Dark Mode
+    sport_text_color = "#000000" 
     numeric_color = "#00FFFF"    # Electric Blue in Dark Mode
 else:
     bg_color = "#F8FAFC"
@@ -40,8 +40,8 @@ else:
     sidebar_bg = "#FFFFFF"
     sidebar_text = "#0F172A"
     input_bg = "#FFFFFF"
-    sport_text_color = "#FFFFFF" # Forced White in Light Mode
-    numeric_color = "#000000"    # Forced Black in Light Mode
+    sport_text_color = "#FFFFFF" 
+    numeric_color = "#000000"    # FORCED BLACK FOR IPHONE/LIGHT MODE
     
 st.markdown(f"""
     <style>
@@ -54,20 +54,25 @@ st.markdown(f"""
         -webkit-text-fill-color: {sidebar_text} !important;
     }}
 
-    /* Sport Selection Text Fix */
     div[data-baseweb="select"] span {{
         color: {sport_text_color} !important;
         -webkit-text-fill-color: {sport_text_color} !important;
     }}
 
-    /* Numeric Inputs and Stats visibility */
-    input, .stat-value, [role="slider"], [data-testid="stMarkdownContainer"] p > span {{
+    /* --- IPHONE NUMERIC INPUT FIX --- */
+    /* Targets inputs, number fields, and the big stat values */
+    input, 
+    textarea, 
+    [data-testid="stNumericInput"] input,
+    .stat-value, 
+    [role="slider"], 
+    [data-testid="stMarkdownContainer"] p > span {{
         color: {numeric_color} !important;
         -webkit-text-fill-color: {numeric_color} !important;
+        opacity: 1 !important; /* Fixes iPhone's forced light gray on disabled or specific inputs */
         font-weight: 900 !important;
     }}
 
-    /* Input Container borders */
     div[data-baseweb="input"] > div, 
     div[data-baseweb="select"] > div {{
         background-color: {input_bg} !important;
@@ -115,7 +120,6 @@ st.sidebar.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Monthly Goal
 goal = 20
 progress = min(st.session_state.monthly_sessions / goal, 1.0)
 st.sidebar.markdown(f"""
