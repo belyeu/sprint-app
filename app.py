@@ -36,7 +36,7 @@ st.markdown(f"""
         font-weight: 700;
     }}
 
-    /* ELECTRIC BLUE TITLES */
+    /* ELECTRIC BLUE TITLES (Target Set, Reps/Time, Completed) */
     label[data-testid="stWidgetLabel"] p {{
         color: {electric_blue} !important;
         -webkit-text-fill-color: {electric_blue} !important;
@@ -72,52 +72,52 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. WORKOUT DATABASE (9 DRILLS PER SPORT) ---
+# --- 3. WORKOUT DATABASE (9 DRILLS PER SPORT WITH DESCRIPTIONS) ---
 def get_workout_template(sport, locs):
     workouts = {
         "Basketball": [
-            {"ex": "POUND SERIES", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "loc": "Gym"},
-            {"ex": "MIKAN SERIES", "sets": 4, "base": 20, "unit": "reps", "rest": 45, "loc": "Gym"},
-            {"ex": "FIGURE 8", "sets": 3, "base": 45, "unit": "sec", "rest": 30, "loc": "Gym"},
-            {"ex": "FREE THROWS", "sets": 5, "base": 10, "unit": "makes", "rest": 60, "loc": "Gym"},
-            {"ex": "V-DRIBBLE", "sets": 3, "base": 50, "unit": "reps", "rest": 30, "loc": "Gym"},
-            {"ex": "DEFENSIVE SLIDES", "sets": 4, "base": 30, "unit": "sec", "rest": 45, "loc": "Gym"},
-            {"ex": "BOX JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 90, "loc": "Weight Room"},
-            {"ex": "WALL SITS", "sets": 3, "base": 60, "unit": "sec", "rest": 60, "loc": "Weight Room"},
-            {"ex": "FULL COURT SPRINTS", "sets": 2, "base": 4, "unit": "laps", "rest": 120, "loc": "Gym"}
+            {"ex": "POUND SERIES", "desc": "Power dribbling at 3 heights.", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "loc": "Gym", "demo": "https://youtube.com/placeholder1"},
+            {"ex": "MIKAN SERIES", "desc": "Alternating layups for touch and rhythm.", "sets": 4, "base": 20, "unit": "reps", "rest": 45, "loc": "Gym", "demo": "https://youtube.com/placeholder2"},
+            {"ex": "FIGURE 8", "desc": "Low, tight handling through legs.", "sets": 3, "base": 45, "unit": "sec", "rest": 30, "loc": "Gym", "demo": "https://youtube.com/placeholder3"},
+            {"ex": "FREE THROWS", "desc": "Static routine practice for muscle memory.", "sets": 5, "base": 10, "unit": "makes", "rest": 60, "loc": "Gym", "demo": "https://youtube.com/placeholder4"},
+            {"ex": "V-DRIBBLE", "desc": "Explosive lateral control and wrist snap.", "sets": 3, "base": 50, "unit": "reps", "rest": 30, "loc": "Gym", "demo": "https://youtube.com/placeholder5"},
+            {"ex": "DEFENSIVE SLIDES", "sets": 4, "base": 30, "unit": "sec", "rest": 45, "loc": "Gym", "desc": "Lateral intensity drill.", "demo": ""},
+            {"ex": "BOX JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 90, "loc": "Weight Room", "desc": "Vertical power development.", "demo": ""},
+            {"ex": "WALL SITS", "sets": 3, "base": 60, "unit": "sec", "rest": 60, "loc": "Weight Room", "desc": "Isometric leg strength.", "demo": ""},
+            {"ex": "FULL COURT SPRINTS", "sets": 2, "base": 4, "unit": "laps", "rest": 120, "loc": "Gym", "desc": "Conditioning finish.", "demo": ""}
         ],
         "Track": [
-            {"ex": "ANKLE DRIBBLES", "sets": 3, "base": 30, "unit": "m", "rest": 30, "loc": "Track"},
-            {"ex": "A-SKIPS", "sets": 4, "base": 40, "unit": "m", "rest": 45, "loc": "Track"},
-            {"ex": "BOUNDING", "sets": 3, "base": 30, "unit": "m", "rest": 90, "loc": "Track"},
-            {"ex": "HIGH KNEES", "sets": 3, "base": 20, "unit": "sec", "rest": 30, "loc": "Track"},
-            {"ex": "ACCELERATIONS", "sets": 6, "base": 20, "unit": "m", "rest": 120, "loc": "Track"},
-            {"ex": "SINGLE LEG HOPS", "sets": 3, "base": 10, "unit": "reps", "rest": 60, "loc": "Track"},
-            {"ex": "HILL SPRINTS", "sets": 5, "base": 10, "unit": "sec", "rest": 90, "loc": "Track"},
-            {"ex": "RUSSIAN TWISTS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "loc": "Weight Room"},
-            {"ex": "800M FINISHER", "sets": 1, "base": 800, "unit": "m", "rest": 180, "loc": "Track"}
+            {"ex": "ANKLE DRIBBLES", "desc": "Quick ankle strikes with low knee drive.", "sets": 3, "base": 30, "unit": "m", "rest": 30, "loc": "Track", "demo": ""},
+            {"ex": "A-SKIPS", "desc": "Rhythmic knee drive and arm synchronization.", "sets": 4, "base": 40, "unit": "m", "rest": 45, "loc": "Track", "demo": ""},
+            {"ex": "BOUNDING", "desc": "Horizontal power leaps focusing on air time.", "sets": 3, "base": 30, "unit": "m", "rest": 90, "loc": "Track", "demo": ""},
+            {"ex": "HIGH KNEES", "desc": "Rapid vertical cycles and foot speed.", "sets": 3, "base": 20, "unit": "sec", "rest": 30, "loc": "Track", "demo": ""},
+            {"ex": "ACCELERATIONS", "desc": "20m drive bursts from a crouched start.", "sets": 6, "base": 20, "unit": "m", "rest": 120, "loc": "Track", "demo": ""},
+            {"ex": "SINGLE LEG HOPS", "sets": 3, "base": 10, "unit": "reps", "rest": 60, "loc": "Track", "desc": "Ankle stability.", "demo": ""},
+            {"ex": "HILL SPRINTS", "sets": 5, "base": 10, "unit": "sec", "rest": 90, "loc": "Track", "desc": "Uphill force production.", "demo": ""},
+            {"ex": "RUSSIAN TWISTS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "loc": "Weight Room", "desc": "Core rotation power.", "demo": ""},
+            {"ex": "800M FINISHER", "sets": 1, "base": 800, "unit": "m", "rest": 180, "loc": "Track", "desc": "Lactic acid threshold test.", "demo": ""}
         ],
         "Softball": [
-            {"ex": "TEE WORK", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "loc": "Softball Cages"},
-            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "loc": "Softball Field"},
-            {"ex": "FRONT TOSS", "sets": 4, "base": 20, "unit": "swings", "rest": 60, "loc": "Softball Cages"},
-            {"ex": "LATERAL SHUFFLES", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "loc": "Softball Field"},
-            {"ex": "LONG TOSS", "sets": 3, "base": 15, "unit": "throws", "rest": 60, "loc": "Softball Field"},
-            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "loc": "Softball Field"},
-            {"ex": "SQUAT JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 60, "loc": "Weight Room"},
-            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "unit": "sprint", "rest": 45, "loc": "Softball Field"},
-            {"ex": "BUNTING DRILLS", "sets": 3, "base": 10, "unit": "bunts", "rest": 30, "loc": "Softball Cages"}
+            {"ex": "TEE WORK", "desc": "Swing mechanics and point of contact.", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "loc": "Softball Cages", "demo": ""},
+            {"ex": "GLOVE TRANSFERS", "desc": "Rapid transfer from glove to hand.", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "loc": "Softball Field", "demo": ""},
+            {"ex": "FRONT TOSS", "desc": "Timing and directional hitting.", "sets": 4, "base": 20, "unit": "swings", "rest": 60, "loc": "Softball Cages", "demo": ""},
+            {"ex": "LATERAL SHUFFLES", "desc": "Defensive range and low center of gravity.", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "loc": "Softball Field", "demo": ""},
+            {"ex": "LONG TOSS", "desc": "Arm strength buildup and accuracy.", "sets": 3, "base": 15, "unit": "throws", "rest": 60, "loc": "Softball Field", "demo": ""},
+            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "loc": "Softball Field", "desc": "Forearm velocity.", "demo": ""},
+            {"ex": "SQUAT JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 60, "loc": "Weight Room", "desc": "Explosive leg drive.", "demo": ""},
+            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "unit": "sprint", "rest": 45, "loc": "Softball Field", "desc": "Base path speed.", "demo": ""},
+            {"ex": "BUNTING DRILLS", "sets": 3, "base": 10, "unit": "bunts", "rest": 30, "loc": "Softball Cages", "desc": "Precision placement.", "demo": ""}
         ],
         "General Workout": [
-            {"ex": "GOBLET SQUATS", "sets": 4, "base": 12, "unit": "reps", "rest": 90, "loc": "Weight Room"},
-            {"ex": "PUSHUPS", "sets": 3, "base": 15, "unit": "reps", "rest": 60, "loc": "Gym"},
-            {"ex": "LUNGES", "sets": 3, "base": 10, "unit": "reps", "rest": 60, "loc": "Gym"},
-            {"ex": "PLANK", "sets": 3, "base": 45, "unit": "sec", "rest": 45, "loc": "Gym"},
-            {"ex": "DUMBBELL ROW", "sets": 4, "base": 12, "unit": "reps", "rest": 60, "loc": "Weight Room"},
-            {"ex": "MOUNTAIN CLIMBERS", "sets": 3, "base": 30, "unit": "sec", "rest": 30, "loc": "Gym"},
-            {"ex": "GLUTE BRIDGES", "sets": 3, "base": 15, "unit": "reps", "rest": 45, "loc": "Gym"},
-            {"ex": "BURPEES", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "loc": "Gym"},
-            {"ex": "JUMP ROPE", "sets": 3, "base": 2, "unit": "min", "rest": 60, "loc": "Gym"}
+            {"ex": "GOBLET SQUATS", "desc": "Leg power with core tension.", "sets": 4, "base": 12, "unit": "reps", "rest": 90, "loc": "Weight Room", "demo": ""},
+            {"ex": "PUSHUPS", "desc": "Chest and tricep strength.", "sets": 3, "base": 15, "unit": "reps", "rest": 60, "loc": "Gym", "demo": ""},
+            {"ex": "LUNGES", "desc": "Unilateral stability and balance.", "sets": 3, "base": 10, "unit": "reps", "rest": 60, "loc": "Gym", "demo": ""},
+            {"ex": "PLANK", "desc": "Total body isometric core strength.", "sets": 3, "base": 45, "unit": "sec", "rest": 45, "loc": "Gym", "demo": ""},
+            {"ex": "DUMBBELL ROW", "desc": "Back pull strength and posture.", "sets": 4, "base": 12, "unit": "reps", "rest": 60, "loc": "Weight Room", "demo": ""},
+            {"ex": "MOUNTAIN CLIMBERS", "sets": 3, "base": 30, "unit": "sec", "rest": 30, "loc": "Gym", "desc": "Dynamic core speed.", "demo": ""},
+            {"ex": "GLUTE BRIDGES", "sets": 3, "base": 15, "unit": "reps", "rest": 45, "loc": "Gym", "desc": "Posterior engagement.", "demo": ""},
+            {"ex": "BURPEES", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "loc": "Gym", "desc": "Full body intensity.", "demo": ""},
+            {"ex": "JUMP ROPE", "sets": 3, "base": 2, "unit": "min", "rest": 60, "loc": "Gym", "desc": "Footwork and cardio.", "demo": ""}
         ]
     }
     all_drills = workouts.get(sport, [])
@@ -136,15 +136,12 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("### 📍 LOCATION CHECKBOXES")
-    
-    # INDIVIDUAL CHECKBOXES
     l1 = st.checkbox("Gym", value=True)
     l2 = st.checkbox("Track", value=True)
     l3 = st.checkbox("Weight Room", value=True)
     l4 = st.checkbox("Softball Cages", value=(sport_choice == "Softball"))
     l5 = st.checkbox("Softball Field", value=(sport_choice == "Softball"))
 
-    # Construct the active location list
     active_locs = []
     if l1: active_locs.append("Gym")
     if l2: active_locs.append("Track")
@@ -164,7 +161,6 @@ with st.sidebar:
 
 # --- 5. MAIN UI ---
 st.title(f"{sport_choice} Session")
-
 drills = get_workout_template(sport_choice, active_locs)
 
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
@@ -174,8 +170,13 @@ if not drills:
     st.warning("No drills selected. Please check location boxes in the side panel.")
 else:
     for i, item in enumerate(drills):
+        # Drill Title and Location
         st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} <span style="font-size:12px; opacity:0.6;">({item["loc"]})</span></div>', unsafe_allow_html=True)
         
+        # RESTORED: Drill Description
+        st.markdown(f'<p style="font-style: italic; font-weight: 500; margin-top: 5px;">{item["desc"]}</p>', unsafe_allow_html=True)
+        
+        # Electric Blue Inputs
         c1, c2, c3 = st.columns(3)
         with c1:
             st.text_input("Target Set", value=str(item["sets"]), key=f"ts_{i}")
@@ -198,8 +199,13 @@ else:
                     time.sleep(1)
                 ph.empty()
 
-        with st.expander("🎥 SESSION VIDEO"):
-            st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"v_{i}")
+        # RESTORED: Demo Video and Clip Upload
+        with st.expander("🎥 DEMO & UPLOAD"):
+            if item["demo"]:
+                st.markdown(f"[Watch Demo Video]({item['demo']})")
+            else:
+                st.write("No demo video available.")
+            st.file_uploader("Upload Session Clip", type=["mp4", "mov"], key=f"v_{i}")
 
 st.divider()
 if st.button("💾 SAVE COMPLETE SESSION", use_container_width=True):
