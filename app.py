@@ -2,104 +2,185 @@ import streamlit as st
 import pandas as pd
 import time
 from datetime import datetime
-import pytz  # Ensure this is in your requirements.txt
+import pytz
 
-# --- 1. EST Time Logic ---
-def get_est_time():
-    # Use 'US/Eastern' to automatically handle Daylight Savings
-    est_tz = pytz.timezone('US/Eastern')
-    return datetime.now(est_tz)
-
-# --- 2. High-Visibility Theme Configuration ---
+# --- 1. SETUP & EST TIME LOGIC ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
-# Initialize Session State
-if 'streak' not in st.session_state: 
-    st.session_state.streak = 1
-if 'session_saved' not in st.session_state: 
-    st.session_state.session_saved = False
+def get_now_est():
+    """Returns current time in US/Eastern (EST/EDT)."""
+    return datetime.now(pytz.timezone('US/Eastern'))
 
-# Sidebar Display Settings
+# Initialize Session State
+if 'history' not in st.session_state:
+    st.session_state.history = []
+if 'streak' not in st.session_state:
+    st.session_state.streak = 0
+
+# --- 2. DYNAMIC THEME & IPHONE CSS ---
 st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
 dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 
-# CSS Variables for Light/Dark Mode Contrast
 if dark_mode:
-    bg_color, text_color, accent_color = "#0F172A", "#FFFFFF", "#3B82F6"
-    header_bg, card_bg = "#1E293B", "#1E293B"
+    bg, text, accent, header = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
 else:
-    # High-contrast Light Mode to prevent iPhone "Graying Out"
-    bg_color, text_color, accent_color = "#FFFFFF", "#000000", "#1E40AF"
-    header_bg, card_bg = "#F1F5F9", "#F8FAFC"
+    # High-contrast Light Mode for iPhone Safari
+    bg, text, accent, header = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
+
+# Strictly force white for all button labels
+btn_txt_white = "#FFFFFF"
 
 st.markdown(f"""
     <style>
-    /* Force high-visibility text on iPhone Safari */
-    .stApp {{ background-color: {bg_color} !important; }}
+    /* Global Background */
+    .stApp {{ background-color: {bg} !important; }}
     
-    h1, h2, h3, p, span, label, div, li {{
-        color: {text_color} !important;
-        -webkit-text-fill-color: {text_color} !important;
+    /* Force Global Text Visibility (No transparency for Safari) */
+    h1, h2, h3, p, span, label, li, .stMarkdown p {{
+        color: {text} !important;
+        -webkit-text-fill-color: {text} !important;
         opacity: 1 !important;
+        font-weight: 500;
     }}
 
-    /* Specific fix for checkbox labels and inputs that turn gray on mobile */
-    .stCheckbox label p, .stTextInput label p {{
-        color: {text_color} !important;
-        font-weight: 600 !important;
+    /* AGGRESSIVE BUTTON OVERRIDE: Forces White Text on iPhone Safari */
+    div.stButton > button {{
+        background-color: {accent} !important;
+        border: none !important;
+        height: 55px !important;
+        width: 100% !important;
+        border-radius: 12px !important;
     }}
 
+    /* Target all possible text containers inside Streamlit buttons */
+    div.stButton > button p, 
+    div.stButton > button span, 
+    div.stButton > button div, 
+    div.stButton > button label,
+    div.stButton > button code {{
+        color: {btn_txt_white} !important;
+        -webkit-text-fill-color: {btn_txt_white} !important;
+        font-weight: 800 !important;
+        font-size: 16px !important;
+        opacity: 1 !important;
+        text-transform: uppercase;
+    }}
+
+    /* Fix Expander and Input visibility */
+    [data-testid="stExpander"], input, textarea {{
+        background-color: {header} !important;
+        border: 2px solid {accent} !important;
+        border-radius: 10px !important;
+        color: {text} !important;
+    }}
+
+    /* Drill Headers */
     .drill-header {{
-        font-size: 20px !important; font-weight: 800 !important; 
-        color: {accent_color} !important; -webkit-text-fill-color: {accent_color} !important;
-        background-color: {header_bg}; border-left: 8px solid {accent_color};
-        padding: 10px; border-radius: 0 8px 8px 0; margin-top: 20px;
+        font-size: 22px !important; font-weight: 900 !important; 
+        color: {accent} !important; -webkit-text-fill-color: {accent} !important;
+        background-color: {header}; border-left: 10px solid {accent};
+        padding: 12px; border-radius: 0 10px 10px 0; margin-top: 25px;
     }}
 
-    .stat-label {{ font-size: 12px !important; font-weight: 800 !important; color: {accent_color} !important; }}
-    .stat-value {{ font-size: 28px !important; font-weight: 900 !important; }}
-    
-    .stButton>button {{ 
-        background-color: {accent_color} !important; color: white !important; 
-        -webkit-text-fill-color: white !important; border-radius: 8px !important; 
-        font-weight: 700 !important; height: 50px !important;
+    .sidebar-card {{ 
+        padding: 15px; border-radius: 12px; border: 2px solid {accent}; 
+        background-color: {header}; text-align: center; margin-bottom: 10px;
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. App Header with EST Clock ---
-est_now = get_est_time()
-st.markdown(f"### 📅 {est_now.strftime('%A, %b %d')} | 🕒 {est_now.strftime('%I:%M %p')} EST")
-st.title("Pro-Athlete Daily Log")
+# --- 3. MASTER DATABASE ---
+def get_workout_template(sport):
+    workouts = {
+        "Basketball": [
+            {"ex": "POUND SERIES", "desc": "Stationary dribbling, max force.", "rest": 30},
+            {"ex": "MIKAN SERIES", "desc": "Continuous layups, alternating hands.", "rest": 45}
+        ],
+        "Track": [
+            {"ex": "ANKLE DRIBBLES", "desc": "Small steps, ankle dorsiflexion.", "rest": 30},
+            {"ex": "A-SKIPS", "desc": "Rhythmic skipping, knee drive.", "rest": 45}
+        ],
+        "Softball": [
+            {"ex": "TEE WORK", "desc": "Stationary hitting mechanics.", "rest": 60},
+            {"ex": "GLOVE TRANSFERS", "desc": "Rapid ball transfer from glove.", "rest": 30}
+        ],
+        "General Workout": [
+            {"ex": "GOBLET SQUATS", "desc": "Weighted squats for depth.", "rest": 90},
+            {"ex": "PUSHUPS", "desc": "Upper body press strength.", "rest": 60}
+        ]
+    }
+    return workouts.get(sport, [])
 
-# --- 4. Workout logic (Example: Basketball) ---
-drills = [
-    {"ex": "POUND SERIES", "desc": "Stationary dribbling, max force.", "sets": 3, "base": 60, "unit": "sec", "rest": 30},
-    {"ex": "MIKAN SERIES", "desc": "Continuous layups, alternating hands.", "sets": 4, "base": 20, "unit": "reps", "rest": 45}
-]
+# --- 4. SIDEBAR NAVIGATION ---
+now_est = get_now_est()
+st.sidebar.markdown(f"""
+<div class="sidebar-card">
+    <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">CURRENT TIME (EST)</p>
+    <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
+    <p style="margin:0; font-size:13px; font-weight:600;">{now_est.strftime('%A, %b %d')}</p>
+</div>
+""", unsafe_allow_html=True)
 
-for i, item in enumerate(drills):
-    st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]}</div>', unsafe_allow_html=True)
-    st.write(item["desc"])
-    
-    c1, c2 = st.columns(2)
-    with c1:
-        if st.button(f"COMPLETE SET", key=f"btn_{i}", use_container_width=True):
-            st.toast(f"Set {i+1} logged!")
-    with c2:
-        if st.button(f"REST TIMER", key=f"rst_{i}", use_container_width=True):
-            ph = st.empty()
-            for t in range(item['rest'], -1, -1):
-                ph.metric("Rest Remaining", f"{t}s")
-                time.sleep(1)
-            ph.empty()
+st.sidebar.markdown(f"""
+<div class="sidebar-card">
+    <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">STREAK</p>
+    <p style="margin:0; font-size:24px; font-weight:900;">{st.session_state.streak} DAYS</p>
+</div>
+""", unsafe_allow_html=True)
 
-    # Evaluation checkboxes (Fixed for iPhone visibility)
-    st.checkbox("Perfect Form", key=f"form_{i}")
-    st.text_input("Performance Notes", key=f"note_{i}", placeholder="e.g., Felt explosive today")
+app_mode = st.sidebar.selectbox("Navigate", ["Workout Plan", "Session History"])
+sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
-st.divider()
+# --- 5. WORKOUT PLAN PAGE ---
+if app_mode == "Workout Plan":
+    st.title(f"{sport_choice} Dashboard")
+    drills = get_workout_template(sport_choice)
 
-if st.button("💾 SAVE SESSION", use_container_width=True):
-    st.balloons()
-    st.success(f"Workout Saved at {get_est_time().strftime('%I:%M %p')} EST")
+    for i, item in enumerate(drills):
+        st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]}</div>', unsafe_allow_html=True)
+        st.write(item["desc"])
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button(f"DONE ✅", key=f"d_{i}"):
+                st.toast(f"Logged: {item['ex']}")
+        with c2:
+            if st.button(f"REST ⏱️", key=f"r_{i}"):
+                ph = st.empty()
+                for t in range(item['rest'], -1, -1):
+                    ph.markdown(f"<p style='text-align:center; font-size:44px; color:{accent}; font-weight:900;'>{t}s</p>", unsafe_allow_html=True)
+                    time.sleep(1)
+                ph.empty()
+
+        st.checkbox("Perfect Form", key=f"f_{i}")
+        st.text_input("Notes", key=f"n_{i}", placeholder="How did this set feel?")
+        
+        with st.expander("🎥 DEMO & UPLOAD"):
+            st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"u_{i}")
+
+    st.divider()
+    s1, s2 = st.columns(2)
+    with s1:
+        if st.button("💾 SAVE WORKOUT"):
+            timestamp = get_now_est().strftime("%b %d, %Y | %I:%M %p")
+            st.session_state.history.append({"date": timestamp, "sport": sport_choice})
+            st.session_state.streak += 1
+            st.balloons()
+            st.success(f"Saved at {timestamp} EST")
+    with s2:
+        if st.button("🔄 RESET SESSION"):
+            st.rerun()
+
+# --- 6. SESSION HISTORY PAGE ---
+else:
+    st.title("📊 Training History")
+    if not st.session_state.history:
+        st.info("No saved sessions yet.")
+    else:
+        for log in reversed(st.session_state.history):
+            st.markdown(f"""
+            <div style="padding:15px; border-radius:12px; border:1px solid {accent}; background-color:{header}; margin-bottom:12px;">
+                <p style="margin:0; font-weight:900; font-size:18px; color:{accent} !important;">{log['sport']} Session</p>
+                <p style="margin:0; font-size:14px; font-weight:700;">{log['date']} EST</p>
+            </div>
+            """, unsafe_allow_html=True)
