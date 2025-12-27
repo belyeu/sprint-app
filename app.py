@@ -1,3 +1,10 @@
+I've updated the code to include a **Monthly Goal Progress** tracker in the sidebar. It tracks your total saved sessions for the current month and displays a progress bar toward a 20-session goal.
+
+I also ensured all your specific iPhone and Laptop CSS fixes are preserved.
+
+### `app.py`
+
+```python
 import streamlit as st
 import pandas as pd
 import time
@@ -13,6 +20,8 @@ if 'streak' not in st.session_state:
     st.session_state.streak = 1
 if 'session_saved' not in st.session_state: 
     st.session_state.session_saved = False
+if 'monthly_sessions' not in st.session_state:
+    st.session_state.monthly_sessions = 0
 
 # Sidebar Toggle for Dark Mode
 st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
@@ -85,6 +94,11 @@ st.markdown(f"""
         padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px; 
         border: 2px solid {accent_color}; background-color: {sidebar_bg};
     }}
+    
+    /* Progress bar color sync */
+    div[data-testid="stProgress"] > div > div > div > div {{
+        background-color: {accent_color} !important;
+    }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -97,6 +111,17 @@ st.sidebar.markdown(f"""
     <p style="margin:0; font-size:24px; font-weight:900; color:{numeric_color} !important;">{now.strftime("%I:%M %p")}</p>
 </div>
 """, unsafe_allow_html=True)
+
+# Monthly Goal Progress
+goal = 20
+progress = min(st.session_state.monthly_sessions / goal, 1.0)
+st.sidebar.markdown(f"""
+<div class="sidebar-card">
+    <p style="margin:0; font-weight:800; font-size:12px; color:{accent_color};">{now.strftime("%B").upper()} GOAL</p>
+    <p style="font-size:28px; font-weight:900; margin:0; color:{numeric_color} !important;">{st.session_state.monthly_sessions} / {goal}</p>
+</div>
+""", unsafe_allow_html=True)
+st.sidebar.progress(progress)
 
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
@@ -162,9 +187,12 @@ def get_workout_template(sport):
 st.markdown(f"<h1>{sport_choice} Session</h1>", unsafe_allow_html=True)
 drills = get_workout_template(sport_choice)
 
-for i, item in enumerate(drills):
+for i in range(len(drills)):
+    item = drills[i]
     drill_key = f"{sport_choice}_{i}"
-    if drill_key not in st.session_state: st.session_state[drill_key] = 0
+    
+    if drill_key not in st.session_state: 
+        st.session_state[drill_key] = 0
     
     st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]}</div>', unsafe_allow_html=True)
     
@@ -194,7 +222,8 @@ for i, item in enumerate(drills):
 
     st.markdown("### 📋 COACH'S EVALUATION")
     eval_cols = st.columns(2)
-    for idx, criteria in enumerate(item['eval']):
+    for idx in range(len(item['eval'])):
+        criteria = item['eval'][idx]
         eval_cols[idx % 2].checkbox(criteria, key=f"ev_{drill_key}_{idx}")
     
     st.select_slider(f"Intensity (RPE)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
@@ -208,7 +237,9 @@ st.divider()
 if st.button("💾 SAVE WORKOUT"):
     st.balloons()
     st.session_state.streak += 1
+    st.session_state.monthly_sessions += 1
     st.session_state.session_saved = True
+    st.rerun()
 
 # --- 5. Post-Workout Analytics ---
 if st.session_state.session_saved:
@@ -216,7 +247,8 @@ if st.session_state.session_saved:
     st.markdown(f"### 📊 Session Summary: {sport_choice}")
     
     summary_data = []
-    for i, item in enumerate(drills):
+    for i in range(len(drills)):
+        item = drills[i]
         drill_key = f"{sport_choice}_{i}"
         summary_data.append({
             "Drill": item["ex"],
@@ -229,3 +261,7 @@ if st.session_state.session_saved:
     
     with st.expander("Show Raw Performance Data"):
         st.dataframe(df, use_container_width=True, hide_index=True)
+
+```
+
+Would you like me to add an **"Export to PDF"** button so you can send your session summary to a coach?
