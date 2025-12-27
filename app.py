@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import time
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 
-# --- 1. Refined Modern Athletic Theme ---
+# --- 1. High-Contrast Athletic Theme ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 st.markdown("""
@@ -12,102 +11,128 @@ st.markdown("""
     /* Main Background */
     .main { background-color: #F8FAFC; color: #1E293B; }
     
-    /* DRILL NAME - UPDATED FOR HIGH VISIBILITY */
+    /* DRILL NAME - BLUE ACCENT VERSION */
     .drill-header {
-        font-size: 30px !important; 
-        font-weight: 800 !important; 
-        color: #0F172A !important; /* Deep Navy - very visible on white */
-        margin-top: 30px; 
-        margin-bottom: 10px;
-        background-color: #FFFFFF; /* White background for the text area */
-        border-left: 8px solid #3B82F6; /* Bright Blue accent */
-        padding: 12px 20px;
-        border-radius: 4px 12px 12px 4px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        font-size: 32px !important; 
+        font-weight: 900 !important; 
+        color: #000000 !important; /* Pure Black text */
+        margin-top: 40px; 
+        margin-bottom: 15px;
+        background-color: #EFF6FF; /* Soft Blue Tint background */
+        border-left: 12px solid #2563EB; /* Electric Blue border */
+        padding: 15px 25px;
+        border-radius: 8px;
+        display: block;
+        width: 100%;
+        letter-spacing: 1px;
     }
     
-    /* Timer Display */
+    /* High-Visibility Rest Timer */
     .timer-text {
-        font-size: 65px !important; font-weight: 700 !important; color: #3B82F6 !important;
-        text-align: center; background: #EFF6FF; border-radius: 16px; padding: 15px;
-        border: 2px solid #DBEAFE;
-    }
-    
-    /* Sidebar Streak Card */
-    .streak-card {
-        background: white; color: #1E293B; padding: 20px; border-radius: 12px; 
-        text-align: center; font-weight: 700; border: 1px solid #E2E8F0;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        font-size: 80px !important; 
+        font-weight: 800 !important; 
+        color: #2563EB !important; 
+        text-align: center; 
+        background: #FFFFFF; 
+        border-radius: 20px; 
+        padding: 20px;
+        border: 4px solid #2563EB;
     }
 
-    /* Buttons */
+    /* Metric Cards */
+    div[data-testid="stMetric"] {
+        background-color: #FFFFFF;
+        border: 2px solid #DBEAFE;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    /* Action Buttons */
     .stButton>button { 
-        background-color: #3B82F6; color: white; border-radius: 10px; 
-        font-weight: 700; height: 55px; border: none;
+        background-color: #2563EB; 
+        color: white; 
+        border-radius: 10px; 
+        font-weight: 700; 
+        height: 60px; 
+        font-size: 20px;
+        border: none;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Session State Logic ---
-if 'streak' not in st.session_state: st.session_state.streak = 1
+# --- 2. Logic & Session Data ---
 if 'set_counters' not in st.session_state: st.session_state.set_counters = {}
+if 'streak' not in st.session_state: st.session_state.streak = 1
 
-def get_workout_template():
+def get_drills():
     return [
-        {"ex": "Pound Series", "base": 30, "sets": 4, "bench": 240, "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0"},
-        {"ex": "Mikan Series", "base": 25, "sets": 4, "bench": 120, "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks"},
-        {"ex": "Stationary Crossover", "base": 50, "sets": 4, "bench": 400, "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E"}
+        {"ex": "POUND SERIES", "base": 30, "sets": 4, "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "note": "Maintain a low, athletic stance. Hard, violent dribbles."},
+        {"ex": "MIKAN SERIES", "base": 25, "sets": 4, "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "note": "Focus on high, soft-touch finishes. Do not let the ball drop below your chin."},
+        {"ex": "STATIONARY CROSSOVER", "base": 50, "sets": 4, "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E", "note": "Wide crossovers outside your frame. Snap the ball across."}
     ]
 
-# --- 3. Sidebar Analytics ---
-st.sidebar.markdown(f"""
-    <div class="streak-card">
-        <p style="margin:0; font-size: 12px; color: #64748B;">DAILY STREAK</p>
-        <p style="margin:0; font-size: 32px; color: #3B82F6;">{st.session_state.streak} Days 🔥</p>
-    </div>
-""", unsafe_allow_html=True)
+# --- 3. Sidebar Customization ---
+st.sidebar.title("🥇 Athlete Profile")
+st.sidebar.metric("Current Streak", f"{st.session_state.streak} Days")
 
-# --- 4. Main Workout View ---
+st.sidebar.markdown("---")
+st.sidebar.subheader("Timer Settings")
+# Rest customizer requested by user
+rest_seconds = st.sidebar.slider("Rest Duration (Seconds)", min_value=15, max_value=120, value=30, step=15)
+
+difficulty = st.sidebar.select_slider("Workout Intensity", options=["Standard", "Elite", "Pro"], value="Elite")
+target_mult = 1.0 if difficulty == "Standard" else 1.5 if difficulty == "Elite" else 2.0
+
+# --- 4. Main App UI ---
 st.title("Performance Tracker")
-drills = get_workout_template()
+all_drills = get_drills()
 
-for i, item in enumerate(drills):
+for i, drill in enumerate(all_drills):
     drill_key = f"drill_{i}"
     if drill_key not in st.session_state.set_counters: st.session_state.set_counters[drill_key] = 0
     
-    # Drill Name Display
-    st.markdown(f'<p class="drill-header">{item["ex"]}</p>', unsafe_allow_html=True)
+    # Drill Header with User-Requested Blue Theme
+    st.markdown(f'<div class="drill-header">{drill["ex"]}</div>', unsafe_allow_html=True)
     
-    current_set = st.session_state.set_counters[drill_key]
-    st.write(f"**Progress:** Set {current_set} of {item['sets']}")
+    current = st.session_state.set_counters[drill_key]
+    st.info(f"Progress: Set {current} of {drill['sets']} Completed")
 
-    # Main Controls
     c1, c2, c3 = st.columns([1, 1, 1])
     with c1:
-        st.metric("Goal", f"{item['base']} Reps")
-        if st.button(f"Mark Set Done", key=f"done_{i}"):
-            st.session_state.set_counters[drill_key] = min(st.session_state.set_counters[drill_key]+1, item['sets'])
+        reps = int(drill['base'] * target_mult)
+        st.metric("Target Reps", f"{reps}")
+        if st.button(f"Complete Set", key=f"btn_{i}"):
+            st.session_state.set_counters[drill_key] = min(current + 1, drill['sets'])
             st.rerun()
+            
     with c2:
-        if st.button(f"Start Rest", key=f"timer_{i}"):
-            ph = st.empty()
-            for t in range(30, -1, -1):
-                ph.markdown(f'<p class="timer-text">{t:02d}s</p>', unsafe_allow_html=True)
+        if st.button(f"Start Rest", key=f"t_{i}"):
+            placeholder = st.empty()
+            for seconds in range(rest_seconds, -1, -1):
+                placeholder.markdown(f'<p class="timer-text">{seconds}s</p>', unsafe_allow_html=True)
                 time.sleep(1)
+            # Auto-increment set after rest finishes
+            st.session_state.set_counters[drill_key] = min(current + 1, drill['sets'])
             st.rerun()
+            
     with c3:
-        st.number_input("Log Reps", key=f"log_{i}", min_value=0)
-        st.select_slider("Intensity", options=range(1,11), value=7, key=f"rpe_{i}")
+        st.number_input("Log Actual", key=f"val_{i}", min_value=0)
+        st.select_slider("Intensity (1-10)", options=range(1,11), value=8, key=f"rpe_{i}")
 
-    # Toggle for Video/Eval
-    with st.expander("🎥 View Form & Evaluation"):
-        v1, v2 = st.columns(2)
-        with v1: st.video(item['vid'])
-        with v2:
-            up = st.file_uploader("Upload Gallery Clip", type=["mp4", "mov"], key=f"up_{i}")
+    with st.expander("🎥 View Form Demo & Coach's Checklist"):
+        st.markdown(f"**Coach's Note:** *{drill['note']}*")
+        v_col1, v_col2 = st.columns(2)
+        with v_col1:
+            st.markdown("**PRO DEMO**")
+            st.video(drill['vid'])
+        with v_col2:
+            st.markdown("**YOUR CLIP**")
+            up = st.file_uploader("Upload from Gallery", type=["mp4", "mov"], key=f"up_{i}")
             if up: st.video(up)
 
 st.divider()
-if st.button("Complete Workout"):
+
+if st.button("Finish & Save Workout"):
     st.balloons()
-    st.success("Session saved!")
+    st.success("Session saved! Your consistency is building elite results.")
