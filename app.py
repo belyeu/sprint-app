@@ -4,16 +4,17 @@ import time
 from datetime import datetime
 import pytz
 
-# --- 1. SETUP & EST TIME LOGIC ---
+# --- 1. SETUP & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
-if 'history' not in st.session_state:
-    st.session_state.history = []
+# Initialize streak and locations if not present
 if 'streak' not in st.session_state:
     st.session_state.streak = 1
+if 'selected_locs' not in st.session_state:
+    st.session_state.selected_locs = ["Gym", "Track", "Weight Room"]
 
 # --- 2. DYNAMIC THEME & ELECTRIC BLUE CSS ---
 st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
@@ -21,10 +22,10 @@ dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 
 if dark_mode:
     bg, text, accent, header_bg = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
-    electric_blue = "#7DF9FF"  # High-glow cyan/blue
+    electric_blue = "#7DF9FF" 
 else:
     bg, text, accent, header_bg = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
-    electric_blue = "#00E5FF"  # Vibrant electric blue
+    electric_blue = "#00E5FF" 
 
 btn_txt_white = "#FFFFFF"
 
@@ -32,25 +33,23 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg} !important; }}
     
-    /* Global Text Visibility */
+    /* Universal Text Visibility */
     h1, h2, h3, p, span, li, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {{
         color: {text} !important;
         -webkit-text-fill-color: {text} !important;
         font-weight: 700;
     }}
 
-    /* --- ELECTRIC BLUE TITLES --- */
-    /* Target Set, Reps/Time, and Completed labels */
+    /* --- ELECTRIC BLUE TITLES (TARGETED) --- */
     label[data-testid="stWidgetLabel"] p {{
         color: {electric_blue} !important;
         -webkit-text-fill-color: {electric_blue} !important;
         font-size: 14px !important;
         font-weight: 900 !important;
         text-transform: uppercase;
-        letter-spacing: 1px;
     }}
 
-    /* Button Styling */
+    /* Global Button Style */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -73,7 +72,7 @@ st.markdown(f"""
 
     .sidebar-card {{ 
         padding: 15px; border-radius: 12px; border: 2px solid {accent}; 
-        background-color: {header_bg}; text-align: center; margin-bottom: 10px;
+        background-color: {header_bg}; text-align: center; margin-bottom: 15px;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -127,17 +126,17 @@ def get_workout_template(sport, locs):
         ]
     }
     all_drills = workouts.get(sport, [])
+    # Safety: If locs is empty, show all. Otherwise, filter strictly.
     if not locs:
         return all_drills
     return [d for d in all_drills if d['loc'] in locs]
 
 # --- 4. SIDEBAR PANEL ---
 with st.sidebar:
-    now_est = get_now_est()
     st.markdown(f"""
     <div class="sidebar-card">
         <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">TIME (EST)</p>
-        <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
+        <p style="margin:0; font-size:20px; font-weight:900;">{get_now_est().strftime('%I:%M %p')}</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -145,11 +144,11 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("### 📍 LOCATION OPTIONS")
-    # This renders specifically in the sidebar
-    loc_filter = st.multiselect(
-        "Filter Training Grounds",
+    # LOCATION OPTIONS LOCKED TO SIDEBAR
+    st.session_state.selected_locs = st.multiselect(
+        "Choose Your Grounds:",
         options=["Gym", "Track", "Weight Room"],
-        default=["Gym", "Track", "Weight Room"]
+        default=st.session_state.selected_locs
     )
 
     st.markdown("---")
@@ -163,15 +162,17 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 # --- 5. MAIN UI ---
-st.title(f"{sport_choice} Session")
-drills = get_workout_template(sport_choice, loc_filter)
+st.title(f"{sport_choice} - Session")
+
+# Pull drills using sidebar selections
+drills = get_workout_template(sport_choice, st.session_state.selected_locs)
 
 # Multipliers
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = {"Standard": 1.0, "Elite": 0.8, "Pro": 0.5}[difficulty]
 
 if not drills:
-    st.info("Select a location in the side panel to see available drills.")
+    st.warning("No drills found. Please check your 'Location Options' in the sidebar.")
 else:
     for i, item in enumerate(drills):
         st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} <span style="font-size:12px; opacity:0.6;">({item["loc"]})</span></div>', unsafe_allow_html=True)
@@ -205,4 +206,4 @@ st.divider()
 if st.button("💾 SAVE COMPLETE SESSION", use_container_width=True):
     st.session_state.streak += 1
     st.balloons()
-    st.success("Session Saved!")
+    st.success("Session saved!")
