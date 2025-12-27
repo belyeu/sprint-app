@@ -1,10 +1,3 @@
-I've updated the code to include a **Monthly Goal Progress** tracker in the sidebar. It tracks your total saved sessions for the current month and displays a progress bar toward a 20-session goal.
-
-I also ensured all your specific iPhone and Laptop CSS fixes are preserved.
-
-### `app.py`
-
-```python
 import streamlit as st
 import pandas as pd
 import time
@@ -261,7 +254,3 @@ if st.session_state.session_saved:
     
     with st.expander("Show Raw Performance Data"):
         st.dataframe(df, use_container_width=True, hide_index=True)
-
-```
-
-Would you like me to add an **"Export to PDF"** button so you can send your session summary to a coach?
