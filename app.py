@@ -90,7 +90,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Multi-Sport Drill Database ---
+# --- 2. Multi-Sport Drill Database (All Sports Included) ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
@@ -105,6 +105,10 @@ def get_workout_template(sport):
         "Softball": [
             {"ex": "TEE SERIES", "base": 50, "inc": 15, "unit": "swings", "rest": 60, "type": "power", "desc": "Focus on hand path.", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact", "Balanced Stance"]},
             {"ex": "GLOVE WORK", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power", "desc": "Soft hands/quick transfers.", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Soft Hands", "Quick Transfer", "Glove Position"]}
+        ],
+        "General Workout": [
+            {"ex": "GOBLET SQUATS", "base": 15, "inc": 3, "unit": "reps", "rest": 120, "type": "power", "desc": "Hold weight at chest. Sit back into hips.", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I", "eval": ["Depth", "Chest Up", "Heels Down"]},
+            {"ex": "PUSHUPS", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Full range of motion. Chest to floor.", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4", "eval": ["Core Tight", "Full Lockout", "Chest to Floor"]}
         ]
     }
     return workouts.get(sport, [])
@@ -116,7 +120,7 @@ st.sidebar.markdown(f'<p style="font-size:36px; font-weight:900; margin:0;">{st.
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 st.sidebar.divider()
-sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball"])
+sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
 week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
 
@@ -146,36 +150,4 @@ for i, item in enumerate(drills):
         if st.button(f"DONE ✅", key=f"done_{i}"):
             st.session_state[drill_key] += 1
             st.rerun()
-    with col_b:
-        if st.button(f"REST ⏱️", key=f"rest_{i}"):
-            final_rest = int(item['rest'] * rest_mult) if item['type'] == 'power' else int(item['rest'] / rest_mult)
-            ph = st.empty()
-            for t in range(final_rest, -1, -1):
-                m, s = divmod(t, 60)
-                ph.markdown(f'<p class="timer-text">{m:02d}:{s:02d}</p>', unsafe_allow_html=True)
-                time.sleep(1)
-            st.session_state[drill_key] += 1
-            st.rerun()
-
-    # RESTORED: Coach's Evaluation Section
-    st.markdown("### 📋 COACH'S EVALUATION")
-    eval_cols = st.columns(2)
-    for idx, criteria in enumerate(item['eval']):
-        eval_cols[idx % 2].checkbox(criteria, key=f"eval_check_{drill_key}_{idx}")
-    
-    st.select_slider(f"Drill Intensity (RPE 1-10)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
-    st.text_input("Coach's Notes / Feedback", key=f"notes_{drill_key}", placeholder="Enter specific feedback here...")
-
-    with st.expander("🎥 DRILL DEMO & UPLOAD"):
-        st.video(item['vid'])
-        st.file_uploader("Upload Practice Clip", type=["mp4", "mov"], key=f"up_{i}")
-
-st.divider()
-if st.button("💾 SAVE WORKOUT"):
-    st.balloons()
-    st.session_state.streak += 1
-    st.session_state.session_saved = True
-    st.success("Session saved! Streak updated.")
-
-if st.session_state.session_saved:
-    st.info("Recovery Protocol: 1. Hydrate 2. Protein Intake 3. Stretch.")
+    with
