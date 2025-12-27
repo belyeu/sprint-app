@@ -23,18 +23,26 @@ st.session_state.dark_mode = dark_mode
 
 # Define Colors
 if dark_mode:
-    bg_color = "#0F172A"; text_color = "#FFFFFF"; accent_color = "#38BDF8"
-    header_bg = "#334155"; sidebar_bg = "#1E293B"; sidebar_text = "#FFFFFF"
+    bg_color = "#0F172A"
+    text_color = "#FFFFFF"
+    accent_color = "#00FFFF"  # ELECTRIC BLUE
+    header_bg = "#334155"
+    sidebar_bg = "#1E293B"
+    sidebar_text = "#FFFFFF"
     input_bg = "#1E293B" 
-    sport_text_color = "#000000" # Black in Dark Mode
-    numeric_color = "#38BDF8"
+    sport_text_color = "#000000" # Forced Black in Dark Mode
+    numeric_color = "#00FFFF"    # Electric Blue in Dark Mode
 else:
-    bg_color = "#F8FAFC"; text_color = "#0F172A"; accent_color = "#2563EB"
-    header_bg = "#E2E8F0"; sidebar_bg = "#FFFFFF"; sidebar_text = "#0F172A"
+    bg_color = "#F8FAFC"
+    text_color = "#0F172A"
+    accent_color = "#00FFFF"  # ELECTRIC BLUE
+    header_bg = "#E2E8F0"
+    sidebar_bg = "#FFFFFF"
+    sidebar_text = "#0F172A"
     input_bg = "#FFFFFF"
-    sport_text_color = "#FFFFFF" # White in Light Mode
-    numeric_color = "#FFFFFF" # White on iPhone in Light Mode
-
+    sport_text_color = "#FFFFFF" # Forced White in Light Mode
+    numeric_color = "#000000"    # Forced Black in Light Mode
+    
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg_color} !important; }}
@@ -46,17 +54,20 @@ st.markdown(f"""
         -webkit-text-fill-color: {sidebar_text} !important;
     }}
 
+    /* Sport Selection Text Fix */
     div[data-baseweb="select"] span {{
         color: {sport_text_color} !important;
         -webkit-text-fill-color: {sport_text_color} !important;
     }}
 
-    input, .stat-value, [role="slider"] {{
+    /* Numeric Inputs and Stats visibility */
+    input, .stat-value, [role="slider"], [data-testid="stMarkdownContainer"] p > span {{
         color: {numeric_color} !important;
         -webkit-text-fill-color: {numeric_color} !important;
         font-weight: 900 !important;
     }}
 
+    /* Input Container borders */
     div[data-baseweb="input"] > div, 
     div[data-baseweb="select"] > div {{
         background-color: {input_bg} !important;
@@ -78,7 +89,7 @@ st.markdown(f"""
     }}
 
     .stButton>button {{ 
-        background-color: {accent_color} !important; color: white !important; 
+        background-color: {accent_color} !important; color: black !important; 
         border-radius: 10px !important; font-weight: 800 !important; 
         width: 100%; height: 55px !important;
     }}
@@ -88,7 +99,6 @@ st.markdown(f"""
         border: 2px solid {accent_color}; background-color: {sidebar_bg};
     }}
     
-    /* Progress bar color sync */
     div[data-testid="stProgress"] > div > div > div > div {{
         background-color: {accent_color} !important;
     }}
@@ -105,7 +115,7 @@ st.sidebar.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Monthly Goal Progress
+# Monthly Goal
 goal = 20
 progress = min(st.session_state.monthly_sessions / goal, 1.0)
 st.sidebar.markdown(f"""
@@ -134,44 +144,22 @@ rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" el
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
-            {"ex": "POUND SERIES", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "eval": ["Low Stance", "Eyes Up"]},
-            {"ex": "MIKAN SERIES", "sets": 4, "base": 20, "unit": "reps", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "eval": ["Soft Touch", "High Finish"]},
-            {"ex": "FIGURE 8", "sets": 3, "base": 45, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0", "eval": ["Ball Control", "Quick Hands"]},
-            {"ex": "FREE THROWS", "sets": 5, "base": 10, "unit": "makes", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=R4-fR8_mXAc", "eval": ["Routine", "Follow Through"]},
-            {"ex": "DEFENSIVE SLIDES", "sets": 4, "base": 30, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=pAnVmqk-G9I", "eval": ["Low Hips", "No Cross"]},
-            {"ex": "BOX JUMPS", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=52r6I-z6r-I", "eval": ["Soft Landing", "Full Extension"]},
-            {"ex": "V-DRIBBLE", "sets": 3, "base": 40, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E", "eval": ["Wide Dribble", "Rhythm"]},
-            {"ex": "WALL SITS", "sets": 3, "base": 45, "unit": "sec", "rest": 60, "type": "cond", "vid": "https://www.youtube.com/watch?v=y-wV4Venusw", "eval": ["90 Degree Angle", "Back Flat"]}
+            {"ex": "POUND SERIES", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "eval": ["Low Stance", "Eyes Up"]},
+            {"ex": "MIKAN SERIES", "sets": 4, "base": 20, "unit": "reps", "rest": 45, "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "eval": ["Soft Touch", "High Finish"]},
+            {"ex": "FIGURE 8", "sets": 3, "base": 45, "unit": "sec", "rest": 30, "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0", "eval": ["Ball Control", "Quick Hands"]},
+            {"ex": "FREE THROWS", "sets": 5, "base": 10, "unit": "makes", "rest": 60, "vid": "https://www.youtube.com/watch?v=R4-fR8_mXAc", "eval": ["Routine", "Follow Through"]}
         ],
         "Track": [
-            {"ex": "ANKLE DRIBBLES", "sets": 3, "base": 30, "unit": "meters", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw", "eval": ["Toes Up", "Quiet Hips"]},
-            {"ex": "A-SKIPS", "sets": 4, "base": 40, "unit": "meters", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y", "eval": ["Aggressive Strike", "Arm Drive"]},
-            {"ex": "BOUNDING", "sets": 3, "base": 30, "unit": "meters", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=8V75e58P7oY", "eval": ["Hang Time", "Active Arms"]},
-            {"ex": "HIGH KNEES", "sets": 3, "base": 20, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=ZZpDqXitvJ0", "eval": ["Parallel Thighs", "Midfoot Strike"]},
-            {"ex": "ACCELERATIONS", "sets": 6, "base": 20, "unit": "meters", "rest": 120, "type": "power", "vid": "https://www.youtube.com/watch?v=9_p5_1q6-vM", "eval": ["Low Start", "Drive Phase"]},
-            {"ex": "SINGLE LEG HOPS", "sets": 3, "base": 10, "unit": "reps/leg", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=rI9XkU_o1f0", "eval": ["Elasticity", "Stable Ankle"]},
-            {"ex": "RUSSIAN TWISTS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=wkD8rjkodUI", "eval": ["Controlled", "Feet Up"]},
-            {"ex": "HILL SPRINTS", "sets": 5, "base": 10, "unit": "sec", "rest": 90, "type": "cond", "vid": "https://www.youtube.com/watch?v=fXvYw0iSAn4", "eval": ["Lean Forward", "High Effort"]}
+            {"ex": "ANKLE DRIBBLES", "sets": 3, "base": 30, "unit": "meters", "rest": 30, "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw", "eval": ["Toes Up", "Quiet Hips"]},
+            {"ex": "A-SKIPS", "sets": 4, "base": 40, "unit": "meters", "rest": 45, "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y", "eval": ["Aggressive Strike", "Arm Drive"]}
         ],
         "Softball": [
-            {"ex": "TEE WORK", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact"]},
-            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Clean Pull", "Fast Grip"]},
-            {"ex": "FRONT TOSS", "sets": 4, "base": 20, "unit": "swings", "rest": 60, "type": "skill", "vid": "https://www.youtube.com/watch?v=vV0I2uC_n68", "eval": ["Weight Transfer", "Short Path"]},
-            {"ex": "LATERAL SHUFFLES", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=uK48_lK-n5w", "eval": ["Stay Low", "Ready Position"]},
-            {"ex": "LONG TOSS", "sets": 3, "base": 15, "unit": "throws", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=4y-iP_N9eE8", "eval": ["Full Extension", "Accuracy"]},
-            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "type": "skill", "vid": "https://www.youtube.com/watch?v=M57O_4wJq0I", "eval": ["Quick Snap", "Follow Through"]},
-            {"ex": "SQUAT JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=72BSZupb-1I", "eval": ["Explosive Up", "Soft Landing"]},
-            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "unit": "sprint", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=B70FfBInA3w", "eval": ["Turn Corner", "Finish Strong"]}
+            {"ex": "TEE WORK", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact"]},
+            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Clean Pull", "Fast Grip"]}
         ],
         "General Workout": [
-            {"ex": "GOBLET SQUATS", "sets": 4, "base": 12, "unit": "reps", "rest": 90, "type": "power", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I", "eval": ["Depth", "Chest Up"]},
-            {"ex": "PUSHUPS", "sets": 3, "base": 15, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4", "eval": ["Core Tight", "Full Lockout"]},
-            {"ex": "LUNGES", "sets": 3, "base": 10, "unit": "reps/leg", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=L8fvypPrzzs", "eval": ["Balance", "Upright"]},
-            {"ex": "PLANK", "sets": 3, "base": 45, "unit": "sec", "rest": 45, "type": "cond", "vid": "https://www.youtube.com/watch?v=pSHjTRCQxIw", "eval": ["Flat Back", "Glutes Engaged"]},
-            {"ex": "DUMBBELL ROW", "sets": 4, "base": 12, "unit": "reps", "rest": 60, "type": "power", "vid": "https://www.youtube.com/watch?v=6KA7SFr8P4E", "eval": ["Elbow High", "Still Torso"]},
-            {"ex": "MOUNTAIN CLIMBERS", "sets": 3, "base": 30, "unit": "sec", "rest": 30, "type": "cond", "vid": "https://www.youtube.com/watch?v=nmwgirgXLYM", "eval": ["Fast Pace", "Knees High"]},
-            {"ex": "GLUTE BRIDGES", "sets": 3, "base": 15, "unit": "reps", "rest": 45, "type": "power", "vid": "https://www.youtube.com/watch?v=wPM8icPu6H8", "eval": ["Squeeze Glutes", "Heels Down"]},
-            {"ex": "BURPEES", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "type": "cond", "vid": "https://www.youtube.com/watch?v=dZfeV_pL3fE", "eval": ["Full Jump", "Fast Tempo"]}
+            {"ex": "GOBLET SQUATS", "sets": 4, "base": 12, "unit": "reps", "rest": 90, "vid": "https://www.youtube.com/watch?v=MeIiGibT69I", "eval": ["Depth", "Chest Up"]},
+            {"ex": "PUSHUPS", "sets": 3, "base": 15, "unit": "reps", "rest": 60, "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4", "eval": ["Core Tight", "Full Lockout"]}
         ]
     }
     return workouts.get(sport, [])
@@ -236,21 +224,11 @@ if st.button("💾 SAVE WORKOUT"):
 
 # --- 5. Post-Workout Analytics ---
 if st.session_state.session_saved:
-    st.success("Session saved. Drink water and stretch!")
-    st.markdown(f"### 📊 Session Summary: {sport_choice}")
-    
+    st.success("Session saved!")
     summary_data = []
     for i in range(len(drills)):
-        item = drills[i]
         drill_key = f"{sport_choice}_{i}"
-        summary_data.append({
-            "Drill": item["ex"],
-            "Target Sets": item["sets"],
-            "Completed": st.session_state.get(drill_key, 0)
-        })
+        summary_data.append({"Drill": drills[i]["ex"], "Completed": st.session_state.get(drill_key, 0)})
     
     df = pd.DataFrame(summary_data)
-    st.bar_chart(df, x="Drill", y=["Target Sets", "Completed"], color=[accent_color, "#10B981"])
-    
-    with st.expander("Show Raw Performance Data"):
-        st.dataframe(df, use_container_width=True, hide_index=True)
+    st.bar_chart(df, x="Drill", y="Completed", color=accent_color)
