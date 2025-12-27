@@ -3,23 +3,23 @@ import pandas as pd
 import time
 from datetime import datetime, date
 
-# --- 1. High-Contrast Athletic Theme ---
+# --- 1. High-Contrast Athletic Theme Configuration ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 st.markdown("""
     <style>
-    /* Main Background */
+    /* Main App Background */
     .main { background-color: #F8FAFC; color: #1E293B; }
     
-    /* DRILL NAME - HIGH VISIBILITY BLUE ACCENT */
+    /* DRILL HEADER - Electric Blue & Pure Black */
     .drill-header {
         font-size: 32px !important; 
         font-weight: 900 !important; 
-        color: #000000 !important; /* Pure Black text */
+        color: #000000 !important; 
         margin-top: 40px; 
         margin-bottom: 15px;
-        background-color: #EFF6FF; /* Soft Blue Tint */
-        border-left: 12px solid #2563EB; /* Electric Blue border */
+        background-color: #EFF6FF; 
+        border-left: 12px solid #2563EB; 
         padding: 15px 25px;
         border-radius: 8px;
         display: block;
@@ -27,7 +27,7 @@ st.markdown("""
         letter-spacing: 1px;
     }
     
-    /* Timer Display */
+    /* Large Format Rest Timer */
     .timer-text {
         font-size: 80px !important; 
         font-weight: 800 !important; 
@@ -39,7 +39,7 @@ st.markdown("""
         border: 4px solid #2563EB;
     }
 
-    /* Metric & Card Styling */
+    /* Card & Metric Styling */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF;
         border: 2px solid #DBEAFE;
@@ -48,7 +48,7 @@ st.markdown("""
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     }
 
-    /* Checklist Item Styling */
+    /* Checklist & Evaluation Styling */
     .stCheckbox {
         background-color: #FFFFFF;
         padding: 12px;
@@ -57,7 +57,7 @@ st.markdown("""
         margin-bottom: 8px;
     }
 
-    /* Action Buttons */
+    /* Primary Action Buttons */
     .stButton>button { 
         background-color: #2563EB; 
         color: white; 
@@ -70,9 +70,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Logic & Session Data ---
+# --- 2. Session State Management ---
 if 'set_counters' not in st.session_state: st.session_state.set_counters = {}
 if 'streak' not in st.session_state: st.session_state.streak = 1
+if 'session_history' not in st.session_state: st.session_state.session_history = []
 
 def get_drills():
     return [
@@ -81,7 +82,7 @@ def get_drills():
         {"ex": "STATIONARY CROSSOVER", "base": 50, "sets": 4, "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E", "note": "Wide crossovers outside your frame."}
     ]
 
-# --- 3. Sidebar Customization ---
+# --- 3. Sidebar Profile & Global Settings ---
 st.sidebar.title("🥇 Athlete Profile")
 st.sidebar.metric("Current Streak", f"{st.session_state.streak} Days")
 
@@ -89,10 +90,11 @@ st.sidebar.markdown("---")
 st.sidebar.subheader("Timer Settings")
 rest_seconds = st.sidebar.slider("Rest Duration (Seconds)", min_value=15, max_value=120, value=30, step=15)
 
-difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
+st.sidebar.subheader("Intensity Settings")
+difficulty = st.sidebar.select_slider("Workout Level", options=["Standard", "Elite", "Pro"], value="Elite")
 target_mult = 1.0 if difficulty == "Standard" else 1.5 if difficulty == "Elite" else 2.0
 
-# --- 4. Main App UI ---
+# --- 4. Main App Interface ---
 st.title("Performance Tracker")
 all_drills = get_drills()
 
@@ -100,13 +102,13 @@ for i, drill in enumerate(all_drills):
     drill_key = f"drill_{i}"
     if drill_key not in st.session_state.set_counters: st.session_state.set_counters[drill_key] = 0
     
-    # 1. Drill Header
+    # --- Drill Header ---
     st.markdown(f'<div class="drill-header">{drill["ex"]}</div>', unsafe_allow_html=True)
     
     current = st.session_state.set_counters[drill_key]
-    st.info(f"Progress: Set {current} of {drill['sets']} Completed")
+    st.info(f"Current Progress: Set {current} of {drill['sets']} Completed")
 
-    # 2. Main Action Row
+    # --- Action Section: Metrics & Controls ---
     c1, c2, c3 = st.columns([1, 1, 1])
     with c1:
         reps = int(drill['base'] * target_mult)
@@ -126,9 +128,9 @@ for i, drill in enumerate(all_drills):
             
     with c3:
         st.number_input("Log Actual", key=f"val_{i}", min_value=0)
-        st.select_slider("RPE (1-10)", options=range(1,11), value=8, key=f"rpe_{i}")
+        st.select_slider("Intensity (1-10)", options=range(1,11), value=8, key=f"rpe_{i}")
 
-    # 3. COACH'S EVALUATION (Always Visible)
+    # --- COACH'S EVALUATION SECTION (Always Visible) ---
     st.markdown("### 📋 Coach's Evaluation")
     eval_col1, eval_col2 = st.columns(2)
     with eval_col1:
@@ -138,23 +140,24 @@ for i, drill in enumerate(all_drills):
         st.checkbox("Ball Control / Grip Strength", key=f"check_grip_{i}")
         st.checkbox("Eye Position (Looking Up)", key=f"check_eyes_{i}")
     
-    st.text_input("Self-Correction (One Fix):", key=f"note_input_{i}", placeholder="e.g., Snap crossovers wider...")
+    st.text_input("Self-Correction Note:", key=f"note_input_{i}", placeholder="What is the one thing to fix next set?")
 
-    # 4. Toggleable Media Section
-    with st.expander("🎥 View Demo & Upload Your Video"):
-        st.markdown(f"**Pro Tip:** *{drill['note']}*")
+    # --- MEDIA SECTION (Toggleable) ---
+    with st.expander("🎥 View Pro Demo & Upload Your Video"):
+        st.markdown(f"**Coach's Tip:** *{drill['note']}*")
         v_col1, v_col2 = st.columns(2)
         with v_col1:
             st.markdown("**PRO DEMO**")
             st.video(drill['vid'])
         with v_col2:
-            st.markdown("**YOUR CLIP**")
-            up = st.file_uploader("Upload from Gallery", type=["mp4", "mov"], key=f"up_{i}")
+            st.markdown("**YOUR CLIP (FROM GALLERY)**")
+            up = st.file_uploader("Upload Video", type=["mp4", "mov"], key=f"up_{i}")
             if up: st.video(up)
 
 st.divider()
 
+# --- 5. Session Wrap-Up ---
 if st.button("Finish & Save Workout"):
     st.balloons()
-    st.success("Session saved! Your consistency is building elite habits.")
+    st.success("Session saved! Great work today.")
     st.session_state.streak += 1
