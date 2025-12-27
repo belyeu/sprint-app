@@ -16,17 +16,17 @@ if 'history' not in st.session_state:
 if 'streak' not in st.session_state:
     st.session_state.streak = 1
 
-# --- 2. THEME & ELECTRIC BLUE CSS ---
+# --- 2. DYNAMIC THEME & ELECTRIC BLUE CSS ---
 st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
 dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 
 if dark_mode:
     bg, text, accent, header_bg = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
-    electric_blue = "#7DF9FF" 
+    electric_blue = "#7DF9FF"  # Vivid Electric Blue for Dark
     numeric_color = "#60A5FA"
 else:
     bg, text, accent, header_bg = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
-    electric_blue = "#00E5FF" 
+    electric_blue = "#00E5FF"  # Bright Electric Blue for Light
     numeric_color = "#000000"
 
 btn_txt_white = "#FFFFFF"
@@ -35,13 +35,15 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg} !important; }}
     
+    /* Universal Text visibility on iPhone */
     h1, h2, h3, p, span, li, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {{
         color: {text} !important;
         -webkit-text-fill-color: {text} !important;
         font-weight: 700;
     }}
 
-    /* ELECTRIC BLUE TITLES */
+    /* --- ELECTRIC BLUE TITLES (TARGETED) --- */
+    /* Specifically for Target Set, Reps/Time, and Completed labels */
     label[data-testid="stWidgetLabel"] p {{
         color: {electric_blue} !important;
         -webkit-text-fill-color: {electric_blue} !important;
@@ -51,6 +53,7 @@ st.markdown(f"""
         letter-spacing: 1px;
     }}
 
+    /* Global Button Override: Always White Text */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -65,6 +68,7 @@ st.markdown(f"""
         font-size: 16px !important;
     }}
 
+    /* Drill Header & Sidebar Cards */
     .drill-header {{
         font-size: 24px !important; font-weight: 900 !important; 
         color: {accent} !important; -webkit-text-fill-color: {accent} !important;
@@ -80,8 +84,7 @@ st.markdown(f"""
     """, unsafe_allow_html=True)
 
 # --- 3. WORKOUT DATABASE (9 DRILLS PER SPORT WITH LOCATION TAGS) ---
-def get_workout_template(sport, locations):
-    # Mapping drills to specific locations for filtering
+def get_workout_template(sport, selected_locs):
     workouts = {
         "Basketball": [
             {"ex": "POUND SERIES", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "loc": "Gym"},
@@ -130,12 +133,12 @@ def get_workout_template(sport, locations):
     }
     
     all_drills = workouts.get(sport, [])
-    # Filter based on selected locations. If no location selected, show all.
-    if not locations:
+    # Filter by selected locations; if none selected, show all to prevent empty screen
+    if not selected_locs:
         return all_drills
-    return [d for d in all_drills if d['loc'] in locations]
+    return [d for d in all_drills if d['loc'] in selected_locs]
 
-# --- 4. SIDEBAR ---
+# --- 4. SIDEBAR PANEL ---
 now_est = get_now_est()
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
@@ -146,17 +149,17 @@ st.sidebar.markdown(f"""
 
 sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
-# NEW: LOCATION SELECTOR
-location_choices = st.sidebar.multiselect(
-    "Location Filter", 
+# LOCATION OPTIONS IN SIDE PANEL
+st.sidebar.markdown("### 📍 LOCATION OPTIONS")
+loc_filter = st.sidebar.multiselect(
+    "Training Grounds",
     options=["Gym", "Track", "Weight Room"],
-    default=["Gym", "Track", "Weight Room"],
-    help="Select one or multiple locations to see drills for those areas."
+    default=["Gym", "Track", "Weight Room"]
 )
 
 difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
 
-# Multipliers
+# Logic Multipliers
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = {"Standard": 1.0, "Elite": 0.8, "Pro": 0.5}[difficulty]
 
@@ -169,14 +172,15 @@ st.sidebar.markdown(f"""
 
 # --- 5. MAIN UI ---
 st.title(f"{sport_choice} Session")
-drills = get_workout_template(sport_choice, location_choices)
+drills = get_workout_template(sport_choice, loc_filter)
 
 if not drills:
-    st.warning("No drills found for the selected location(s). Please check your filters in the sidebar.")
+    st.info("Adjust your 'Location Options' in the side panel to view drills.")
 else:
     for i, item in enumerate(drills):
-        st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} ({item["loc"]})</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} <span style="font-size:14px; opacity:0.7;">[{item["loc"]}]</span></div>', unsafe_allow_html=True)
         
+        # Grid for Electric Blue Field Titles
         c1, c2, c3 = st.columns(3)
         with c1:
             st.text_input("Target Set", value=str(item["sets"]), key=f"ts_{i}")
@@ -189,7 +193,7 @@ else:
         col_a, col_b = st.columns(2)
         with col_a:
             if st.button(f"LOG DRILL ✅", key=f"done_{i}", use_container_width=True):
-                st.toast(f"Drill {i+1} Saved!")
+                st.toast(f"Drill {i+1} saved!")
         with col_b:
             rest_time = int(item["rest"] * rest_mult)
             if st.button(f"REST {rest_time}s ⏱️", key=f"rest_{i}", use_container_width=True):
@@ -202,8 +206,8 @@ else:
         with st.expander("🎥 SESSION VIDEO"):
             st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"v_{i}")
 
-    st.divider()
-    if st.button("💾 SAVE COMPLETE SESSION", use_container_width=True):
-        st.session_state.streak += 1
-        st.balloons()
-        st.success("Full Session Archived!")
+st.divider()
+if st.button("💾 SAVE COMPLETE SESSION", use_container_width=True):
+    st.session_state.streak += 1
+    st.balloons()
+    st.success("Training session archived successfully!")
