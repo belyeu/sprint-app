@@ -22,37 +22,63 @@ st.session_state.dark_mode = dark_mode
 # Define Colors
 if dark_mode:
     bg_color = "#0F172A"; text_color = "#FFFFFF"; accent_color = "#38BDF8"
-    header_bg = "#334155"; sidebar_text = "#FFFFFF"
+    header_bg = "#334155"; sidebar_bg = "#1E293B"; sidebar_text = "#FFFFFF"
 else:
     bg_color = "#F8FAFC"; text_color = "#0F172A"; accent_color = "#2563EB"
-    header_bg = "#E2E8F0"; sidebar_text = "#0F172A"
+    header_bg = "#E2E8F0"; sidebar_bg = "#FFFFFF"; sidebar_text = "#0F172A"
 
 st.markdown(f"""
     <style>
+    /* Main Background */
     .main {{ background-color: {bg_color} !important; color: {text_color} !important; }}
-    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {{ color: {sidebar_text} !important; }}
-    .drill-header {{
-        font-size: 28px !important; font-weight: 900 !important; color: {accent_color} !important;
-        text-transform: uppercase; margin-top: 35px; border-left: 12px solid {accent_color};
-        padding: 10px 20px; background-color: {header_bg}; border-radius: 0 10px 10px 0;
+    
+    /* SIDEBAR FIX FOR IPHONE/MOBILE */
+    [data-testid="stSidebar"] {{
+        background-color: {sidebar_bg} !important;
+        min-width: 300px !important;
     }}
-    .stat-label {{ font-size: 14px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
-    .stat-value {{ font-size: 32px !important; font-weight: 900 !important; color: {text_color} !important; margin-bottom: 10px; }}
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
+        color: {sidebar_text} !important;
+        opacity: 1 !important;
+    }}
+
+    /* Drill Headers */
+    .drill-header {{
+        font-size: 24px !important; font-weight: 900 !important; color: {accent_color} !important;
+        text-transform: uppercase; margin-top: 30px; border-left: 10px solid {accent_color};
+        padding: 10px 15px; background-color: {header_bg}; border-radius: 0 10px 10px 0;
+    }}
+    
+    .stat-label {{ font-size: 13px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
+    .stat-value {{ font-size: 28px !important; font-weight: 900 !important; color: {text_color} !important; margin-bottom: 5px; }}
+    
+    /* Timer Display */
     .timer-text {{
-        font-size: 70px !important; font-weight: bold !important; color: {accent_color} !important;
+        font-size: 60px !important; font-weight: bold !important; color: {accent_color} !important;
         text-align: center; font-family: 'Courier New', monospace; background: {bg_color};
         border-radius: 12px; border: 4px solid {accent_color}; padding: 10px; margin: 10px 0;
     }}
+
+    /* BUTTON STYLING */
     .stButton>button {{ 
         background-color: {accent_color} !important; color: white !important; 
-        border-radius: 12px !important; font-weight: 900 !important; 
-        width: 100%; height: 60px !important; font-size: 18px !important;
+        border-radius: 10px !important; font-weight: 800 !important; 
+        width: 100%; height: 55px !important; font-size: 16px !important;
+        border: none !important;
     }}
+
     .sidebar-card {{ padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; border: 2px solid {accent_color}; }}
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {{
+        .drill-header {{ font-size: 20px !important; }}
+        .stat-value {{ font-size: 24px !important; }}
+        .timer-text {{ font-size: 50px !important; }}
+    }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Expanded Multi-Sport Drill Database (8 Exercises Per Sport) ---
+# --- 2. Drill Database (8 Exercises Per Sport) ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
@@ -111,13 +137,14 @@ for i, item in enumerate(drills):
     with c3:
         st.markdown(f'<p class="stat-label">Completed</p><p class="stat-value">{st.session_state[drill_key]}</p>', unsafe_allow_html=True)
 
+    # BUTTONS ON THE SAME LINE
     col_a, col_b = st.columns(2)
     with col_a:
-        if st.button(f"SET COMPLETE ✅", key=f"done_{i}"):
+        if st.button(f"DONE ✅", key=f"done_{i}"):
             st.session_state[drill_key] += 1
             st.rerun()
     with col_b:
-        if st.button(f"START REST ⏱️", key=f"rest_{i}"):
+        if st.button(f"REST ⏱️", key=f"rest_{i}"):
             final_rest = int(item['rest'] * rest_mult)
             ph = st.empty()
             for t in range(final_rest, -1, -1):
@@ -131,7 +158,7 @@ for i, item in enumerate(drills):
     for idx, criteria in enumerate(item['eval']):
         eval_cols[idx % 2].checkbox(criteria, key=f"ev_{drill_key}_{idx}")
     
-    st.select_slider(f"RPE (Intensity)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
+    st.select_slider(f"Intensity (RPE)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
     st.text_input("Notes", key=f"note_{drill_key}")
 
     with st.expander("🎥 DEMO & UPLOAD"):
