@@ -21,6 +21,24 @@ st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
 dark_mode = st.sidebar.toggle("Dark Mode", value=st.session_state.dark_mode)
 st.session_state.dark_mode = dark_mode
 
+/* Targets the Demo & Upload Expander Box */
+[data-testid="stExpander"] {
+    background-color: {sidebar_bg} !important;
+    border: 1px solid {accent_color} !important;
+    border-radius: 10px !important;
+}
+
+/* Forces the Expander Title Text to White (Dark Mode) or Black (Light Mode) */
+[data-testid="stExpander"] summary p {
+    color: {text_color} !important;
+    -webkit-text-fill-color: {text_color} !important;
+    font-weight: 700 !important;
+}
+
+/* Ensures the icon inside the expander matches the text color */
+[data-testid="stExpander"] svg {
+    fill: {text_color} !important;
+}
 # Define Colors
 if dark_mode:
     bg_color = "#0F172A"
@@ -267,3 +285,4 @@ if st.session_state.session_saved:
     
     df = pd.DataFrame(summary_data)
     st.bar_chart(df, x="Drill", y="Completed", color=accent_color)
+
