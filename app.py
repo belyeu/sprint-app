@@ -8,6 +8,7 @@ import pytz
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 def get_now_est():
+    """Returns current time in US/Eastern (EST/EDT)."""
     return datetime.now(pytz.timezone('US/Eastern'))
 
 if 'history' not in st.session_state:
@@ -22,15 +23,18 @@ dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 if dark_mode:
     bg, text, accent, header_bg = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
 else:
+    # High-contrast Light Mode: Text is Pure Black
     bg, text, accent, header_bg = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
 
+# Constant for button text visibility
 btn_txt_white = "#FFFFFF"
 
 st.markdown(f"""
     <style>
+    /* Global App Background */
     .stApp {{ background-color: {bg} !important; }}
     
-    /* Force Header & Sidebar Text Visibility (Black in Light / White in Dark) */
+    /* 1. Universal Text Visibility (Black in Light / White in Dark) */
     h1, h2, h3, p, span, li, label, 
     [data-testid="stSidebar"] p, 
     [data-testid="stSidebar"] span, 
@@ -41,7 +45,7 @@ st.markdown(f"""
         font-weight: 600;
     }}
 
-    /* AGGRESSIVE BUTTON OVERRIDE: Always White Text */
+    /* 2. AGGRESSIVE BUTTON OVERRIDE: ALWAYS WHITE TEXT */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -49,13 +53,29 @@ st.markdown(f"""
         border-radius: 12px !important;
     }}
 
-    div.stButton > button p, div.stButton > button span, div.stButton > button div {{
+    /* Force button labels to Pure White regardless of theme or device */
+    div.stButton > button p, 
+    div.stButton > button span, 
+    div.stButton > button div, 
+    div.stButton > button label,
+    div.stButton > button code,
+    div.stButton > button small {{
         color: {btn_txt_white} !important;
         -webkit-text-fill-color: {btn_txt_white} !important;
         font-weight: 800 !important;
+        font-size: 16px !important;
+        opacity: 1 !important;
         text-transform: uppercase;
     }}
 
+    /* 3. Expander, Input, and Sidebar Styling */
+    [data-testid="stExpander"], input, textarea {{
+        background-color: {header_bg} !important;
+        border: 2px solid {accent} !important;
+        border-radius: 10px !important;
+    }}
+
+    /* Drill Header Styling */
     .drill-header {{
         font-size: 22px !important; font-weight: 900 !important; 
         color: {accent} !important; -webkit-text-fill-color: {accent} !important;
@@ -78,18 +98,18 @@ def get_workout_template(sport):
             {"ex": "MIKAN SERIES", "desc": "Alternating layups for touch.", "rest": 40},
             {"ex": "FIGURE 8", "desc": "Low handling through legs.", "rest": 30},
             {"ex": "V-DRIBBLE", "desc": "Explosive lateral control.", "rest": 30},
-            {"ex": "WALL SITS", "desc": "Isometric leg strength.", "rest": 60},
+            {"ex": "WALL SITS", "desc": "Isometric leg strength hold.", "rest": 60},
             {"ex": "BOX JUMPS", "desc": "Max vertical explosion.", "rest": 90},
-            {"ex": "FREE THROWS", "desc": "Ritual and breath focus.", "rest": 60},
-            {"ex": "DEFENSIVE SLIDES", "desc": "Lateral quickness.", "rest": 45}
+            {"ex": "FREE THROWS", "desc": "Routine and breath focus.", "rest": 60},
+            {"ex": "DEFENSIVE SLIDES", "desc": "Lateral quickness across key.", "rest": 45}
         ],
         "Track": [
             {"ex": "ANKLE DRIBBLES", "desc": "Small steps, active ankles.", "rest": 30},
-            {"ex": "A-SKIPS", "desc": "Rhythmic knee drive.", "rest": 45},
+            {"ex": "A-SKIPS", "desc": "Rhythmic knee drive skips.", "rest": 45},
             {"ex": "BOUNDING", "desc": "Max horizontal distance.", "rest": 90},
-            {"ex": "HIGH KNEES", "desc": "Rapid vertical cycles.", "rest": 30},
+            {"ex": "HIGH KNEES", "rest": 30, "desc": "Rapid vertical cycles."},
             {"ex": "ACCELERATIONS", "desc": "20m drive phase bursts.", "rest": 120},
-            {"ex": "SINGLE LEG HOPS", "desc": "Unilateral stability.", "rest": 60},
+            {"ex": "SINGLE LEG HOPS", "desc": "Unilateral power.", "rest": 60},
             {"ex": "HILL SPRINTS", "desc": "Max effort uphill.", "rest": 90},
             {"ex": "CORE ROTATION", "desc": "Seated med-ball twists.", "rest": 30}
         ],
@@ -97,7 +117,7 @@ def get_workout_template(sport):
             {"ex": "TEE WORK", "desc": "Solid contact mechanics.", "rest": 60},
             {"ex": "GLOVE TRANSFERS", "desc": "Fast hands to throw.", "rest": 30},
             {"ex": "FRONT TOSS", "desc": "Timing and direction.", "rest": 60},
-            {"ex": "LATERAL SHUFFLES", "desc": "Quick-step fielding range.", "rest": 45},
+            {"ex": "LATERAL SHUFFLES", "desc": "Quick fielding range.", "rest": 45},
             {"ex": "LONG TOSS", "desc": "Arm strength building.", "rest": 60},
             {"ex": "WRIST SNAPS", "desc": "Isolated flick velocity.", "rest": 30},
             {"ex": "SQUAT JUMPS", "desc": "Base path explosive speed.", "rest": 60},
@@ -106,7 +126,7 @@ def get_workout_template(sport):
         "General Workout": [
             {"ex": "GOBLET SQUATS", "desc": "Weighted depth squats.", "rest": 90},
             {"ex": "PUSHUPS", "desc": "Core-locked pressing.", "rest": 60},
-            {"ex": "LUNGES", "desc": "Unilateral power.", "rest": 60},
+            {"ex": "LUNGES", "desc": "Unilateral stability.", "rest": 60},
             {"ex": "PLANK", "desc": "Static core tension hold.", "rest": 45},
             {"ex": "DUMBBELL ROW", "desc": "Back strength/stability.", "rest": 60},
             {"ex": "MOUNTAIN CLIMBERS", "desc": "Dynamic conditioning.", "rest": 30},
@@ -116,19 +136,20 @@ def get_workout_template(sport):
     }
     return workouts.get(sport, [])
 
-# --- 4. SIDEBAR NAVIGATION & INTENSITY TOGGLE ---
+# --- 4. SIDEBAR NAVIGATION & INTENSITY ---
 now_est = get_now_est()
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
     <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">CURRENT TIME (EST)</p>
     <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
+    <p style="margin:0; font-size:13px;">{now_est.strftime('%A, %b %d')}</p>
 </div>
 """, unsafe_allow_html=True)
 
 app_mode = st.sidebar.selectbox("Navigate", ["Workout Plan", "Session History"])
 sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
-# ELITE/PRO LEVEL TOGGLE
+# TRAINING LEVEL LOGIC
 level = st.sidebar.select_slider("Training Level", options=["Standard", "Elite", "Pro"])
 rest_multiplier = {"Standard": 1.0, "Elite": 0.75, "Pro": 0.5}[level]
 
@@ -141,14 +162,13 @@ st.sidebar.markdown(f"""
 
 # --- 5. WORKOUT PLAN PAGE ---
 if app_mode == "Workout Plan":
-    st.title(f"{sport_choice} ({level})")
+    st.title(f"{sport_choice} - {level}")
     drills = get_workout_template(sport_choice)
 
     for i, item in enumerate(drills):
         st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]}</div>', unsafe_allow_html=True)
         st.write(item["desc"])
         
-        # Calculate dynamic rest based on level
         current_rest = int(item["rest"] * rest_multiplier)
         
         c1, c2 = st.columns(2)
@@ -164,7 +184,7 @@ if app_mode == "Workout Plan":
                 ph.empty()
 
         st.checkbox("Perfect Form", key=f"f_{i}")
-        st.text_input("Notes", key=f"n_{i}", placeholder="Log performance...")
+        st.text_input("Notes", key=f"n_{i}", placeholder="Set details...")
 
     st.divider()
     s1, s2 = st.columns(2)
@@ -192,3 +212,7 @@ else:
                 <p style="margin:0; font-size:14px; font-weight:700;">{log['date']} EST</p>
             </div>
             """, unsafe_allow_html=True)
+        
+        if st.sidebar.button("Clear All History"):
+            st.session_state.history = []
+            st.rerun()
