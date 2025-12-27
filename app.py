@@ -23,7 +23,7 @@ dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 if dark_mode:
     bg, text, accent, header_bg = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
 else:
-    # High-contrast Light Mode: Text is Pure Black
+    # Light Mode: Pure Black text for visibility
     bg, text, accent, header_bg = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
 
 # Constant for button text visibility
@@ -31,10 +31,9 @@ btn_txt_white = "#FFFFFF"
 
 st.markdown(f"""
     <style>
-    /* Global App Background */
     .stApp {{ background-color: {bg} !important; }}
     
-    /* 1. Universal Text Visibility (Black in Light / White in Dark) */
+    /* Force Header & Sidebar Text Visibility (Black in Light / White in Dark) */
     h1, h2, h3, p, span, li, label, 
     [data-testid="stSidebar"] p, 
     [data-testid="stSidebar"] span, 
@@ -42,10 +41,10 @@ st.markdown(f"""
         color: {text} !important;
         -webkit-text-fill-color: {text} !important;
         opacity: 1 !important;
-        font-weight: 600;
+        font-weight: 700;
     }}
 
-    /* 2. AGGRESSIVE BUTTON OVERRIDE: ALWAYS WHITE TEXT */
+    /* AGGRESSIVE BUTTON OVERRIDE: ALWAYS WHITE TEXT */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -53,26 +52,16 @@ st.markdown(f"""
         border-radius: 12px !important;
     }}
 
-    /* Force button labels to Pure White regardless of theme or device */
     div.stButton > button p, 
     div.stButton > button span, 
     div.stButton > button div, 
-    div.stButton > button label,
-    div.stButton > button code,
-    div.stButton > button small {{
+    div.stButton > button label {{
         color: {btn_txt_white} !important;
         -webkit-text-fill-color: {btn_txt_white} !important;
         font-weight: 800 !important;
         font-size: 16px !important;
         opacity: 1 !important;
         text-transform: uppercase;
-    }}
-
-    /* 3. Expander, Input, and Sidebar Styling */
-    [data-testid="stExpander"], input, textarea {{
-        background-color: {header_bg} !important;
-        border: 2px solid {accent} !important;
-        border-radius: 10px !important;
     }}
 
     /* Drill Header Styling */
@@ -90,7 +79,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. MASTER DATABASE (8 DRILLS PER SPORT) ---
+# --- 3. MASTER DATABASE (9 DRILLS PER SPORT) ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
@@ -101,17 +90,19 @@ def get_workout_template(sport):
             {"ex": "WALL SITS", "desc": "Isometric leg strength hold.", "rest": 60},
             {"ex": "BOX JUMPS", "desc": "Max vertical explosion.", "rest": 90},
             {"ex": "FREE THROWS", "desc": "Routine and breath focus.", "rest": 60},
-            {"ex": "DEFENSIVE SLIDES", "desc": "Lateral quickness across key.", "rest": 45}
+            {"ex": "DEFENSIVE SLIDES", "desc": "Lateral quickness across key.", "rest": 45},
+            {"ex": "FULL COURT SPRINTS", "desc": "Conditioning end-to-end.", "rest": 90}
         ],
         "Track": [
             {"ex": "ANKLE DRIBBLES", "desc": "Small steps, active ankles.", "rest": 30},
             {"ex": "A-SKIPS", "desc": "Rhythmic knee drive skips.", "rest": 45},
             {"ex": "BOUNDING", "desc": "Max horizontal distance.", "rest": 90},
-            {"ex": "HIGH KNEES", "rest": 30, "desc": "Rapid vertical cycles."},
+            {"ex": "HIGH KNEES", "desc": "Rapid vertical cycles.", "rest": 30},
             {"ex": "ACCELERATIONS", "desc": "20m drive phase bursts.", "rest": 120},
-            {"ex": "SINGLE LEG HOPS", "desc": "Unilateral power.", "rest": 60},
+            {"ex": "SINGLE LEG HOPS", "desc": "Unilateral stability.", "rest": 60},
             {"ex": "HILL SPRINTS", "desc": "Max effort uphill.", "rest": 90},
-            {"ex": "CORE ROTATION", "desc": "Seated med-ball twists.", "rest": 30}
+            {"ex": "CORE ROTATION", "desc": "Seated med-ball twists.", "rest": 30},
+            {"ex": "COOL DOWN JOG", "desc": "Low intensity flush.", "rest": 60}
         ],
         "Softball": [
             {"ex": "TEE WORK", "desc": "Solid contact mechanics.", "rest": 60},
@@ -121,7 +112,8 @@ def get_workout_template(sport):
             {"ex": "LONG TOSS", "desc": "Arm strength building.", "rest": 60},
             {"ex": "WRIST SNAPS", "desc": "Isolated flick velocity.", "rest": 30},
             {"ex": "SQUAT JUMPS", "desc": "Base path explosive speed.", "rest": 60},
-            {"ex": "SPRINT TO FIRST", "desc": "Max speed turn at bag.", "rest": 45}
+            {"ex": "SPRINT TO FIRST", "desc": "Max speed turn at bag.", "rest": 45},
+            {"ex": "BUNTING DRILLS", "desc": "Sacrifice and drag control.", "rest": 40}
         ],
         "General Workout": [
             {"ex": "GOBLET SQUATS", "desc": "Weighted depth squats.", "rest": 90},
@@ -131,7 +123,8 @@ def get_workout_template(sport):
             {"ex": "DUMBBELL ROW", "desc": "Back strength/stability.", "rest": 60},
             {"ex": "MOUNTAIN CLIMBERS", "desc": "Dynamic conditioning.", "rest": 30},
             {"ex": "GLUTE BRIDGES", "desc": "Posterior chain power.", "rest": 45},
-            {"ex": "BURPEES", "desc": "Total body intensity.", "rest": 90}
+            {"ex": "BURPEES", "desc": "Total body intensity.", "rest": 90},
+            {"ex": "JUMP ROPE", "desc": "Footwork and cardio.", "rest": 45}
         ]
     }
     return workouts.get(sport, [])
@@ -142,14 +135,13 @@ st.sidebar.markdown(f"""
 <div class="sidebar-card">
     <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">CURRENT TIME (EST)</p>
     <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
-    <p style="margin:0; font-size:13px;">{now_est.strftime('%A, %b %d')}</p>
 </div>
 """, unsafe_allow_html=True)
 
 app_mode = st.sidebar.selectbox("Navigate", ["Workout Plan", "Session History"])
 sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
-# TRAINING LEVEL LOGIC
+# TRAINING LEVEL TOGGLE
 level = st.sidebar.select_slider("Training Level", options=["Standard", "Elite", "Pro"])
 rest_multiplier = {"Standard": 1.0, "Elite": 0.75, "Pro": 0.5}[level]
 
@@ -162,7 +154,8 @@ st.sidebar.markdown(f"""
 
 # --- 5. WORKOUT PLAN PAGE ---
 if app_mode == "Workout Plan":
-    st.title(f"{sport_choice} - {level}")
+    st.title(f"{sport_choice} Dashboard")
+    st.subheader(f"Intensity Level: {level}")
     drills = get_workout_template(sport_choice)
 
     for i, item in enumerate(drills):
@@ -174,7 +167,7 @@ if app_mode == "Workout Plan":
         c1, c2 = st.columns(2)
         with c1:
             if st.button(f"DONE ✅", key=f"d_{i}", use_container_width=True):
-                st.toast(f"Logged: {item['ex']}")
+                st.toast(f"Completed: {item['ex']}")
         with c2:
             if st.button(f"REST {current_rest}s ⏱️", key=f"r_{i}", use_container_width=True):
                 ph = st.empty()
@@ -184,7 +177,7 @@ if app_mode == "Workout Plan":
                 ph.empty()
 
         st.checkbox("Perfect Form", key=f"f_{i}")
-        st.text_input("Notes", key=f"n_{i}", placeholder="Set details...")
+        st.text_input("Notes", key=f"n_{i}", placeholder="Log performance...")
 
     st.divider()
     s1, s2 = st.columns(2)
