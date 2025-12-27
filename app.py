@@ -37,12 +37,7 @@ st.markdown(f"""
     <style>
     .main {{ background-color: {bg_color} !important; color: {text_color} !important; }}
     
-    /* UNIFIED SIDEBAR FONT COLOR */
-    [data-testid="stSidebar"] *, 
-    [data-testid="stSidebar"] p, 
-    [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] div {{
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
         color: {sidebar_text} !important;
     }}
 
@@ -92,11 +87,6 @@ st.markdown(f"""
         margin-bottom: 20px;
         border: 2px solid {accent_color};
     }}
-
-    @media (max-width: 600px) {{
-        .timer-text {{ font-size: 55px !important; }}
-        .stat-value {{ font-size: 30px !important; }}
-    }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -138,7 +128,7 @@ target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
 # --- 4. Main App UI ---
-st.markdown(f"<h1>{sport_choice} Tracker</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1>{sport_choice} Performance</h1>", unsafe_allow_html=True)
 drills = get_workout_template(sport_choice)
 
 for i, item in enumerate(drills):
@@ -171,14 +161,14 @@ for i, item in enumerate(drills):
             st.session_state[drill_key] += 1
             st.rerun()
 
-    # Evaluation Section
+    # Coach's Evaluation Section
     st.markdown("### 📋 COACH'S EVALUATION")
     eval_cols = st.columns(2)
     for idx, criteria in enumerate(item['eval']):
         eval_cols[idx % 2].checkbox(criteria, key=f"eval_check_{drill_key}_{idx}")
     
-    st.select_slider(f"Intensity (RPE 1-10)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
-    st.text_input("Feedback/Notes", key=f"notes_{drill_key}", placeholder="Add notes for this drill...")
+    st.select_slider(f"Drill Intensity (RPE 1-10)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
+    st.text_input("Coach's Notes / Feedback", key=f"notes_{drill_key}", placeholder="Enter specific feedback here...")
 
     with st.expander("🎥 DRILL DEMO & UPLOAD"):
         st.video(item['vid'])
