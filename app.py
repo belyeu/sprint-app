@@ -8,7 +8,6 @@ import pytz
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 def get_now_est():
-    """Returns current time in US/Eastern (EST/EDT)."""
     return datetime.now(pytz.timezone('US/Eastern'))
 
 if 'history' not in st.session_state:
@@ -22,12 +21,10 @@ dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 
 if dark_mode:
     bg, text, accent, header_bg = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
-    electric_blue = "#7DF9FF"  # Vivid Electric Blue for Dark
-    numeric_color = "#60A5FA"
+    electric_blue = "#7DF9FF"  # High-glow cyan/blue
 else:
     bg, text, accent, header_bg = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
-    electric_blue = "#00E5FF"  # Bright Electric Blue for Light
-    numeric_color = "#000000"
+    electric_blue = "#00E5FF"  # Vibrant electric blue
 
 btn_txt_white = "#FFFFFF"
 
@@ -35,15 +32,15 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg} !important; }}
     
-    /* Universal Text visibility on iPhone */
+    /* Global Text Visibility */
     h1, h2, h3, p, span, li, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {{
         color: {text} !important;
         -webkit-text-fill-color: {text} !important;
         font-weight: 700;
     }}
 
-    /* --- ELECTRIC BLUE TITLES (TARGETED) --- */
-    /* Specifically for Target Set, Reps/Time, and Completed labels */
+    /* --- ELECTRIC BLUE TITLES --- */
+    /* Target Set, Reps/Time, and Completed labels */
     label[data-testid="stWidgetLabel"] p {{
         color: {electric_blue} !important;
         -webkit-text-fill-color: {electric_blue} !important;
@@ -53,7 +50,7 @@ st.markdown(f"""
         letter-spacing: 1px;
     }}
 
-    /* Global Button Override: Always White Text */
+    /* Button Styling */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -65,10 +62,8 @@ st.markdown(f"""
         color: {btn_txt_white} !important;
         -webkit-text-fill-color: {btn_txt_white} !important;
         font-weight: 800 !important;
-        font-size: 16px !important;
     }}
 
-    /* Drill Header & Sidebar Cards */
     .drill-header {{
         font-size: 24px !important; font-weight: 900 !important; 
         color: {accent} !important; -webkit-text-fill-color: {accent} !important;
@@ -83,8 +78,8 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. WORKOUT DATABASE (9 DRILLS PER SPORT WITH LOCATION TAGS) ---
-def get_workout_template(sport, selected_locs):
+# --- 3. WORKOUT DATABASE (9 DRILLS PER SPORT) ---
+def get_workout_template(sport, locs):
     workouts = {
         "Basketball": [
             {"ex": "POUND SERIES", "sets": 3, "base": 60, "unit": "sec", "rest": 30, "loc": "Gym"},
@@ -131,56 +126,56 @@ def get_workout_template(sport, selected_locs):
             {"ex": "JUMP ROPE", "sets": 3, "base": 2, "unit": "min", "rest": 60, "loc": "Gym"}
         ]
     }
-    
     all_drills = workouts.get(sport, [])
-    # Filter by selected locations; if none selected, show all to prevent empty screen
-    if not selected_locs:
+    if not locs:
         return all_drills
-    return [d for d in all_drills if d['loc'] in selected_locs]
+    return [d for d in all_drills if d['loc'] in locs]
 
 # --- 4. SIDEBAR PANEL ---
-now_est = get_now_est()
-st.sidebar.markdown(f"""
-<div class="sidebar-card">
-    <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">TIME (EST)</p>
-    <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
-</div>
-""", unsafe_allow_html=True)
+with st.sidebar:
+    now_est = get_now_est()
+    st.markdown(f"""
+    <div class="sidebar-card">
+        <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">TIME (EST)</p>
+        <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
+    sport_choice = st.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
-# LOCATION OPTIONS IN SIDE PANEL
-st.sidebar.markdown("### 📍 LOCATION OPTIONS")
-loc_filter = st.sidebar.multiselect(
-    "Training Grounds",
-    options=["Gym", "Track", "Weight Room"],
-    default=["Gym", "Track", "Weight Room"]
-)
+    st.markdown("---")
+    st.markdown("### 📍 LOCATION OPTIONS")
+    # This renders specifically in the sidebar
+    loc_filter = st.multiselect(
+        "Filter Training Grounds",
+        options=["Gym", "Track", "Weight Room"],
+        default=["Gym", "Track", "Weight Room"]
+    )
 
-difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
-
-# Logic Multipliers
-target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
-rest_mult = {"Standard": 1.0, "Elite": 0.8, "Pro": 0.5}[difficulty]
-
-st.sidebar.markdown(f"""
-<div class="sidebar-card">
-    <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">STREAK</p>
-    <p style="margin:0; font-size:28px; font-weight:900;">{st.session_state.streak} DAYS</p>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown("---")
+    difficulty = st.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
+    
+    st.markdown(f"""
+    <div class="sidebar-card">
+        <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">STREAK</p>
+        <p style="margin:0; font-size:28px; font-weight:900;">{st.session_state.streak} DAYS</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- 5. MAIN UI ---
 st.title(f"{sport_choice} Session")
 drills = get_workout_template(sport_choice, loc_filter)
 
+# Multipliers
+target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
+rest_mult = {"Standard": 1.0, "Elite": 0.8, "Pro": 0.5}[difficulty]
+
 if not drills:
-    st.info("Adjust your 'Location Options' in the side panel to view drills.")
+    st.info("Select a location in the side panel to see available drills.")
 else:
     for i, item in enumerate(drills):
-        st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} <span style="font-size:14px; opacity:0.7;">[{item["loc"]}]</span></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} <span style="font-size:12px; opacity:0.6;">({item["loc"]})</span></div>', unsafe_allow_html=True)
         
-        # Grid for Electric Blue Field Titles
         c1, c2, c3 = st.columns(3)
         with c1:
             st.text_input("Target Set", value=str(item["sets"]), key=f"ts_{i}")
@@ -193,7 +188,7 @@ else:
         col_a, col_b = st.columns(2)
         with col_a:
             if st.button(f"LOG DRILL ✅", key=f"done_{i}", use_container_width=True):
-                st.toast(f"Drill {i+1} saved!")
+                st.toast(f"Logged!")
         with col_b:
             rest_time = int(item["rest"] * rest_mult)
             if st.button(f"REST {rest_time}s ⏱️", key=f"rest_{i}", use_container_width=True):
@@ -210,4 +205,4 @@ st.divider()
 if st.button("💾 SAVE COMPLETE SESSION", use_container_width=True):
     st.session_state.streak += 1
     st.balloons()
-    st.success("Training session archived successfully!")
+    st.success("Session Saved!")
