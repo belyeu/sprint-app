@@ -51,7 +51,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. THE MASTER DATABASE (RESTORED) ---
+# --- 3. THE MASTER DATABASE ---
 def get_workout_template(sport, locs, active_categories=None):
     if sport == "Basketball":
         all_bb_drills = [
@@ -128,7 +128,7 @@ def get_workout_template(sport, locs, active_categories=None):
             {"cat": "Retreats", "ex": "Ball Screen Retreat", "desc": "Escaping a hedge defender.", "base": 10, "unit": "reps", "loc": "Gym", "focus": ["Escape Hedge", "Eyes Up"]},
             {"cat": "Retreats", "ex": "Double Move Retreat", "desc": "Recovering after a defender cuts you off.", "base": 10, "unit": "reps", "loc": "Gym", "focus": ["Recovery", "Double Move"]},
             {"cat": "Retreats", "ex": "Drive & Relocate", "desc": "Retreating to the corner/wing after a drive.", "base": 10, "unit": "reps", "loc": "Gym", "focus": ["Relocation", "Drive Speed"]},
-            {"cat": "Twitchy", "ex": "Shoulder Rock Walking", "desc": "Exaggerating movement to be deceptive.", "base": 2, "unit": "Length", "loc": "Gym", "focus": ["Deception", "Shoulder Rock"]},
+            {"cat": "Twitchy", "ex": "Shoulder Rock Walking", "desc": "Exaggerating movement to be deceptive.", "base": 2, "unit": "Laps", "loc": "Gym", "focus": ["Deception", "Shoulder Rock"]},
             {"cat": "Twitchy", "ex": "Slide-Twitch", "desc": "Adding a slide to the rocking motion.", "base": 12, "unit": "reps", "loc": "Gym", "focus": ["Lateral Twitch", "Balance"]},
             {"cat": "Twitchy", "ex": "Between-Cross Twitch", "desc": "Rapid-fire change of direction.", "base": 12, "unit": "reps", "loc": "Gym", "focus": ["Fast Direction Change", "Twitch"]},
             {"cat": "Drop Series", "ex": "Drop-Between Legs", "desc": "Shoulders to hips of the defender.", "base": 12, "unit": "reps", "loc": "Gym", "focus": ["Hip Level", "Drop Step"]},
@@ -156,12 +156,12 @@ def get_workout_template(sport, locs, active_categories=None):
             {"cat": "Contact", "ex": "Side Lunge Pressure", "desc": "Resisting movement from the side.", "base": 15, "unit": "reps", "loc": "Gym", "focus": ["Side Balance", "Lunge Resistance"]},
             {"cat": "Contact", "ex": "Back/Hip Grabbing", "desc": "Staying balanced with rear-end contact.", "base": 15, "unit": "reps", "loc": "Gym", "focus": ["Balance", "Hip Resilience"]},
             {"cat": "Contact", "ex": "Drive Through", "desc": "Football-style straight-line resistance.", "base": 10, "unit": "reps", "loc": "Gym", "focus": ["Shoulder Low", "Drive Power"]},
-            {"cat": "Contact", "ex": "Zig-Zag Dribbling", "desc": "Both offense and defense dribble.", "base": 2, "unit": "Length", "loc": "Gym", "focus": ["Defense Mirror", "Zig-Zag Flow"]},
+            {"cat": "Contact", "ex": "Zig-Zag Dribbling", "desc": "Both offense and defense dribble.", "base": 2, "unit": "Laps", "loc": "Gym", "focus": ["Defense Mirror", "Zig-Zag Flow"]},
             {"cat": "2-Ball", "ex": "Rhythm Pass", "desc": "Chest passes while keeping rhythm alive.", "base": 20, "unit": "reps", "loc": "Gym", "focus": ["Pass Accuracy", "Rhythm"]},
             {"cat": "2-Ball", "ex": "Machine Gun Pass", "desc": "Alternating dribbles into a pass.", "base": 15, "unit": "reps", "loc": "Gym", "focus": ["Alternating Flow", "Sharp Pass"]},
             {"cat": "2-Ball", "ex": "Side Partner Pass", "desc": "Passing across the body.", "base": 15, "unit": "reps", "loc": "Gym", "focus": ["Side Pass", "Coordination"]},
             {"cat": "2-Ball", "ex": "Behind the Back Pass", "desc": "Advanced coordination with a partner.", "base": 10, "unit": "reps", "loc": "Gym", "focus": ["Advanced Flow", "Behind Pass"]},
-            {"cat": "2-Ball", "ex": "Two-Ball Skip", "desc": "Rhythm and machine gun variations.", "base": 2, "unit": "Length", "loc": "Gym", "focus": ["Skip Rhythm", "Two-Ball Control"]},
+            {"cat": "2-Ball", "ex": "Two-Ball Skip", "desc": "Rhythm and machine gun variations.", "base": 2, "unit": "Laps", "loc": "Gym", "focus": ["Skip Rhythm", "Two-Ball Control"]},
             {"cat": "2-Ball", "ex": "Mixed Extension", "desc": "One ball front, one ball side.", "base": 30, "unit": "sec", "loc": "Gym", "focus": ["Dual Focus", "Extension Range"]},
             {"cat": "Tennis Ball", "ex": "Spike-Cross-Catch", "desc": "Using the tennis ball to force ball control.", "base": 15, "unit": "reps", "loc": "Gym", "focus": ["Hand-Eye", "Cross Speed"]},
         ]
@@ -170,16 +170,15 @@ def get_workout_template(sport, locs, active_categories=None):
             filtered = [d for d in filtered if d['cat'] in active_categories]
         return filtered
 
-    # RESTORED OTHER SPORTS DATABASES
     elif sport == "Softball":
         softball_drills = [
-            {"cat": "Hitting", "ex": "TEE WORK", "desc": "Mechanical refinement and path.", "base": 25, "unit": "swings", "loc": "Batting Cages", "focus": ["Path", "Hip Drive"]},
-            {"cat": "Fielding", "ex": "GLOVE TRANSFERS", "desc": "Rapid transfer speed drill.", "base": 30, "unit": "reps", "loc": "Softball Field", "focus": ["Quick Release", "Grip"]},
-            {"cat": "Hitting", "ex": "INSIDE PITCH PULLS", "desc": "Quick hands on inside pitches.", "base": 15, "unit": "swings", "loc": "Batting Cages", "focus": ["Hands First", "Finish"]},
-            {"cat": "Fielding", "ex": "PICKER HOPS", "desc": "Fielding velocity decision-making.", "base": 20, "unit": "reps", "loc": "Softball Field", "focus": ["Glove Down", "Balance"]},
-            {"cat": "Arm", "ex": "LONG TOSS", "desc": "Arm strength and distance building.", "base": 15, "unit": "throws", "loc": "Softball Field", "focus": ["Arc", "Follow Through"]},
-            {"cat": "Hitting", "ex": "TWO-BALL FOCUS", "desc": "Vision drill for selective hitting.", "base": 10, "unit": "swings", "loc": "Batting Cages", "focus": ["Vision", "Reaction"]},
-            {"cat": "Speed", "ex": "SPRINT TO FIRST", "desc": "Max speed burst to the bag.", "base": 6, "unit": "sprints", "loc": "Softball Field", "focus": ["Burst", "Finish"]},
+            {"cat": "Hitting", "ex": "TEE WORK", "desc": "Refinement and path.", "base": 25, "unit": "swings", "loc": "Batting Cages", "focus": ["Path", "Hip Drive"]},
+            {"cat": "Fielding", "ex": "GLOVE TRANSFERS", "desc": "Transfer speed drill.", "base": 30, "unit": "reps", "loc": "Softball Field", "focus": ["Quick Release", "Grip"]},
+            {"cat": "Hitting", "ex": "INSIDE PITCH PULLS", "desc": "Hands on inside pitches.", "base": 15, "unit": "swings", "loc": "Batting Cages", "focus": ["Hands First", "Finish"]},
+            {"cat": "Fielding", "ex": "PICKER HOPS", "desc": "Fielding velocity decision.", "base": 20, "unit": "reps", "loc": "Softball Field", "focus": ["Glove Down", "Balance"]},
+            {"cat": "Arm", "ex": "LONG TOSS", "desc": "Arm strength and distance.", "base": 15, "unit": "throws", "loc": "Softball Field", "focus": ["Arc", "Follow Through"]},
+            {"cat": "Hitting", "ex": "TWO-BALL FOCUS", "desc": "Vision for selective hitting.", "base": 10, "unit": "swings", "loc": "Batting Cages", "focus": ["Vision", "Reaction"]},
+            {"cat": "Speed", "ex": "SPRINT TO FIRST", "desc": "Max speed burst.", "base": 6, "unit": "sprints", "loc": "Softball Field", "focus": ["Burst", "Finish"]},
             {"cat": "Hitting", "ex": "BUNTING DRILLS", "desc": "Precision bat control.", "base": 10, "unit": "bunts", "loc": "Batting Cages", "focus": ["Bat Angle", "Pivot"]}
         ]
         return [d for d in softball_drills if d['loc'] in locs]
