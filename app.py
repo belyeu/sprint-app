@@ -8,10 +8,9 @@ import pytz
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 def get_now_est():
-    """Returns current time in US/Eastern (EST/EDT) regardless of server location."""
+    """Returns current time in US/Eastern (EST/EDT)."""
     return datetime.now(pytz.timezone('US/Eastern'))
 
-# Initialize Session State
 if 'history' not in st.session_state:
     st.session_state.history = []
 if 'streak' not in st.session_state:
@@ -24,7 +23,7 @@ dark_mode = st.sidebar.toggle("Dark Mode", value=False)
 if dark_mode:
     bg, text, accent, header_bg = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B"
 else:
-    # High-contrast Light Mode: Pure Black text for visibility on iPhone
+    # High-contrast Light Mode: Pure Black text for iPhone visibility
     bg, text, accent, header_bg = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9"
 
 # Force button text to white
@@ -32,10 +31,9 @@ btn_txt_white = "#FFFFFF"
 
 st.markdown(f"""
     <style>
-    /* Global App Background */
     .stApp {{ background-color: {bg} !important; }}
     
-    /* 1. Universal Text Visibility (Black in Light / White in Dark) */
+    /* Universal Text Visibility (Black in Light / White in Dark) */
     h1, h2, h3, p, span, li, label, 
     [data-testid="stSidebar"] p, 
     [data-testid="stSidebar"] span, 
@@ -46,7 +44,7 @@ st.markdown(f"""
         font-weight: 700;
     }}
 
-    /* 2. AGGRESSIVE BUTTON OVERRIDE: ALWAYS WHITE TEXT */
+    /* AGGRESSIVE BUTTON OVERRIDE: ALWAYS WHITE TEXT */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -54,7 +52,6 @@ st.markdown(f"""
         border-radius: 12px !important;
     }}
 
-    /* Force all text inside buttons to Pure White */
     div.stButton > button p, 
     div.stButton > button span, 
     div.stButton > button div, 
@@ -65,14 +62,6 @@ st.markdown(f"""
         font-size: 16px !important;
         opacity: 1 !important;
         text-transform: uppercase;
-    }}
-
-    /* 3. Expander & Input Box Styling */
-    [data-testid="stExpander"], input, textarea {{
-        background-color: {header_bg} !important;
-        border: 2px solid {accent} !important;
-        border-radius: 10px !important;
-        color: {text} !important;
     }}
 
     /* Drill Header Styling */
@@ -94,67 +83,66 @@ st.markdown(f"""
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
-            {"ex": "POUND SERIES", "desc": "Power dribbling at waist, knee, and ankle heights.", "rest": 40},
-            {"ex": "MIKAN SERIES", "desc": "Alternating layups focusing on touch and footwork.", "rest": 40},
-            {"ex": "FIGURE 8", "desc": "Low-to-ground ball handling through and around legs.", "rest": 30},
-            {"ex": "V-DRIBBLE", "desc": "Explosive lateral control with a heavy pound.", "rest": 30},
-            {"ex": "WALL SITS", "desc": "Isometric leg strength hold for core stability.", "rest": 60},
-            {"ex": "BOX JUMPS", "desc": "Max vertical explosion with controlled landings.", "rest": 90},
-            {"ex": "FREE THROWS", "desc": "Focus on ritual, breath, and high release.", "rest": 60},
-            {"ex": "DEFENSIVE SLIDES", "desc": "Lateral quickness and active hands across the key.", "rest": 45},
-            {"ex": "FULL COURT SPRINTS", "desc": "End-to-end conditioning at 100% effort.", "rest": 120}
+            {"ex": "POUND SERIES", "desc": "Hard dribbles at waist, knee, and ankle.", "rest": 40},
+            {"ex": "MIKAN SERIES", "desc": "Alternating layups with high-arc touch.", "rest": 40},
+            {"ex": "FIGURE 8", "desc": "Low-to-ground ball control through legs.", "rest": 30},
+            {"ex": "V-DRIBBLE", "desc": "Explosive side-to-side crossovers.", "rest": 30},
+            {"ex": "WALL SITS", "desc": "Leg endurance hold (keep back flat).", "rest": 60},
+            {"ex": "BOX JUMPS", "desc": "Vertical power with soft landings.", "rest": 90},
+            {"ex": "FREE THROWS", "desc": "Consistent routine and mental focus.", "rest": 60},
+            {"ex": "DEFENSIVE SLIDES", "desc": "Lateral intensity across the paint.", "rest": 45},
+            {"ex": "FULL COURT SPRINTS", "desc": "Maximum effort end-to-end sprints.", "rest": 120}
         ],
         "Track": [
-            {"ex": "ANKLE DRIBBLES", "desc": "Small steps focusing on active foot strikes.", "rest": 30},
-            {"ex": "A-SKIPS", "desc": "Rhythmic knee drive and aggressive mid-foot strike.", "rest": 45},
-            {"ex": "BOUNDING", "desc": "Max horizontal distance per jump stride.", "rest": 90},
-            {"ex": "HIGH KNEES", "desc": "Rapid vertical cycles while staying upright.", "rest": 30},
-            {"ex": "20M ACCELERATIONS", "desc": "Full effort drive phase bursts from a 3-point start.", "rest": 120},
-            {"ex": "SINGLE LEG HOPS", "desc": "Unilateral stability and force production.", "rest": 60},
-            {"ex": "HILL SPRINTS", "desc": "Max effort uphill bursts for explosive power.", "rest": 90},
-            {"ex": "RUSSIAN TWISTS", "desc": "Seated core rotation with explosive movement.", "rest": 30},
-            {"ex": "COOL DOWN FLUSH", "desc": "Low-intensity jog to clear lactic acid.", "rest": 60}
+            {"ex": "ANKLE DRIBBLES", "desc": "Small, rapid steps on the balls of feet.", "rest": 30},
+            {"ex": "A-SKIPS", "desc": "Aggressive knee drive and foot strike.", "rest": 45},
+            {"ex": "BOUNDING", "desc": "Explosive leaps for horizontal power.", "rest": 90},
+            {"ex": "HIGH KNEES", "desc": "Upright posture with rapid cycling.", "rest": 30},
+            {"ex": "ACCELERATIONS", "desc": "20m bursts from a crouched start.", "rest": 120},
+            {"ex": "SINGLE LEG HOPS", "desc": "Unilateral ankle stability and power.", "rest": 60},
+            {"ex": "HILL SPRINTS", "desc": "Resistance sprints for force production.", "rest": 90},
+            {"ex": "CORE ROTATION", "desc": "Explosive Russian twists or med-ball cycles.", "rest": 30},
+            {"ex": "POST-SESSION JOG", "desc": "Recovery flush to clear lactic acid.", "rest": 60}
         ],
         "Softball": [
-            {"ex": "TEE WORK", "desc": "Focus on driving through the center of the ball.", "rest": 60},
-            {"ex": "GLOVE TRANSFERS", "desc": "Rapid hands from catch to throwing position.", "rest": 30},
-            {"ex": "FRONT TOSS", "desc": "Timing drills with directional hitting focus.", "rest": 60},
-            {"ex": "LATERAL SHUFFLES", "desc": "Quick-step fielding range movement.", "rest": 45},
-            {"ex": "LONG TOSS", "desc": "Building arm strength and throwing arc.", "rest": 60},
-            {"ex": "WRIST SNAPS", "desc": "Isolated flick for velocity and ball spin.", "rest": 30},
-            {"ex": "SQUAT JUMPS", "desc": "Explosive power for base path acceleration.", "rest": 60},
-            {"ex": "SPRINT TO FIRST", "desc": "Max speed turn at the bag.", "rest": 45},
-            {"ex": "BUNTING CONTROL", "desc": "Sacrifice and drag bunt placement.", "rest": 40}
+            {"ex": "TEE WORK", "desc": "Extension and power through the middle.", "rest": 60},
+            {"ex": "GLOVE TRANSFERS", "desc": "Quick transition from catch to throw.", "rest": 30},
+            {"ex": "FRONT TOSS", "desc": "Timing and directional hitting control.", "rest": 60},
+            {"ex": "LATERAL SHUFFLES", "desc": "Fielding range and footwork speed.", "rest": 45},
+            {"ex": "LONG TOSS", "desc": "Building arm strength and accuracy.", "rest": 60},
+            {"ex": "WRIST SNAPS", "desc": "Isolated flick for velocity and spin.", "rest": 30},
+            {"ex": "SQUAT JUMPS", "desc": "Explosive first-step base path speed.", "rest": 60},
+            {"ex": "SPRINT TO FIRST", "desc": "Rounding the bag at full speed.", "rest": 45},
+            {"ex": "BUNTING PLACEMENT", "desc": "Sacrifice and drag bunt accuracy.", "rest": 40}
         ],
         "General Workout": [
-            {"ex": "GOBLET SQUATS", "desc": "Weighted depth squats with upright chest.", "rest": 90},
-            {"ex": "PUSHUPS", "desc": "Military style, chest to floor with core locked.", "rest": 60},
-            {"ex": "LUNGES", "desc": "Alternating steps with 90-degree stability.", "rest": 60},
-            {"ex": "PLANK", "desc": "Static forearm hold with total body tension.", "rest": 45},
-            {"ex": "DUMBBELL ROW", "desc": "Back strength and shoulder health focus.", "rest": 60},
-            {"ex": "MOUNTAIN CLIMBERS", "desc": "Rapid dynamic core and conditioning.", "rest": 30},
-            {"ex": "GLUTE BRIDGES", "desc": "Posterior chain engagement and power.", "rest": 45},
+            {"ex": "GOBLET SQUATS", "desc": "Weighted depth squats for leg power.", "rest": 90},
+            {"ex": "PUSHUPS", "desc": "Full extension with locked core.", "rest": 60},
+            {"ex": "LUNGES", "desc": "Unilateral stability and balance.", "rest": 60},
+            {"ex": "PLANK", "desc": "Total body isometric tension hold.", "rest": 45},
+            {"ex": "DUMBBELL ROW", "desc": "Back strength and postural stability.", "rest": 60},
+            {"ex": "MOUNTAIN CLIMBERS", "desc": "Dynamic core and cardio conditioning.", "rest": 30},
+            {"ex": "GLUTE BRIDGES", "desc": "Posterior chain engagement.", "rest": 45},
             {"ex": "BURPEES", "desc": "Full body explosive intensity.", "rest": 90},
-            {"ex": "JUMP ROPE", "desc": "Footwork speed and sustained cardio.", "rest": 45}
+            {"ex": "JUMP ROPE", "desc": "Consistent footwork and stamina.", "rest": 45}
         ]
     }
     return workouts.get(sport, [])
 
-# --- 4. SIDEBAR CONTROLS ---
+# --- 4. SIDEBAR NAVIGATION & INTENSITY ---
 now_est = get_now_est()
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
-    <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">CURRENT TIME (EST)</p>
+    <p style="margin:0; font-size:11px; color:{accent}; font-weight:800;">TIME (EST)</p>
     <p style="margin:0; font-size:20px; font-weight:900;">{now_est.strftime('%I:%M %p')}</p>
-    <p style="margin:0; font-size:13px;">{now_est.strftime('%A, %b %d')}</p>
 </div>
 """, unsafe_allow_html=True)
 
 app_mode = st.sidebar.selectbox("Navigate", ["Workout Plan", "Session History"])
 sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
-# LEVEL TOGGLE
-level = st.sidebar.select_slider("Training Level", options=["Standard", "Elite", "Pro"])
+# LEVEL SLIDER
+level = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"])
 rest_multiplier = {"Standard": 1.0, "Elite": 0.75, "Pro": 0.5}[level]
 
 st.sidebar.markdown(f"""
@@ -178,7 +166,7 @@ if app_mode == "Workout Plan":
         c1, c2 = st.columns(2)
         with c1:
             if st.button(f"DONE ✅", key=f"d_{i}", use_container_width=True):
-                st.toast(f"Completed: {item['ex']}")
+                st.toast(f"Logged: {item['ex']}")
         with c2:
             if st.button(f"REST {current_rest}s ⏱️", key=f"r_{i}", use_container_width=True):
                 ph = st.empty()
@@ -187,8 +175,11 @@ if app_mode == "Workout Plan":
                     time.sleep(1)
                 ph.empty()
 
-        st.checkbox("Perfect Execution", key=f"f_{i}")
-        st.text_input("Performance Notes", key=f"n_{i}", placeholder="Log details...")
+        # VIDEO LOG & NOTES
+        with st.expander("📝 LOG PERFORMANCE & VIDEO"):
+            st.text_input("Notes", key=f"n_{i}", placeholder="How did this set feel?")
+            st.file_uploader("Upload Session Clip", type=["mp4", "mov"], key=f"v_{i}")
+            st.checkbox("Perfect Execution", key=f"f_{i}")
 
     st.divider()
     s1, s2 = st.columns(2)
@@ -207,7 +198,7 @@ if app_mode == "Workout Plan":
 else:
     st.title("📊 Training History")
     if not st.session_state.history:
-        st.info("No saved sessions yet. Time to get to work!")
+        st.info("No saved sessions yet.")
     else:
         for log in reversed(st.session_state.history):
             st.markdown(f"""
@@ -216,7 +207,3 @@ else:
                 <p style="margin:0; font-size:14px; font-weight:700;">{log['date']} EST</p>
             </div>
             """, unsafe_allow_html=True)
-        
-        if st.sidebar.button("Clear History"):
-            st.session_state.history = []
-            st.rerun()
