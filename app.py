@@ -201,4 +201,63 @@ for i in range(len(drills)):
         st.markdown(f'<p class="stat-label">Target Sets</p><p class="stat-value">{item["sets"]}</p>', unsafe_allow_html=True)
     with c2:
         reps_val = int(item['base'] * target_mult)
-        st.markdown(f'<p class="stat-label">Reps/Time</
+        st.markdown(f'<p class="stat-label">Reps/Time</p><p class="stat-value">{reps_val} {item["unit"]}</p>', unsafe_allow_html=True)
+    with c3:
+        st.markdown(f'<p class="stat-label">Completed</p><p class="stat-value">{st.session_state[drill_key]}</p>', unsafe_allow_html=True)
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        if st.button(f"DONE ✅", key=f"done_{i}"):
+            st.session_state[drill_key] += 1
+            st.rerun()
+    with col_b:
+        if st.button(f"REST ⏱️", key=f"rest_{i}"):
+            final_rest = int(item['rest'] * rest_mult)
+            ph = st.empty()
+            for t in range(final_rest, -1, -1):
+                ph.markdown(f'<p class="timer-text">{t//60:02d}:{t%60:02d}</p>', unsafe_allow_html=True)
+                time.sleep(1)
+            st.session_state[drill_key] += 1
+            st.rerun()
+
+    st.markdown("### 📋 COACH'S EVALUATION")
+    eval_cols = st.columns(2)
+    for idx in range(len(item['eval'])):
+        criteria = item['eval'][idx]
+        eval_cols[idx % 2].checkbox(criteria, key=f"ev_{drill_key}_{idx}")
+    
+    st.select_slider(f"Intensity (RPE)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
+    st.text_input("Notes", key=f"note_{drill_key}")
+
+    with st.expander("🎥 DEMO & UPLOAD"):
+        st.video(item['vid'])
+        st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"up_{i}")
+
+st.divider()
+c_save, c_reset = st.columns(2)
+with c_save:
+    if st.button("💾 SAVE WORKOUT"):
+        st.balloons()
+        st.session_state.streak += 1
+        st.session_state.monthly_sessions += 1
+        st.session_state.session_saved = True
+        st.rerun()
+
+with c_reset:
+    if st.button("🔄 RESET SESSION"):
+        for i in range(len(drills)):
+            drill_key = f"{sport_choice}_{i}"
+            st.session_state[drill_key] = 0
+        st.session_state.session_saved = False
+        st.rerun()
+
+# --- 5. Post-Workout Analytics ---
+if st.session_state.session_saved:
+    st.success("Session saved!")
+    summary_data = []
+    for i in range(len(drills)):
+        drill_key = f"{sport_choice}_{i}"
+        summary_data.append({"Drill": drills[i]["ex"], "Completed": st.session_state.get(drill_key, 0)})
+    
+    df = pd.DataFrame(summary_data)
+    st.bar_chart(df, x="Drill", y="Completed", color=accent_color)
