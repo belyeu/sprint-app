@@ -19,53 +19,45 @@ st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
 dark_mode = st.sidebar.toggle("Dark Mode", value=st.session_state.dark_mode)
 st.session_state.dark_mode = dark_mode
 
-# Define Colors for Maximum Visibility
+# Define Colors
 if dark_mode:
     bg_color = "#0F172A"; text_color = "#FFFFFF"; accent_color = "#38BDF8"
     header_bg = "#334155"; sidebar_bg = "#1E293B"; sidebar_text = "#FFFFFF"
-    input_bg = "#334155"; input_text = "#FFFFFF"
-    stat_val_color = "#38BDF8" # Bright blue for numbers
+    input_bg = "#334155"; input_text = "#38BDF8" # Forced Blue
+    stat_val_color = "#38BDF8"
 else:
     bg_color = "#F8FAFC"; text_color = "#0F172A"; accent_color = "#2563EB"
     header_bg = "#E2E8F0"; sidebar_bg = "#FFFFFF"; sidebar_text = "#0F172A"
-    input_bg = "#FFFFFF"; input_text = "#0F172A"
-    stat_val_color = "#000000" # Pure black for numbers in light mode
+    input_bg = "#FFFFFF"; input_text = "#2563EB" # Forced Blue
+    stat_val_color = "#2563EB" # Forced Blue for stats too
 
 st.markdown(f"""
     <style>
-    /* Prevent sidebar overlap */
     .main .block-container {{ padding-left: 5rem; padding-right: 2rem; }}
     .main {{ background-color: {bg_color} !important; color: {text_color} !important; }}
     
-    /* Sidebar Text & Label Visibility */
     [data-testid="stSidebar"] {{ background-color: {sidebar_bg} !important; }}
-    [data-testid="stSidebar"] *, [data-testid="stSidebar"] label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {{
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] label, [data-testid="stSidebar"] p {{
         color: {sidebar_text} !important;
-        opacity: 1 !important;
         -webkit-text-fill-color: {sidebar_text} !important;
     }}
 
-    /* Input Field Visibility */
-    div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {{
-        background-color: {input_bg} !important;
-        color: {input_text} !important;
-        border: 2px solid {accent_color} !important;
-    }}
-    
-    input {{ 
-        color: {input_text} !important; 
-        -webkit-text-fill-color: {input_text} !important; 
+    /* Global Input & Numeric Visibility */
+    div[data-baseweb="input"] > div, 
+    div[data-baseweb="select"] > div,
+    div[data-testid="stMarkdownContainer"] p {{
+        color: {text_color};
     }}
 
-    /* Numbers & Stats (Target Sets, Reps, Completed) */
-    .stat-label {{ font-size: 14px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
-    .stat-value {{ 
-        font-size: 32px !important; 
-        font-weight: 900 !important; 
-        color: {stat_val_color} !important; 
-        -webkit-text-fill-color: {stat_val_color} !important;
-        margin-bottom: 5px; 
+    /* Force BLUE on all Numeric/Input Text for iPhone visibility */
+    input, .stat-value, [data-testid="stTickBarMin"], [data-testid="stTickBarMax"], [role="slider"] {{
+        color: {input_text} !important;
+        -webkit-text-fill-color: {input_text} !important;
+        font-weight: 900 !important;
     }}
+
+    .stat-label {{ font-size: 14px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
+    .stat-value {{ font-size: 32px !important; margin-bottom: 5px; }}
 
     .drill-header {{
         font-size: 24px !important; font-weight: 900 !important; color: {accent_color} !important;
@@ -75,46 +67,36 @@ st.markdown(f"""
     
     .timer-text {{
         font-size: 60px !important; font-weight: bold !important; color: {accent_color} !important;
-        text-align: center; font-family: 'Courier New', monospace; background: {bg_color};
-        border-radius: 12px; border: 4px solid {accent_color}; padding: 10px; margin: 10px 0;
+        text-align: center; font-family: 'Courier New', monospace; border: 4px solid {accent_color}; padding: 10px;
     }}
 
     .stButton>button {{ 
         background-color: {accent_color} !important; color: white !important; 
         border-radius: 10px !important; font-weight: 800 !important; 
-        width: 100%; height: 55px !important; font-size: 16px !important;
+        width: 100%; height: 55px !important;
     }}
 
     .sidebar-card {{ 
-        padding: 15px; 
-        border-radius: 12px; 
-        text-align: center; 
-        margin-bottom: 15px; 
-        border: 2px solid {accent_color}; 
-        background-color: {sidebar_bg};
-    }}
-
-    @media (max-width: 768px) {{
-        .main .block-container {{ padding-left: 1rem; padding-right: 1rem; }}
-        .drill-header {{ font-size: 20px !important; }}
+        padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px; 
+        border: 2px solid {accent_color}; background-color: {sidebar_bg};
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Sidebar Date, Time, and Streak ---
+# --- 2. Sidebar ---
 now = datetime.now()
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
-    <p style="margin:0; font-weight:800; font-size:12px; color:{accent_color};">CURRENT SESSION</p>
+    <p style="margin:0; font-weight:800; font-size:12px; color:{accent_color};">SESSION START</p>
     <p style="margin:0; font-size:16px; font-weight:700;">{now.strftime("%B %d, %Y")}</p>
-    <p style="margin:0; font-size:24px; font-weight:900;">{now.strftime("%I:%M %p")}</p>
+    <p style="margin:0; font-size:24px; font-weight:900; color:{input_text} !important;">{now.strftime("%I:%M %p")}</p>
 </div>
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown(f"""
 <div class="sidebar-card">
     <p style="margin:0; font-weight:800; font-size:12px; color:{accent_color};">STREAK</p>
-    <p style="font-size:32px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>
+    <p style="font-size:32px; font-weight:900; margin:0; color:{input_text} !important;">{st.session_state.streak} DAYS</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -122,7 +104,6 @@ st.sidebar.divider()
 sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
 
-# Logic: Calculation based on difficulty multiplier only
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
@@ -224,5 +205,26 @@ if st.button("💾 SAVE WORKOUT"):
     st.session_state.streak += 1
     st.session_state.session_saved = True
 
+# --- 5. Post-Workout Analytics ---
 if st.session_state.session_saved:
-    st.info("Session saved. Drink water and stretch!")
+    st.success("Session saved. Drink water and stretch!")
+    st.markdown(f"### 📊 Session Summary: {sport_choice}")
+    
+    # Prepare data for chart
+    summary_data = []
+    for i, item in enumerate(drills):
+        drill_key = f"{sport_choice}_{i}"
+        summary_data.append({
+            "Drill": item["ex"],
+            "Target Sets": item["sets"],
+            "Completed": st.session_state.get(drill_key, 0)
+        })
+    
+    df = pd.DataFrame(summary_data)
+    
+    # Display Chart
+    st.bar_chart(df, x="Drill", y=["Target Sets", "Completed"], color=[accent_color, "#10B981"])
+    
+    # Detailed Table
+    with st.expander("Show Raw Performance Data"):
+        st.dataframe(df, use_container_width=True, hide_index=True)
