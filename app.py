@@ -6,75 +6,66 @@ from datetime import datetime
 # --- 1. High-Visibility Theme Configuration ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
-# Initialize Dark Mode in session state
+# Initialize Session State
 if 'dark_mode' not in st.session_state:
     st.session_state.dark_mode = False
+if 'streak' not in st.session_state: 
+    st.session_state.streak = 1
+if 'session_saved' not in st.session_state: 
+    st.session_state.session_saved = False
 
 # Sidebar Toggle for Dark Mode
 st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
 dark_mode = st.sidebar.toggle("Dark Mode", value=st.session_state.dark_mode)
 st.session_state.dark_mode = dark_mode
 
-# Define Colors based on Mode
+# Define Colors
 if dark_mode:
-    bg_color = "#0F172A"        # Deep Navy
-    card_bg = "#1E293B"         # Slate Gray
-    text_color = "#FFFFFF"      # Pure White
-    accent_color = "#38BDF8"    # Vivid Sky Blue
-    header_bg = "#334155"       # Medium Slate
-    sidebar_text = "#FFFFFF"    # Unified Sidebar Font: White
+    bg_color = "#0F172A"        
+    text_color = "#FFFFFF"      
+    accent_color = "#38BDF8"    
+    header_bg = "#334155"       
+    sidebar_text = "#FFFFFF"    
 else:
-    bg_color = "#F8FAFC"        # Bright White-Gray
-    card_bg = "#FFFFFF"         # Pure White
-    text_color = "#0F172A"      # Deep Slate Text
-    accent_color = "#2563EB"    # Royal Blue
-    header_bg = "#E2E8F0"       # Light Steel Gray
-    sidebar_text = "#0F172A"    # Unified Sidebar Font: Dark Navy
+    bg_color = "#F8FAFC"        
+    text_color = "#0F172A"      
+    accent_color = "#2563EB"    
+    header_bg = "#E2E8F0"       
+    sidebar_text = "#0F172A"    
 
 st.markdown(f"""
     <style>
-    /* Global Styles */
     .main {{ background-color: {bg_color} !important; color: {text_color} !important; }}
     
-    /* UNIFIED SIDEBAR FONT COLOR - Targets all elements */
-    [data-testid="stSidebar"] *, 
-    [data-testid="stSidebar"] p, 
-    [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] div,
-    [data-testid="stSidebar"] .stSelectbox p,
-    [data-testid="stSidebar"] .stNumberInput label {{
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
         color: {sidebar_text} !important;
     }}
 
-    /* Drill Section Styling */
     .drill-header {{
-        font-size: 32px !important;
+        font-size: 30px !important;
         font-weight: 900 !important;
         color: {accent_color} !important;
         text-transform: uppercase;
-        margin-bottom: 10px;
         margin-top: 35px;
-        font-family: 'Arial Black', sans-serif;
         border-left: 12px solid {accent_color};
-        padding: 15px 20px;
+        padding: 10px 20px;
         background-color: {header_bg};
         border-radius: 0 10px 10px 0;
     }}
     
-    .stat-label {{ font-size: 18px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
-    .stat-value {{ font-size: 42px !important; font-weight: 900 !important; color: {text_color} !important; }}
+    .stat-label {{ font-size: 16px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
+    .stat-value {{ font-size: 38px !important; font-weight: 900 !important; color: {text_color} !important; margin-bottom: 15px; }}
 
     .timer-text {{
-        font-size: 85px !important;
+        font-size: 75px !important;
         font-weight: bold !important;
         color: {accent_color} !important;
         text-align: center;
         font-family: 'Courier New', monospace;
         background: {bg_color};
         border-radius: 12px;
-        border: 5px solid {accent_color};
-        padding: 15px;
+        border: 4px solid {accent_color};
+        padding: 10px;
         margin: 10px 0;
     }}
 
@@ -84,60 +75,48 @@ st.markdown(f"""
         border-radius: 12px !important; 
         font-weight: 900 !important; 
         width: 100%; 
-        height: 75px !important;
-        font-size: 24px !important;
+        height: 65px !important;
+        font-size: 20px !important;
         border: none !important;
     }}
 
-    /* Sidebar Streak Card Styling */
     .sidebar-card {{
-        padding: 20px;
-        border-radius: 15px;
+        padding: 15px;
+        border-radius: 12px;
         text-align: center;
         margin-bottom: 20px;
-        border: 3px solid {accent_color};
-    }}
-
-    @media (max-width: 600px) {{
-        .timer-text {{ font-size: 55px !important; }}
-        .stat-value {{ font-size: 32px !important; }}
+        border: 2px solid {accent_color};
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Multi-Sport Drill Database (Full Integrity) ---
+# --- 2. Multi-Sport Drill Database ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
-            {"ex": "POUND SERIES", "base": 60, "inc": 15, "unit": "sec", "rest": 30, "type": "cond", "desc": "Hard, explosive dribbles at hip, knee, and ankle height. Keep eyes up.", "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "eval": ["Low Stance", "Power Dribble", "Eyes Up"]},
-            {"ex": "FIGURE 8 SERIES", "base": 90, "inc": 20, "unit": "sec", "rest": 30, "type": "cond", "desc": "Low dribbles in a figure-8 pattern around legs.", "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0", "eval": ["Fingertip Control", "Low Center", "No Tangles"]},
-            {"ex": "STATIONARY CROSSOVER", "base": 100, "inc": 25, "unit": "reps", "rest": 45, "type": "power", "desc": "Wide crossovers outside the body frame. Snap the ball.", "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E", "eval": ["Wide Snap", "Rhythm", "Low Hips"]},
-            {"ex": "MIKAN SERIES", "base": 50, "inc": 10, "unit": "makes", "rest": 60, "type": "power", "desc": "Continuous layups alternating hands. Keep ball high.", "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "eval": ["High Finish", "Footwork", "Soft Touch"]}
+            {"ex": "POUND SERIES", "base": 60, "inc": 15, "unit": "sec", "rest": 30, "type": "cond", "desc": "Explosive dribbles at hip/knee/ankle height.", "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0", "eval": ["Low Stance", "Power Dribble", "Eyes Up"]},
+            {"ex": "FIGURE 8 SERIES", "base": 90, "inc": 20, "unit": "sec", "rest": 30, "type": "cond", "desc": "Low dribbles in figure-8 pattern.", "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0", "eval": ["Fingertip Control", "Low Center", "No Tangles"]},
+            {"ex": "MIKAN SERIES", "base": 50, "inc": 10, "unit": "makes", "rest": 60, "type": "power", "desc": "Continuous alternating layups.", "vid": "https://www.youtube.com/watch?v=3-8H85P6Kks", "eval": ["High Finish", "Footwork", "Soft Touch"]}
         ],
         "Track": [
-            {"ex": "ANKLE DRIBBLES", "base": 40, "inc": 10, "unit": "meters", "rest": 30, "type": "cond", "desc": "Quick steps with toes up. Movement from ankles.", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw", "eval": ["Toes Up", "Ankle Drive", "Tall Posture"]},
-            {"ex": "A-SKIP", "base": 60, "inc": 10, "unit": "meters", "rest": 60, "type": "power", "desc": "Aggressive foot strike under center of mass.", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y", "eval": ["Aggressive Strike", "Arm Action", "Knee Drive"]}
+            {"ex": "ANKLE DRIBBLES", "base": 40, "inc": 10, "unit": "meters", "rest": 30, "type": "cond", "desc": "Quick steps, toes up.", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw", "eval": ["Toes Up", "Ankle Drive", "Tall Posture"]},
+            {"ex": "A-SKIP", "base": 60, "inc": 10, "unit": "meters", "rest": 60, "type": "power", "desc": "Aggressive strike under center.", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y", "eval": ["Aggressive Strike", "Arm Action", "Knee Drive"]}
         ],
         "Softball": [
-            {"ex": "TEE SERIES", "base": 50, "inc": 15, "unit": "swings", "rest": 60, "type": "power", "desc": "Focus on hand path. Hit to all fields.", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact", "Balanced Stance"]},
-            {"ex": "GLOVE WORK", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power", "desc": "Develop soft hands and quick transfers.", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Soft Hands", "Quick Transfer", "Glove Position"]}
-        ],
-        "General Workout": [
-            {"ex": "GOBLET SQUATS", "base": 15, "inc": 3, "unit": "reps", "rest": 120, "type": "power", "desc": "Hold weight at chest. Sit back into hips.", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I", "eval": ["Depth", "Chest Up", "Heels Down"]},
-            {"ex": "PUSHUPS", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Full range of motion. Chest to floor.", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4", "eval": ["Core Tight", "Full Lockout", "Chest to Floor"]}
+            {"ex": "TEE SERIES", "base": 50, "inc": 15, "unit": "swings", "rest": 60, "type": "power", "desc": "Focus on hand path.", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y", "eval": ["Hip Rotation", "Eye on Contact", "Balanced Stance"]},
+            {"ex": "GLOVE WORK", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power", "desc": "Soft hands/quick transfers.", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U", "eval": ["Soft Hands", "Quick Transfer", "Glove Position"]}
         ]
     }
     return workouts.get(sport, [])
 
 # --- 3. Sidebar Profile ---
 st.sidebar.markdown('<div class="sidebar-card">', unsafe_allow_html=True)
-if 'streak' not in st.session_state: st.session_state.streak = 1
-st.sidebar.markdown(f'<p style="margin:0; font-weight:800; font-size:16px;">STREAK</p>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<p style="font-size:44px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<p style="margin:0; font-weight:800; font-size:14px;">STREAK</p>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<p style="font-size:36px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 st.sidebar.divider()
-sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
+sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball"])
 difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
 week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
 
@@ -145,10 +124,8 @@ target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
 
 # --- 4. Main App UI ---
-st.markdown(f"<h1>{sport_choice} Tracker</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1>{sport_choice} Performance</h1>", unsafe_allow_html=True)
 drills = get_workout_template(sport_choice)
-
-if 'session_saved' not in st.session_state: st.session_state.session_saved = False
 
 for i, item in enumerate(drills):
     drill_key = f"{sport_choice}_{i}"
@@ -163,6 +140,7 @@ for i, item in enumerate(drills):
     with c2:
         st.markdown(f'<p class="stat-label">Sets Done</p><p class="stat-value">{st.session_state[drill_key]}</p>', unsafe_allow_html=True)
 
+    # Action Row
     col_a, col_b = st.columns(2)
     with col_a:
         if st.button(f"DONE ✅", key=f"done_{i}"):
@@ -179,12 +157,25 @@ for i, item in enumerate(drills):
             st.session_state[drill_key] += 1
             st.rerun()
 
-    with st.expander("🎥 DRILL DEMO & NOTES"):
+    # RESTORED: Coach's Evaluation Section
+    st.markdown("### 📋 COACH'S EVALUATION")
+    eval_cols = st.columns(2)
+    for idx, criteria in enumerate(item['eval']):
+        eval_cols[idx % 2].checkbox(criteria, key=f"eval_check_{drill_key}_{idx}")
+    
+    st.select_slider(f"Drill Intensity (RPE 1-10)", options=range(1, 11), value=8, key=f"rpe_{drill_key}")
+    st.text_input("Coach's Notes / Feedback", key=f"notes_{drill_key}", placeholder="Enter specific feedback here...")
+
+    with st.expander("🎥 DRILL DEMO & UPLOAD"):
         st.video(item['vid'])
-        st.markdown(f"**Focus:** {item['desc']}")
+        st.file_uploader("Upload Practice Clip", type=["mp4", "mov"], key=f"up_{i}")
 
 st.divider()
 if st.button("💾 SAVE WORKOUT"):
     st.balloons()
     st.session_state.streak += 1
+    st.session_state.session_saved = True
     st.success("Session saved! Streak updated.")
+
+if st.session_state.session_saved:
+    st.info("Recovery Protocol: 1. Hydrate 2. Protein Intake 3. Stretch.")
