@@ -50,6 +50,7 @@ st.markdown("""
     }
     h1 { color: #FFD700 !important; font-size: 52px !important; text-align: center; border-bottom: 5px solid #FFD700; padding-bottom: 15px; text-transform: uppercase; }
     .coach-notes { background-color: #ffd70022; padding: 10px; border-radius: 5px; border-left: 3px solid #FFD700; margin-bottom: 10px; }
+    .recovery-card { background-color: #004d26; border: 2px solid #FFD700; padding: 20px; border-radius: 15px; margin-top: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -59,7 +60,7 @@ def get_workout_template(sport):
             {"ex": "POUND SERIES", "base": 60, "inc": 15, "unit": "seconds", "rest": 30, "type": "cond", "desc": "Hard, explosive dribbles at hip, knee, and ankle height. Keep eyes up.", "vid": "https://www.youtube.com/watch?v=akSJjN8UIj0"},
             {"ex": "FIGURE 8 SERIES", "base": 90, "inc": 20, "unit": "seconds", "rest": 30, "type": "cond", "desc": "Low dribbles in a figure-8 pattern around legs. Focus on fingertip control.", "vid": "https://www.youtube.com/watch?v=XpG0oE_A6k0"},
             {"ex": "STATIONARY CROSSOVER", "base": 100, "inc": 25, "unit": "reps", "rest": 45, "type": "power", "desc": "Wide crossovers outside the frame of your body. Snap the ball across.", "vid": "https://www.youtube.com/watch?v=2fS_Vp9fF8E"},
-            {"ex": "MOVING CROSSOVER", "base": 10, "inc": 2, "unit": "trips", "rest": "60", "type": "power", "desc": "Full court trips using change of pace and direction at each line.", "vid": "https://www.youtube.com/watch?v=RInYn_KszpQ"},
+            {"ex": "MOVING CROSSOVER", "base": 10, "inc": 2, "unit": "trips", "rest": 60, "type": "power", "desc": "Full court trips using change of pace and direction at each line.", "vid": "https://www.youtube.com/watch?v=RInYn_KszpQ"},
             {"ex": "LATERAL DEFENSIVE SLIDES", "base": 8, "inc": 2, "unit": "trips", "rest": 90, "type": "power", "desc": "Stay low, chest up, do not cross feet. Push off the trail leg.", "vid": "https://www.youtube.com/watch?v=0kFvYF2V_W0"},
             {"ex": "FLOAT DRIBBLE SERIES", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power", "desc": "Use a skip step to 'float' laterally while keeping the ball in your pocket.", "vid": "https://www.youtube.com/watch?v=G-ylr5AQExw"},
             {"ex": "SLIDE TO FLOAT TRANSITION", "base": 30, "inc": 5, "unit": "reps", "rest": 60, "type": "power", "desc": "Defensive slide for 2 steps, then immediate transition into an offensive float.", "vid": "https://www.youtube.com/watch?v=Y-PbeO20oI0"},
@@ -67,33 +68,33 @@ def get_workout_template(sport):
         ],
         "Track": [
             {"ex": "ANKLE DRIBBLES", "base": 40, "inc": 10, "unit": "meters", "rest": 30, "type": "cond", "desc": "Quick steps with toes up. Movement comes from the ankles, not knees.", "vid": "https://www.youtube.com/watch?v=jmGox3HQvZw"},
-            {"ex": "A-MARCH", "base": 50, "inc": 10, "unit": "meters", "rest": 45, "type": "cond", "desc": "Focus on knee drive and opposite arm action. Stay tall with a neutral spine.", "vid": "https://www.youtube.com/watch?v=1eX7v7S7eP0"},
-            {"ex": "A-SKIP", "base": 60, "inc": 10, "unit": "meters", "rest": 60, "type": "power", "desc": "Add a rhythmic skip to the A-March. Aggressive foot strike under center of mass.", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y"},
-            {"ex": "WICKET RUNS", "base": 12, "inc": 2, "unit": "reps", "rest": 180, "type": "power", "desc": "Runs over low mini-hurdles to force upright posture and front-side mechanics.", "vid": "https://www.youtube.com/watch?v=lS69U9Zp4rI"},
-            {"ex": "BLOCK STARTS", "base": 8, "inc": 2, "unit": "reps", "rest": 240, "type": "power", "desc": "Explosive exit from blocks. Stay low (drive phase) for the first 10-15m.", "vid": "https://www.youtube.com/watch?v=hGv-1Mst0Cg"},
-            {"ex": "MAX VELOCITY FLYS", "base": 6, "inc": 1, "unit": "reps", "rest": 300, "type": "power", "desc": "30m build-in followed by 20-30m of maximum possible speed.", "vid": "https://www.youtube.com/watch?v=G66hT9W-9qI"},
-            {"ex": "POWER SKIPS", "base": 50, "inc": 10, "unit": "meters", "rest": 60, "type": "power", "desc": "Explode upward and forward. Aim for maximum height and hang time.", "vid": "https://www.youtube.com/watch?v=M9F0YpG7Eis"},
-            {"ex": "SPEED ENDURANCE", "base": 5, "inc": 1, "unit": "reps", "rest": 120, "type": "cond", "desc": "Longer sprints (150m-200m) at 90% intensity to build lactic threshold.", "vid": "https://www.youtube.com/watch?v=5rLzHbeV9iM"}
+            {"ex": "A-MARCH", "base": 50, "inc": 10, "unit": "meters", "rest": 45, "type": "cond", "desc": "Focus on knee drive and opposite arm action. Stay tall.", "vid": "https://www.youtube.com/watch?v=1eX7v7S7eP0"},
+            {"ex": "A-SKIP", "base": 60, "inc": 10, "unit": "meters", "rest": 60, "type": "power", "desc": "Aggressive foot strike under center of mass.", "vid": "https://www.youtube.com/watch?v=r19U_fLgU2Y"},
+            {"ex": "WICKET RUNS", "base": 12, "inc": 2, "unit": "reps", "rest": 180, "type": "power", "desc": "Runs over low mini-hurdles to force upright posture.", "vid": "https://www.youtube.com/watch?v=lS69U9Zp4rI"},
+            {"ex": "BLOCK STARTS", "base": 8, "inc": 2, "unit": "reps", "rest": 240, "type": "power", "desc": "Explosive exit from blocks.", "vid": "https://www.youtube.com/watch?v=hGv-1Mst0Cg"},
+            {"ex": "MAX VELOCITY FLYS", "base": 6, "inc": 1, "unit": "reps", "rest": 300, "type": "power", "desc": "20-30m of maximum possible speed.", "vid": "https://www.youtube.com/watch?v=G66hT9W-9qI"},
+            {"ex": "POWER SKIPS", "base": 50, "inc": 10, "unit": "meters", "rest": 60, "type": "power", "desc": "Aim for maximum height and hang time.", "vid": "https://www.youtube.com/watch?v=M9F0YpG7Eis"},
+            {"ex": "SPEED ENDURANCE", "base": 5, "inc": 1, "unit": "reps", "rest": 120, "type": "cond", "desc": "Longer sprints (150m-200m) at 90% intensity.", "vid": "https://www.youtube.com/watch?v=5rLzHbeV9iM"}
         ],
         "Softball": [
-            {"ex": "TEE SERIES", "base": 50, "inc": 15, "unit": "swings", "rest": 60, "type": "power", "desc": "Focus on hand path and staying inside the ball. Hit to all fields.", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y"},
-            {"ex": "FRONT TOSS POWER", "base": 40, "inc": 10, "unit": "swings", "rest": 120, "type": "power", "desc": "Drive through the ball with lower half engagement. Aim for line drives.", "vid": "https://www.youtube.com/watch?v=t_o7u-M6G-M"},
-            {"ex": "GLOVE WORK (KNEES)", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power", "desc": "Short hops while on knees to develop soft hands and quick transfers.", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U"},
-            {"ex": "INFIELD CHARGING", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Attack the slow roller, field on the run, and make an accurate throw.", "vid": "https://www.youtube.com/watch?v=68D0v7fWpT4"},
-            {"ex": "BACKHAND/FOREHAND", "base": 30, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Lateral movement drills focusing on footwork and glove positioning.", "vid": "https://www.youtube.com/watch?v=P_UvP0L8yXk"},
-            {"ex": "BASERUNNING SPRINTS", "base": 12, "inc": 2, "unit": "sprints", "rest": 120, "type": "power", "desc": "Home to 1st and rounding 1st. Focus on the 'banana' path and touching the bag.", "vid": "https://www.youtube.com/watch?v=f-Bf0-uF-u4"},
-            {"ex": "LATERAL AGILITY", "base": 10, "inc": 2, "unit": "sets", "rest": 60, "type": "cond", "desc": "Quick lateral shuffles between cones to improve range at your position.", "vid": "https://www.youtube.com/watch?v=vV_XyR-7i0o"},
-            {"ex": "FLY BALL TRACKING", "base": 20, "inc": 5, "unit": "reps", "rest": 60, "type": "cond", "desc": "Drop steps and angled runs to catch balls over the shoulder.", "vid": "https://www.youtube.com/watch?v=n7zG-pB_Y8M"}
+            {"ex": "TEE SERIES", "base": 50, "inc": 15, "unit": "swings", "rest": 60, "type": "power", "desc": "Focus on hand path. Hit to all fields.", "vid": "https://www.youtube.com/watch?v=Kz6XU0-z8_Y"},
+            {"ex": "FRONT TOSS POWER", "base": 40, "inc": 10, "unit": "swings", "rest": 120, "type": "power", "desc": "Drive through the ball with lower half engagement.", "vid": "https://www.youtube.com/watch?v=t_o7u-M6G-M"},
+            {"ex": "GLOVE WORK (KNEES)", "base": 50, "inc": 10, "unit": "reps", "rest": 60, "type": "power", "desc": "Develop soft hands and quick transfers.", "vid": "https://www.youtube.com/watch?v=F07N8iL-G3U"},
+            {"ex": "INFIELD CHARGING", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Attack the slow roller and field on the run.", "vid": "https://www.youtube.com/watch?v=68D0v7fWpT4"},
+            {"ex": "BACKHAND/FOREHAND", "base": 30, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Lateral movement drills for footwork.", "vid": "https://www.youtube.com/watch?v=P_UvP0L8yXk"},
+            {"ex": "BASERUNNING SPRINTS", "base": 12, "inc": 2, "unit": "sprints", "rest": 120, "type": "power", "desc": "Home to 1st and rounding 1st.", "vid": "https://www.youtube.com/watch?v=f-Bf0-uF-u4"},
+            {"ex": "LATERAL AGILITY", "base": 10, "inc": 2, "unit": "sets", "rest": 60, "type": "cond", "desc": "Quick lateral shuffles between cones.", "vid": "https://www.youtube.com/watch?v=vV_XyR-7i0o"},
+            {"ex": "FLY BALL TRACKING", "base": 20, "inc": 5, "unit": "reps", "rest": 60, "type": "cond", "desc": "Catch balls over the shoulder.", "vid": "https://www.youtube.com/watch?v=n7zG-pB_Y8M"}
         ],
         "General Workout": [
-            {"ex": "GOBLET SQUATS", "base": 15, "inc": 3, "unit": "reps", "rest": 120, "type": "power", "desc": "Hold weight at chest. Sit back into hips, keep back straight, drive through heels.", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I"},
-            {"ex": "PUSHUPS", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Full range of motion. Chest to floor, elbows at 45 degrees, core tight.", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4"},
-            {"ex": "DUMBBELL ROWS", "base": 12, "inc": 2, "unit": "reps/arm", "rest": 90, "type": "power", "desc": "Flat back, pull weight to hip, squeeze shoulder blade at the top.", "vid": "https://www.youtube.com/watch?v=roCP6wC47G0"},
-            {"ex": "WALKING LUNGES", "base": 15, "inc": 2, "unit": "reps", "rest": 90, "type": "power", "desc": "Keep front knee over ankle. Push up through the front heel.", "vid": "https://www.youtube.com/watch?v=D7KaRcUTQeE"},
-            {"ex": "PLANK HOLD", "base": 60, "inc": 15, "unit": "seconds", "rest": 60, "type": "cond", "desc": "Maintain a straight line from head to heels. Do not let hips sag.", "vid": "https://www.youtube.com/watch?v=ASdvN_XEl_c"},
-            {"ex": "MED BALL SLAMS", "base": 20, "inc": 5, "unit": "reps", "rest": 60, "type": "power", "desc": "Overhead extension, slam ball down with full body power. Catch on the bounce.", "vid": "https://www.youtube.com/watch?v=Rx_UHMnQljU"},
-            {"ex": "BOX JUMPS", "base": 12, "inc": 2, "unit": "reps", "rest": 120, "type": "power", "desc": "Land softly with knees out. Stand up fully on top of the box.", "vid": "https://www.youtube.com/watch?v=52r_Ul5k03g"},
-            {"ex": "MOUNTAIN CLIMBERS", "base": 60, "inc": 15, "unit": "seconds", "rest": 60, "type": "cond", "desc": "Drive knees to chest while maintaining a solid plank position.", "vid": "https://www.youtube.com/watch?v=zT-9L37Re_8"}
+            {"ex": "GOBLET SQUATS", "base": 15, "inc": 3, "unit": "reps", "rest": 120, "type": "power", "desc": "Hold weight at chest. Sit back into hips.", "vid": "https://www.youtube.com/watch?v=MeIiGibT69I"},
+            {"ex": "PUSHUPS", "base": 25, "inc": 5, "unit": "reps", "rest": 90, "type": "power", "desc": "Full range of motion. Chest to floor.", "vid": "https://www.youtube.com/watch?v=IODxDxX7oi4"},
+            {"ex": "DUMBBELL ROWS", "base": 12, "inc": 2, "unit": "reps/arm", "rest": 90, "type": "power", "desc": "Pull weight to hip, squeeze shoulder blade.", "vid": "https://www.youtube.com/watch?v=roCP6wC47G0"},
+            {"ex": "WALKING LUNGES", "base": 15, "inc": 2, "unit": "reps", "rest": 90, "type": "power", "desc": "Keep front knee over ankle.", "vid": "https://www.youtube.com/watch?v=D7KaRcUTQeE"},
+            {"ex": "PLANK HOLD", "base": 60, "inc": 15, "unit": "seconds", "rest": 60, "type": "cond", "desc": "Maintain a straight line from head to heels.", "vid": "https://www.youtube.com/watch?v=ASdvN_XEl_c"},
+            {"ex": "MED BALL SLAMS", "base": 20, "inc": 5, "unit": "reps", "rest": 60, "type": "power", "desc": "Slam ball down with full body power.", "vid": "https://www.youtube.com/watch?v=Rx_UHMnQljU"},
+            {"ex": "BOX JUMPS", "base": 12, "inc": 2, "unit": "reps", "rest": 120, "type": "power", "desc": "Land softly with knees out.", "vid": "https://www.youtube.com/watch?v=52r_Ul5k03g"},
+            {"ex": "MOUNTAIN CLIMBERS", "base": 60, "inc": 15, "unit": "seconds", "rest": 60, "type": "cond", "desc": "Drive knees to chest.", "vid": "https://www.youtube.com/watch?v=zT-9L37Re_8"}
         ]
     }
     return workouts.get(sport, [])
@@ -111,6 +112,9 @@ rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" el
 # --- Workout UI ---
 st.header(f"🔥 {sport} | Level: {difficulty}")
 drills = get_workout_template(sport)
+
+if 'session_saved' not in st.session_state:
+    st.session_state.session_saved = False
 
 for i, item in enumerate(drills):
     target_val = int((item['base'] + ((week_num - 1) * item['inc'])) * target_mult)
@@ -141,6 +145,21 @@ for i, item in enumerate(drills):
             st.text_input("Log Result", key=f"log_{i}")
             st.select_slider("RPE", options=range(1, 11), value=8, key=f"rpe_{i}")
 
+st.divider()
+
 if st.button("💾 SAVE SESSION DATA"):
+    st.session_state.session_saved = True
     st.balloons()
-    st.success("Session Saved!")
+
+if st.session_state.session_saved:
+    st.markdown("""
+        <div class="recovery-card">
+            <h3>✅ SESSION COMPLETE! RECOVERY PROTOCOL:</h3>
+            <ul>
+                <li><b>Hydration:</b> Consume 16-24oz of water with electrolytes.</li>
+                <li><b>Nutrition:</b> Eat a 3:1 Carb-to-Protein snack/meal within 45 mins.</li>
+                <li><b>Soft Tissue:</b> 5-10 mins of foam rolling or static stretching.</li>
+                <li><b>Mental:</b> Log one thing you did well and one to improve.</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
