@@ -39,7 +39,7 @@ st.markdown(f"""
     
     /* Sidebar Text & Label Visibility */
     [data-testid="stSidebar"] {{ background-color: {sidebar_bg} !important; }}
-    [data-testid="stSidebar"] *, [data-testid="stSidebar"] label, [data-testid="stSidebar"] p {{
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {{
         color: {sidebar_text} !important;
         opacity: 1 !important;
         -webkit-text-fill-color: {sidebar_text} !important;
@@ -52,7 +52,11 @@ st.markdown(f"""
         border: 2px solid {accent_color} !important;
     }}
     
-    input {{ color: {input_text} !important; -webkit-text-fill-color: {input_text} !important; }}
+    /* Force input text color for iPhone */
+    input {{ 
+        color: {input_text} !important; 
+        -webkit-text-fill-color: {input_text} !important; 
+    }}
 
     /* Numbers & Stats (Target Sets, Reps, Completed) */
     .stat-label {{ font-size: 14px !important; font-weight: 800 !important; color: {accent_color} !important; text-transform: uppercase; }}
@@ -76,11 +80,19 @@ st.markdown(f"""
         border-radius: 12px; border: 4px solid {accent_color}; padding: 10px; margin: 10px 0;
     }}
 
-    /* Buttons */
     .stButton>button {{ 
         background-color: {accent_color} !important; color: white !important; 
         border-radius: 10px !important; font-weight: 800 !important; 
         width: 100%; height: 55px !important; font-size: 16px !important;
+    }}
+
+    .sidebar-card {{ 
+        padding: 15px; 
+        border-radius: 12px; 
+        text-align: center; 
+        margin-bottom: 15px; 
+        border: 2px solid {accent_color}; 
+        background-color: {sidebar_bg};
     }}
 
     @media (max-width: 768px) {{
@@ -90,7 +102,32 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Master Database ---
+# --- 2. Sidebar Date, Time, and Profile ---
+now = datetime.now()
+st.sidebar.markdown(f"""
+<div class="sidebar-card">
+    <p style="margin:0; font-weight:800; font-size:12px; color:{accent_color};">CURRENT SESSION</p>
+    <p style="margin:0; font-size:16px; font-weight:700;">{now.strftime("%B %d, %Y")}</p>
+    <p style="margin:0; font-size:24px; font-weight:900;">{now.strftime("%I:%M %p")}</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown(f"""
+<div class="sidebar-card">
+    <p style="margin:0; font-weight:800; font-size:12px; color:{accent_color};">STREAK</p>
+    <p style="font-size:32px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.divider()
+sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
+difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
+week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
+
+target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
+rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
+
+# --- 3. Master Database ---
 def get_workout_template(sport):
     workouts = {
         "Basketball": [
@@ -136,25 +173,8 @@ def get_workout_template(sport):
     }
     return workouts.get(sport, [])
 
-# --- 3. Sidebar ---
-st.sidebar.markdown('<div class="sidebar-card">', unsafe_allow_html=True)
-st.sidebar.markdown(f'<p style="margin:0; font-weight:800; font-size:14px;">STREAK</p>', unsafe_allow_html=True)
-st.sidebar.markdown(f'<p style="font-size:36px; font-weight:900; margin:0;">{st.session_state.streak} DAYS</p>', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
-
-st.sidebar.divider()
-sport_choice = st.sidebar.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
-difficulty = st.sidebar.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
-week_num = st.sidebar.number_input("Current Week", min_value=1, value=1)
-
-target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
-rest_mult = 1.0 if difficulty == "Standard" else 1.1 if difficulty == "Elite" else 1.2
-
 # --- 4. Main App UI ---
-current_date = datetime.now().strftime("%A, %B %d, %Y")
-st.markdown(f"<p style='color:{accent_color}; font-weight:bold;'>{current_date}</p>", unsafe_allow_html=True)
 st.markdown(f"<h1>{sport_choice} Session</h1>", unsafe_allow_html=True)
-
 drills = get_workout_template(sport_choice)
 
 for i, item in enumerate(drills):
