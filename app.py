@@ -10,11 +10,8 @@ st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
-# Initialize streak and locations if not present
 if 'streak' not in st.session_state:
     st.session_state.streak = 1
-if 'selected_locs' not in st.session_state:
-    st.session_state.selected_locs = ["Gym", "Track", "Weight Room"]
 
 # --- 2. DYNAMIC THEME & ELECTRIC BLUE CSS ---
 st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
@@ -33,14 +30,13 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg} !important; }}
     
-    /* Universal Text Visibility */
     h1, h2, h3, p, span, li, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {{
         color: {text} !important;
         -webkit-text-fill-color: {text} !important;
         font-weight: 700;
     }}
 
-    /* --- ELECTRIC BLUE TITLES (TARGETED) --- */
+    /* ELECTRIC BLUE TITLES */
     label[data-testid="stWidgetLabel"] p {{
         color: {electric_blue} !important;
         -webkit-text-fill-color: {electric_blue} !important;
@@ -49,7 +45,6 @@ st.markdown(f"""
         text-transform: uppercase;
     }}
 
-    /* Global Button Style */
     div.stButton > button {{
         background-color: {accent} !important;
         border: none !important;
@@ -60,7 +55,7 @@ st.markdown(f"""
     div.stButton > button p, div.stButton > button span {{
         color: {btn_txt_white} !important;
         -webkit-text-fill-color: {btn_txt_white} !important;
-        font-weight: 800 !important;
+        font-weight: 800;
     }}
 
     .drill-header {{
@@ -103,15 +98,15 @@ def get_workout_template(sport, locs):
             {"ex": "800M FINISHER", "sets": 1, "base": 800, "unit": "m", "rest": 180, "loc": "Track"}
         ],
         "Softball": [
-            {"ex": "TEE WORK", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "loc": "Gym"},
-            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "loc": "Gym"},
-            {"ex": "FRONT TOSS", "sets": 4, "base": 20, "unit": "swings", "rest": 60, "loc": "Gym"},
-            {"ex": "LATERAL SHUFFLES", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "loc": "Gym"},
-            {"ex": "LONG TOSS", "sets": 3, "base": 15, "unit": "throws", "rest": 60, "loc": "Track"},
-            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "loc": "Gym"},
+            {"ex": "TEE WORK", "sets": 4, "base": 25, "unit": "swings", "rest": 60, "loc": "Softball Cages"},
+            {"ex": "GLOVE TRANSFERS", "sets": 3, "base": 30, "unit": "reps", "rest": 30, "loc": "Softball Field"},
+            {"ex": "FRONT TOSS", "sets": 4, "base": 20, "unit": "swings", "rest": 60, "loc": "Softball Cages"},
+            {"ex": "LATERAL SHUFFLES", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "loc": "Softball Field"},
+            {"ex": "LONG TOSS", "sets": 3, "base": 15, "unit": "throws", "rest": 60, "loc": "Softball Field"},
+            {"ex": "WRIST SNAPS", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "loc": "Softball Field"},
             {"ex": "SQUAT JUMPS", "sets": 3, "base": 12, "unit": "reps", "rest": 60, "loc": "Weight Room"},
-            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "unit": "sprint", "rest": 45, "loc": "Track"},
-            {"ex": "BUNTING DRILLS", "sets": 3, "base": 10, "unit": "bunts", "rest": 30, "loc": "Gym"}
+            {"ex": "SPRINT TO FIRST", "sets": 6, "base": 1, "unit": "sprint", "rest": 45, "loc": "Softball Field"},
+            {"ex": "BUNTING DRILLS", "sets": 3, "base": 10, "unit": "bunts", "rest": 30, "loc": "Softball Cages"}
         ],
         "General Workout": [
             {"ex": "GOBLET SQUATS", "sets": 4, "base": 12, "unit": "reps", "rest": 90, "loc": "Weight Room"},
@@ -126,9 +121,6 @@ def get_workout_template(sport, locs):
         ]
     }
     all_drills = workouts.get(sport, [])
-    # Safety: If locs is empty, show all. Otherwise, filter strictly.
-    if not locs:
-        return all_drills
     return [d for d in all_drills if d['loc'] in locs]
 
 # --- 4. SIDEBAR PANEL ---
@@ -143,13 +135,22 @@ with st.sidebar:
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Track", "Softball", "General Workout"])
 
     st.markdown("---")
-    st.markdown("### 📍 LOCATION OPTIONS")
-    # LOCATION OPTIONS LOCKED TO SIDEBAR
-    st.session_state.selected_locs = st.multiselect(
-        "Choose Your Grounds:",
-        options=["Gym", "Track", "Weight Room"],
-        default=st.session_state.selected_locs
-    )
+    st.markdown("### 📍 LOCATION CHECKBOXES")
+    
+    # INDIVIDUAL CHECKBOXES
+    l1 = st.checkbox("Gym", value=True)
+    l2 = st.checkbox("Track", value=True)
+    l3 = st.checkbox("Weight Room", value=True)
+    l4 = st.checkbox("Softball Cages", value=(sport_choice == "Softball"))
+    l5 = st.checkbox("Softball Field", value=(sport_choice == "Softball"))
+
+    # Construct the active location list
+    active_locs = []
+    if l1: active_locs.append("Gym")
+    if l2: active_locs.append("Track")
+    if l3: active_locs.append("Weight Room")
+    if l4: active_locs.append("Softball Cages")
+    if l5: active_locs.append("Softball Field")
 
     st.markdown("---")
     difficulty = st.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
@@ -162,17 +163,15 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 # --- 5. MAIN UI ---
-st.title(f"{sport_choice} - Session")
+st.title(f"{sport_choice} Session")
 
-# Pull drills using sidebar selections
-drills = get_workout_template(sport_choice, st.session_state.selected_locs)
+drills = get_workout_template(sport_choice, active_locs)
 
-# Multipliers
 target_mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 rest_mult = {"Standard": 1.0, "Elite": 0.8, "Pro": 0.5}[difficulty]
 
 if not drills:
-    st.warning("No drills found. Please check your 'Location Options' in the sidebar.")
+    st.warning("No drills selected. Please check location boxes in the side panel.")
 else:
     for i, item in enumerate(drills):
         st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]} <span style="font-size:12px; opacity:0.6;">({item["loc"]})</span></div>', unsafe_allow_html=True)
@@ -189,7 +188,7 @@ else:
         col_a, col_b = st.columns(2)
         with col_a:
             if st.button(f"LOG DRILL ✅", key=f"done_{i}", use_container_width=True):
-                st.toast(f"Logged!")
+                st.toast("Logged!")
         with col_b:
             rest_time = int(item["rest"] * rest_mult)
             if st.button(f"REST {rest_time}s ⏱️", key=f"rest_{i}", use_container_width=True):
