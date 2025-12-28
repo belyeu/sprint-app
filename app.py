@@ -17,10 +17,10 @@ if 'active_sport' not in st.session_state: st.session_state.active_sport = ""
 
 # --- 2. SIDEBAR ---
 with st.sidebar:
-    # Restored Date/Time Card
+    # Sidebar Date/Time Card
     st.markdown(f"""
-    <div style="background-color:#1E293B; padding:20px; border-radius:15px; border: 1px solid #3B82F6; text-align:center; margin-bottom:25px;">
-        <h1 style="color:#FFFFFF; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
+    <div style="background-color:#1E293B; padding:20px; border-radius:15px; border: 2px solid #3B82F6; text-align:center; margin-bottom:25px;">
+        <h1 style="color:#3B82F6; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
         <p style="color:#60A5FA; margin:0; font-weight:bold; letter-spacing:1px;">{get_now_est().strftime('%A, %b %d').upper()}</p>
     </div>
     """, unsafe_allow_html=True)
@@ -34,25 +34,29 @@ with st.sidebar:
     if st.button("🔄 GENERATE NEW SESSION", use_container_width=True):
         st.session_state.current_session = None
 
-# Custom CSS for Dark Mode Integration
+# --- 3. CUSTOM CSS (BLUE SIDEBAR TEXT & DARK MODE) ---
 st.markdown(f"""
 <style>
     /* Main App Background */
     .stApp {{ background-color: #0F172A !important; }}
     
-    /* Sidebar Text & Background matching */
+    /* Sidebar Background matching App */
     [data-testid="stSidebar"] {{
         background-color: #0F172A !important;
         border-right: 1px solid #1E293B;
     }}
     
-    /* Ensuring sidebar labels and text are visible/white */
+    /* GLOBAL SIDEBAR TEXT TO BLUE */
     [data-testid="stSidebar"] .stMarkdown p, 
     [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] h2 {{
-        color: #FFFFFF !important;
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] span {{
+        color: #3B82F6 !important;
+        font-weight: 600 !important;
     }}
 
+    /* Main Area Styling */
     .drill-header {{
         font-size: 20px !important; font-weight: 800 !important;
         color: #3B82F6 !important; background-color: #1E293B; 
@@ -61,11 +65,12 @@ st.markdown(f"""
     
     .metric-row {{
         background-color: #1E293B; padding: 12px; border-radius: 8px; margin: 8px 0; border: 1px solid #334155;
+        color: #FFFFFF;
     }}
 </style>
 """, unsafe_allow_html=True)
 
-# --- 3. DATABASE (REPS, SETS, TIME GOALS) ---
+# --- 4. DATABASE (REPS, SETS, TIME GOALS) ---
 def get_vault():
     return {
         "Basketball": [
@@ -88,7 +93,7 @@ def get_vault():
         ]
     }
 
-# --- 4. SESSION LOGIC ---
+# --- 5. SESSION LOGIC ---
 vault = get_vault()
 count = 12 if sport_choice in ["Basketball", "Softball"] else 8
 
@@ -97,7 +102,7 @@ if st.session_state.active_sport != sport_choice or st.session_state.current_ses
     st.session_state.current_session = random.sample(available, min(len(available), count))
     st.session_state.active_sport = sport_choice
 
-# --- 5. MAIN UI ---
+# --- 6. MAIN UI ---
 st.title(f"🔥 {difficulty} {sport_choice} Session")
 mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 
