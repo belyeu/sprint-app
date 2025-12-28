@@ -15,9 +15,9 @@ if 'history' not in st.session_state: st.session_state.history = []
 if 'current_session' not in st.session_state: st.session_state.current_session = None
 if 'active_sport' not in st.session_state: st.session_state.active_sport = ""
 
-# --- 2. SIDEBAR (DATE MOVED HERE) ---
+# --- 2. SIDEBAR (BLACK LABELS & DATE) ---
 with st.sidebar:
-    # High-Contrast Date/Time Card
+    # Date/Time Card
     st.markdown(f"""
     <div style="background-color:#F8FAFC; padding:20px; border-radius:15px; border: 2px solid #3B82F6; text-align:center; margin-bottom:25px;">
         <h1 style="color:#000000; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
@@ -63,56 +63,56 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 4. DATABASE (ALL WITH SETS/REPS/TIME) ---
+# --- 4. FULL MASTER DATABASE ---
 def get_vault():
     return {
         "Basketball": [
-            {"ex": "Iverson Cross", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "25s", "desc": "Wide deceptive step-across.", "focus": ["Width", "Low Hips"]},
-            {"ex": "Shammgod", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "15s", "desc": "Push out R, pull back L.", "focus": ["Extension", "Speed"]},
-            {"ex": "Pocket Pulls", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "Pull ball to hip pocket.", "focus": ["Security", "Wrist Snap"]},
-            {"ex": "Trae Young Pullback", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "18s", "desc": "Lunge forward and snap back.", "focus": ["Deceleration", "Balance"]},
-            {"ex": "V-Dribble (R/L)", "sets": 3, "base": 40, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "One-handed 'V' shape.", "focus": ["Pound Force"]},
-            {"ex": "Inside Out Jab", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "Fake move with heavy jab.", "focus": ["Head Fake"]},
-            {"ex": "Spin to Post", "sets": 3, "base": 8, "unit": "reps", "rest": 45, "time_goal": "22s", "desc": "Drive R, spin to turn back.", "focus": ["Pivot Accuracy"]},
-            {"ex": "Stutter Step", "sets": 3, "base": 20, "unit": "m", "rest": 30, "time_goal": "12s", "desc": "Chop feet to freeze defender.", "focus": ["Foot Frequency"]},
-            {"ex": "Behind Back Stop", "sets": 3, "base": 8, "unit": "reps", "rest": 45, "time_goal": "15s", "desc": "Sprint into behind-back halt.", "focus": ["Body Control"]},
-            {"ex": "Double Tap Cross", "sets": 3, "base": 10, "unit": "reps", "rest": 30, "time_goal": "14s", "desc": "Drop and tap twice before cross.", "focus": ["Hand Speed"]},
-            {"ex": "High/Low Walking", "sets": 2, "base": 20, "unit": "m", "rest": 30, "time_goal": "20s", "desc": "3 High, 3 Low; walking forward.", "focus": ["Rhythm"]},
-            {"ex": "Crossover-Spin", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "25s", "desc": "Link cross and spin.", "focus": ["Fluidity"]}
+            {"ex": "Ball Slaps & Wraps", "sets": 3, "base": 30, "unit": "sec", "rest": 15, "time_goal": "Max Speed", "desc": "Continuous wraps around head, waist, and knees.", "focus": ["Fingertip Control"]},
+            {"ex": "Iverson Cross", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "25s", "desc": "Wide deceptive step-across move.", "focus": ["Low Hips", "Width"]},
+            {"ex": "Shammgod", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "15s", "desc": "Push ball out with R, pull back with L.", "focus": ["Extension", "Speed"]},
+            {"ex": "Pocket Pulls", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "Dribble and pull ball hard into hip pocket.", "focus": ["Security", "Wrist Snap"]},
+            {"ex": "Mikan Drill", "sets": 3, "base": 20, "unit": "makes", "rest": 45, "time_goal": "40s", "desc": "Alternate side layups under the rim.", "focus": ["Footwork", "High Release"]},
+            {"ex": "Trae Young Pullback", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "18s", "desc": "Lunge forward into a hard snap-back dribble.", "focus": ["Deceleration"]},
+            {"ex": "Zig-Zag Pull-Up", "sets": 4, "base": 6, "unit": "makes", "rest": 60, "time_goal": "Fluid", "desc": "Zig-zag dribble into a mid-range jumper.", "focus": ["Stop on a Dime"]},
+            {"ex": "V-Dribble (R/L)", "sets": 3, "base": 40, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "Stationary one-handed 'V' shape dribble.", "focus": ["Pound Force"]},
+            {"ex": "Figure 8 Dribble", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "time_goal": "25s", "desc": "Low dribble through and around legs.", "focus": ["Eyes Up"]},
+            {"ex": "Inside Out Jab", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "In-and-out move paired with a heavy jab step.", "focus": ["Head Fake"]},
+            {"ex": "Spin to Post", "sets": 3, "base": 8, "unit": "reps", "rest": 45, "time_goal": "22s", "desc": "Drive, then spin to turn back toward the hoop.", "focus": ["Pivot Accuracy"]},
+            {"ex": "Free Throw Fatigue", "sets": 5, "base": 10, "unit": "reps", "rest": 30, "time_goal": "8/10", "desc": "Shoot 10 free throws while breathing heavy.", "focus": ["Routine"]}
         ],
         "Softball": [
-            {"ex": "Shuffle Step Throw", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "40s", "desc": "Instep to instep throw.", "focus": ["Accuracy"]},
-            {"ex": "Power Step", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "35s", "desc": "Instep to ball; move around.", "focus": ["Wrap Around Tag"]},
-            {"ex": "Jam Step Backhand", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "Glove foot steps with ball.", "focus": ["Drop And Up"]},
-            {"ex": "Short Hop Drills", "sets": 4, "base": 20, "unit": "reps", "rest": 30, "time_goal": "45s", "desc": "Make hops shorter; soft hands.", "focus": ["Glove Presentation"]},
-            {"ex": "Dart Throws", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "time_goal": "25s", "desc": "Elbow, wrist, finger snap.", "focus": ["Quick Release"]},
-            {"ex": "Tripod Grounders", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "Bare hand down; eyes behind.", "focus": ["Eye Alignment"]},
-            {"ex": "Fence Work", "sets": 3, "base": 8, "unit": "reps", "rest": 60, "time_goal": "40s", "desc": "Feel fence; climb for catch.", "focus": ["Spatial Awareness"]},
-            {"ex": "Do or Die Pro", "sets": 4, "base": 10, "unit": "reps", "rest": 45, "time_goal": "30s", "desc": "Throw on run; full speed.", "focus": ["Momentum Transfer"]},
-            {"ex": "Glove Flip", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "Using glove to flip ball.", "focus": ["Quick Transfer"]},
-            {"ex": "Catcher Blocking", "sets": 4, "base": 15, "unit": "reps", "rest": 45, "time_goal": "40s", "desc": "Center of ball shift.", "focus": ["Body Angle"]},
-            {"ex": "Slide Dives", "sets": 3, "base": 8, "unit": "reps", "rest": 60, "time_goal": "35s", "desc": "Knees take you down low.", "focus": ["Body Control"]},
-            {"ex": "3/4 Sway Throw", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "Bow & arrow tilt mechanics.", "focus": ["Core Strength"]}
+            {"ex": "Kneeling Glove Work", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "time_goal": "Clean", "desc": "Forehand and backhand picks from knees.", "focus": ["Soft Hands"]},
+            {"ex": "Shuffle Step Throw", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "40s", "desc": "Field and shuffle toward target for throw.", "focus": ["Accuracy", "Footwork"]},
+            {"ex": "Short Hop Drills", "sets": 4, "base": 20, "unit": "reps", "rest": 30, "time_goal": "45s", "desc": "Partner throws short hops; field at the bounce.", "focus": ["Glove Presentation"]},
+            {"ex": "Jam Step Backhand", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "Backhand fielding where glove foot steps.", "focus": ["Stay Low"]},
+            {"ex": "Dart Throws", "sets": 3, "base": 20, "unit": "reps", "rest": 30, "time_goal": "25s", "desc": "Focus on elbow lead and wrist snap.", "focus": ["Quick Release"]},
+            {"ex": "Tripod Grounders", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "30s", "desc": "Bare hand down; eyes behind the ball.", "focus": ["Eye Alignment"]},
+            {"ex": "Fence Work", "sets": 3, "base": 8, "unit": "reps", "rest": 60, "time_goal": "40s", "desc": "Drill for tracking and catching at the wall.", "focus": ["Spatial Awareness"]},
+            {"ex": "Do or Die Pro", "sets": 4, "base": 10, "unit": "reps", "rest": 45, "time_goal": "30s", "desc": "Charge the ball and throw on the run.", "focus": ["Momentum"]},
+            {"ex": "Glove Flip", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "Quick flip using only the glove hand.", "focus": ["Precision"]},
+            {"ex": "Catcher Blocking", "sets": 4, "base": 15, "unit": "reps", "rest": 45, "time_goal": "40s", "desc": "Center of ball shift and drop.", "focus": ["Body Angle"]},
+            {"ex": "Slide Dives", "sets": 3, "base": 8, "unit": "reps", "rest": 60, "time_goal": "Controlled", "desc": "Infield diving technique into sliding catch.", "focus": ["Safety"]},
+            {"ex": "Tee Extension", "sets": 4, "base": 15, "unit": "swings", "rest": 60, "time_goal": "Solid", "desc": "Focus on full arm extension at contact.", "focus": ["Bat Path"]}
         ],
         "Track": [
-            {"ex": "Pogo Jumps", "sets": 3, "base": 20, "unit": "reps", "rest": 60, "time_goal": "15s", "desc": "Ankle Stiffness focus.", "focus": ["Elasticity"]},
-            {"ex": "A-March", "sets": 3, "base": 20, "unit": "m", "rest": 45, "time_goal": "12s", "desc": "Posture & Dorsiflexion.", "focus": ["Toe Up"]},
-            {"ex": "Wall Drive Accels", "sets": 5, "base": 5, "unit": "reps", "rest": 90, "time_goal": "10s", "desc": "Drive Phase Mechanics.", "focus": ["Lean"]},
-            {"ex": "Flying 30s", "sets": 4, "base": 30, "unit": "m", "rest": 180, "time_goal": "4s", "desc": "Pure Top-End Speed.", "focus": ["Relaxation"]},
-            {"ex": "Wicket Flys", "sets": 4, "base": 40, "unit": "m", "rest": 120, "time_goal": "6s", "desc": "Max Velocity Maintenance.", "focus": ["Frequency"]},
-            {"ex": "Straight-Leg Bounds", "sets": 3, "base": 30, "unit": "m", "rest": 90, "time_goal": "8s", "desc": "Glute/Hamstring Snap.", "focus": ["Active Foot"]},
-            {"ex": "Hill Sprints", "sets": 6, "base": 30, "unit": "m", "rest": 120, "time_goal": "5s", "desc": "Force vs Gravity.", "focus": ["Knee Drive"]},
-            {"ex": "Tempo Strides", "sets": 4, "base": 100, "unit": "m", "rest": 60, "time_goal": "15s", "desc": "Recovery & Form Work.", "focus": ["Technique"]}
+            {"ex": "Pogo Jumps", "sets": 3, "base": 20, "unit": "reps", "rest": 60, "time_goal": "15s", "desc": "Vertical jumps focused on ankle stiffness.", "focus": ["Short Ground Contact"]},
+            {"ex": "A-March", "sets": 3, "base": 20, "unit": "m", "rest": 45, "time_goal": "12s", "desc": "Exaggerated marching for posture.", "focus": ["Toe Up", "Dorsiflexion"]},
+            {"ex": "Wall Drive Accels", "sets": 5, "base": 5, "unit": "reps", "rest": 90, "time_goal": "10s", "desc": "Drive phase drills leaning against wall.", "focus": ["45 Degree Lean"]},
+            {"ex": "Flying 30s", "sets": 4, "base": 30, "unit": "m", "rest": 180, "time_goal": "4.0s", "desc": "Full speed sprint after a 20m build-up.", "focus": ["Max Velocity"]},
+            {"ex": "Wicket Flys", "sets": 4, "base": 40, "unit": "m", "rest": 120, "time_goal": "6.0s", "desc": "Sprinting over mini-hurdles (wickets).", "focus": ["Frequency", "Step Pattern"]},
+            {"ex": "Straight-Leg Bounds", "sets": 3, "base": 30, "unit": "m", "rest": 90, "time_goal": "8s", "desc": "Bouncing with stiff legs to engage glutes.", "focus": ["Active Foot Strike"]},
+            {"ex": "Hill Sprints", "sets": 6, "base": 30, "unit": "m", "rest": 120, "time_goal": "5.5s", "desc": "Incline sprints for power development.", "focus": ["Knee Drive"]},
+            {"ex": "Tempo Strides", "sets": 4, "base": 100, "unit": "m", "rest": 60, "time_goal": "15s", "desc": "80% effort runs focused on perfect form.", "focus": ["Fluidity"]}
         ],
         "General": [
-            {"ex": "Bulgarian Split Squat", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "time_goal": "45s", "desc": "Unilateral Strength.", "focus": ["Knee Tracking"]},
-            {"ex": "Nordic Curls", "sets": 3, "base": 6, "unit": "reps", "rest": 90, "time_goal": "30s", "desc": "Eccentric Hamstring Safety.", "focus": ["Slow Descent"]},
-            {"ex": "Power Clean", "sets": 5, "base": 3, "unit": "reps", "rest": 120, "time_goal": "Explosive", "desc": "Rate of Force Development.", "focus": ["Extension"]},
-            {"ex": "Pallof Press", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "time_goal": "30s", "desc": "Anti-rotation core hold.", "focus": ["Core Bracing"]},
-            {"ex": "Box Jumps", "sets": 4, "base": 5, "unit": "reps", "rest": 60, "time_goal": "15s", "desc": "Vertical Displacement.", "focus": ["Soft Landing"]},
-            {"ex": "Farmer Carries", "sets": 3, "base": 40, "unit": "m", "rest": 60, "time_goal": "35s", "desc": "Grip & Core Anti-Flexion.", "focus": ["Posture"]},
-            {"ex": "Spiderman w/ Reach", "sets": 2, "base": 10, "unit": "reps", "rest": 30, "time_goal": "60s", "desc": "Hip & Thoracic mobility.", "focus": ["Opening Hips"]},
-            {"ex": "Deadbugs", "sets": 3, "base": 12, "unit": "reps", "rest": 30, "time_goal": "45s", "desc": "Spinal Control.", "focus": ["Lower Back Flush"]}
+            {"ex": "Power Clean", "sets": 5, "base": 3, "unit": "reps", "rest": 120, "time_goal": "Explosive", "desc": "Full body explosive pull from floor to chest.", "focus": ["Full Extension"]},
+            {"ex": "Bulgarian Split Squat", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "time_goal": "45s", "desc": "Single-leg squat with rear foot elevated.", "focus": ["Knee Stability"]},
+            {"ex": "Nordic Curls", "sets": 3, "base": 6, "unit": "reps", "rest": 90, "time_goal": "30s", "desc": "Slow eccentric lowering of the torso.", "focus": ["Hamstring Strength"]},
+            {"ex": "Pallof Press", "sets": 3, "base": 30, "unit": "sec", "rest": 45, "time_goal": "30s", "desc": "Anti-rotation core hold with resistance.", "focus": ["No Hip Shift"]},
+            {"ex": "Box Jumps", "sets": 4, "base": 5, "unit": "reps", "rest": 60, "time_goal": "15s", "desc": "Max height jumps onto platform.", "focus": ["Soft Landing"]},
+            {"ex": "Farmer Carries", "sets": 3, "base": 40, "unit": "m", "rest": 60, "time_goal": "35s", "desc": "Heavy walking for grip and core stability.", "focus": ["Shoulder Position"]},
+            {"ex": "Spiderman w/ Reach", "sets": 2, "base": 10, "unit": "reps", "rest": 30, "time_goal": "60s", "desc": "Deep lunge with thoracic rotation.", "focus": ["Hip Mobility"]},
+            {"ex": "Deadbugs", "sets": 3, "base": 12, "unit": "reps", "rest": 30, "time_goal": "45s", "desc": "Core stability maintaining flat lower back.", "focus": ["Lower Back Flush"]}
         ]
     }
 
@@ -126,7 +126,7 @@ if st.session_state.active_sport != sport_choice or st.session_state.current_ses
     st.session_state.active_sport = sport_choice
 
 # --- 6. MAIN UI ---
-st.title(f"🔥 {difficulty} {sport_choice} Session")
+st.title(f"🔥 {difficulty} {sport_choice} Training Session")
 mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 
 for i, drill in enumerate(st.session_state.current_session):
@@ -159,17 +159,17 @@ for i, drill in enumerate(st.session_state.current_session):
             ph.empty()
             st.success("Recovery Done!")
         
-        st.markdown("🎯 **Coach's Eval**")
+        st.markdown("🎯 **Coach's Evaluation**")
         for f in drill["focus"]:
             st.checkbox(f, key=f"f_{i}_{f}")
 
     with col3:
         st.markdown("🎥 **Action**")
         st.button("Watch Demo", key=f"d_{i}")
-        st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"u_{i}")
+        st.file_uploader("Upload Progress Clip", type=["mp4", "mov"], key=f"u_{i}")
 
 st.divider()
 if st.button("💾 ARCHIVE COMPLETE SESSION", use_container_width=True):
     st.session_state.history.append({"date": get_now_est(), "sport": sport_choice, "loc": location})
     st.balloons()
-    st.success("Session saved!")
+    st.success("Session saved to Performance History!")
