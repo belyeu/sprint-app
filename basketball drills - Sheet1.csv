@@ -1,0 +1,127 @@
+#,Environment,Category,Exercise Name,Equipment / Focus,Sets,Reps/Dist.,Primary Focus,Fitness Stars
+1,Field,Warm-up,High/Low Walking (R),Bodyweight/Space,2,20m,Dynamic Mobility,⭐
+2,Field,Warm-up,High/Low Walking (L),Bodyweight/Space,2,20m,Dynamic Mobility,⭐
+3,Field,Warm-up,High/Low Backpedal (R),Space/Balance,2,15m,Posterior Chain Prep,⭐⭐
+4,Field,Warm-up,High/Low Backpedal (L),Space/Balance,2,15m,Posterior Chain Prep,⭐⭐
+5,Field,Warm-up,Forward Skip (R),Ball at hip,2,20m,Rhythmic Coordination,⭐
+6,Field,Warm-up,Forward Skip (L),Ball at hip,2,20m,Rhythmic Coordination,⭐
+7,Field,Warm-up,Backward Skip (R),Balance,2,15m,Reverse Elasticity,⭐⭐
+8,Field,Warm-up,Backward Skip (L),Balance,2,15m,Reverse Elasticity,⭐⭐
+9,Field,Warm-up,Side Shuffle (R Hand),Space/Lateral,2,20m,Adductor Warm-up,⭐
+10,Field,Warm-up,Side Shuffle (L Hand),Space/Lateral,2,20m,Adductor Warm-up,⭐
+11,Field,Crossover,Stationary High,Dribble Height,3,30 sec,Power & Handle,⭐⭐
+12,Field,Crossover,Stationary Medium,Dribble Height,3,30 sec,Control Rhythm,⭐⭐
+13,Field,Crossover,Stationary Low,Dribble Height,3,30 sec,Finger Dexterity,⭐⭐⭐
+14,Field,Crossover,Pocket Pull (R to L),Ball Control,3,15 reps,Hand Quickness,⭐⭐⭐
+15,Field,Crossover,Pocket Pull (L to R),Ball Control,3,15 reps,Hand Quickness,⭐⭐⭐
+16,Field,Crossover,Cross Step Jab (R),Deception,4,10 ea.,Ankle Stability,⭐⭐⭐
+17,Field,Crossover,Cross Step Jab (L),Deception,4,10 ea.,Ankle Stability,⭐⭐⭐
+18,Field,Crossover,Continuous Shuffle Cross,Agility,3,20m,Active Footwork,⭐⭐⭐
+19,Field,Crossover,Push Crossover (R),Attacking,4,10 reps,Burst Speed,⭐⭐⭐
+20,Field,Crossover,Push Crossover (L),Attacking,4,10 reps,Burst Speed,⭐⭐⭐
+21,Field,Crossover,Iverson Cross (R to L),Lateral Shift,4,8 reps,Deceleration,⭐⭐⭐⭐
+22,Field,Crossover,Iverson Cross (L to R),Lateral Shift,4,8 reps,Deceleration,⭐⭐⭐⭐
+23,Field,Crossover,Trae Young Pullback (R),Space Creation,4,10 reps,Change of Direction,⭐⭐⭐⭐
+24,Field,Crossover,Trae Young Pullback (L),Space Creation,4,10 reps,Change of Direction,⭐⭐⭐⭐
+25,Field,Crossover,Double Tap (R),Change of Pace,3,12 reps,Rhythm Disruption,⭐⭐⭐
+26,Field,Crossover,Double Tap (L),Change of Pace,3,12 reps,Rhythm Disruption,⭐⭐⭐
+27,Field,Crossover,V-Dribble (R),Stationary,3,20 reps,One-Hand Control,⭐⭐
+28,Field,Crossover,V-Dribble (L),Stationary,3,20 reps,One-Hand Control,⭐⭐
+29,Field,Crossover,Shammgod (R to L),Elite Deception,4,8 reps,Hand Eye Timing,⭐⭐⭐⭐⭐
+30,Field,Crossover,Shammgod (L to R),Elite Deception,4,8 reps,Hand Eye Timing,⭐⭐⭐⭐⭐
+31,Field,Combo,Pound Cross,Ball Security,3,15 reps,Forceful Handle,⭐⭐⭐
+32,Field,Combo,Between-Cross-Front,Complexity,4,10 reps,Neural Loading,⭐⭐⭐⭐
+33,Field,Combo,Pound-Between,Transition,3,15 reps,Flow State,⭐⭐⭐
+34,Field,Combo,Inside Out-Cross,Counter Move,4,10 reps,Weight Shift,⭐⭐⭐⭐
+35,Field,Between Legs,Stationary (No Feet),Hand Path,3,30 sec,Tight Exchange,⭐⭐
+36,Field,Between Legs,Continuous Between,Speed,3,30 sec,Rapid Turnover,⭐⭐⭐
+37,Field,Between Legs,Boxer/Shuffle Feet,Active Feet,3,20m,Integrated Agility,⭐⭐⭐
+38,Field,Between Legs,Forward Lunge (R),Attack Angle,4,10 reps,Quad Strength,⭐⭐⭐
+39,Field,Between Legs,Forward Lunge (L),Attack Angle,4,10 reps,Quad Strength,⭐⭐⭐
+40,Field,Between Legs,Side Jab (R),Lateral Movement,4,10 reps,Lateral Force,⭐⭐⭐
+41,Field,Between Legs,Side Jab (L),Lateral Movement,4,10 reps,Lateral Force,⭐⭐⭐
+42,Field,Between Legs,Walking Backward,Retreat,3,15m,Backpedal Control,⭐⭐
+43,Field,Between Legs,Outside-In (Reverse),Ball Manipulation,3,15 reps,Advanced Pathing,⭐⭐⭐⭐
+44,Field,On the Move,Inside Out (R),Faking,4,15m,Shoulder Deception,⭐⭐⭐
+45,Field,On the Move,Inside Out (L),Faking,4,15m,Shoulder Deception,⭐⭐⭐
+46,Field,On the Move,Retreat Inside Out,Separation,4,20m,Step-Back Mechanics,⭐⭐⭐⭐
+47,Field,On the Move,Under Leg Stop,Momentum,4,10 reps,Hard Deceleration,⭐⭐⭐⭐
+48,Field,Behind Back,Sharp Behind (R to L),Low Path,4,15 reps,Low Center Gravity,⭐⭐⭐
+49,Field,Behind Back,Sharp Behind (L to R),Low Path,4,15 reps,Low Center Gravity,⭐⭐⭐
+50,Field,Behind Back,Wrap Behind (R to L),Perimeter Path,4,10 reps,Core Torque,⭐⭐⭐
+51,Field,Behind Back,Wrap Behind (L to R),Perimeter Path,4,10 reps,Core Torque,⭐⭐⭐
+52,Field,Fakes,Side/Float Dribble (R),Shot Threat,4,15m,Hang Time,⭐⭐⭐
+53,Field,Fakes,Side/Float Dribble (L),Shot Threat,4,15m,Hang Time,⭐⭐⭐
+54,Field,Fakes,Rip & Drive (R),Power Drive,5,10m,First Step Speed,⭐⭐⭐⭐
+55,Field,Fakes,Rip & Drive (L),Power Drive,5,10m,First Step Speed,⭐⭐⭐⭐
+56,Field,Post-Up,Spin to Post (R Drive),Post Entry,4,8 reps,Pivot Mechanics,⭐⭐⭐
+57,Field,Post-Up,Spin to Post (L Drive),Post Entry,4,8 reps,Pivot Mechanics,⭐⭐⭐
+58,Field,Transition,Stutter Step (R Hand),Freeze Defender,4,20m,Eccentric Control,⭐⭐⭐
+59,Field,Transition,Stutter Step (L Hand),Freeze Defender,4,20m,Eccentric Control,⭐⭐⭐
+60,Field,Transition,Delayed Between Legs,Pace,4,20m,Rate Change,⭐⭐⭐⭐
+61,Field,Slide Series,Slide & Drive,Lateral-Linear,4,15m,Change of Plane,⭐⭐⭐
+62,Field,Slide Series,Slide-Crossover,Reactive,4,15m,Lateral Explosion,⭐⭐⭐
+63,Field,Slide Series,Slide-Between Legs,Shielding,4,15m,Ball Protection,⭐⭐⭐
+64,Field,Slide Series,Behind-Slide-Behind,Frame Move,4,15m,Flow Coordination,⭐⭐⭐⭐
+65,Field,Slide Series,Slide-Inside Out,Deceptive,4,15m,Misdirection,⭐⭐⭐
+66,Field,Slide Series,Slide-Double Move,Advanced,4,15m,Combo Stability,⭐⭐⭐⭐
+67,Field,Float Series,Between Legs Float,Hang Time,3,20m,Air Control,⭐⭐⭐
+68,Field,Float Series,Behind Back Float,Hang Time,3,20m,Air Control,⭐⭐⭐
+69,Field,Jab Series,Opposite Foot Jab,Cross Body,4,10 reps,Split Stance Power,⭐⭐⭐
+70,Field,Jab Series,Same Foot/Hand Jab,Direct,4,10 reps,Suddenness,⭐⭐
+71,Field,Jab Series,Side Jab (No Move),Lateral,4,10 reps,Shiftiness,⭐⭐
+72,Field,Jab Series,Cross-Opposite Jab,Combo,4,10 reps,Complex Sequencing,⭐⭐⭐⭐
+73,Field,Jab Series,Between-Opposite Jab,Combo,4,10 reps,Complex Sequencing,⭐⭐⭐⭐
+74,Field,Jab Series,Behind-Opposite Jab,Combo,4,10 reps,Complex Sequencing,⭐⭐⭐⭐
+75,Field,Jab Series,Inside Out Jab,Heavy Foot,4,10 reps,Torque Generation,⭐⭐⭐⭐
+76,Field,Stop Series,Same Foot/Hand Stop,Halt,5,10 reps,Knee Stability,⭐⭐⭐
+77,Field,Stop Series,Opposite Foot Stop,Halt,5,10 reps,Braking Force,⭐⭐⭐
+78,Field,Stop Series,Behind the Back Stop,Sprint-to-Halt,5,10 reps,Dynamic Balance,⭐⭐⭐⭐
+79,Field,Stop Series,Under Leg Stop,Sprint-to-Halt,5,10 reps,Mechanical Tension,⭐⭐⭐⭐
+80,Field,Stop Series,Half Turn Stop,Cross-Halt,5,10 reps,Rotation Control,⭐⭐⭐
+81,Field,Retreats,Hip Swivel,Square Up,4,10 reps,Hip Mobility,⭐⭐⭐
+82,Field,Retreats,Sprint Back (L Pivot),Retreat,4,15m,Rear Power,⭐⭐⭐
+83,Field,Retreats,Sprint Back (R Pivot),Retreat,4,15m,Rear Power,⭐⭐⭐
+84,Field,Retreats,Ball Screen Retreat,Spacing,4,15m,Peripheral Vision,⭐⭐⭐
+85,Field,Retreats,Double Move Retreat,Combo Space,4,20m,Skill Integration,⭐⭐⭐⭐
+86,Field,Retreats,Drive & Relocate,Positioning,4,20m,Conditioning,⭐⭐⭐⭐
+87,Field,Twitchy,Shoulder Rock Walk,Rocking,3,20m,Upper/Lower Sync,⭐⭐⭐
+88,Field,Twitchy,Slide-Twitch,Deceptive,3,20m,Rhythm Break,⭐⭐⭐⭐
+89,Field,Twitchy,Between-Cross Twitch,Tight Space,3,15m,Hand Speed,⭐⭐⭐⭐
+90,Field,Drop Series,Drop-Between Legs,Shoulder Dip,4,12 reps,Explosive Drop,⭐⭐⭐⭐
+91,Field,Drop Series,Drop-Crossover,Low Drive,4,12 reps,Center of Mass,⭐⭐⭐⭐
+92,Field,Drop Series,Push Out Cross,Split Stance,4,10 reps,Acceleration,⭐⭐⭐⭐
+93,Field,Spin Series,Basic Driving Spin,Rolling,5,8 reps,360 Stability,⭐⭐⭐
+94,Field,Spin Series,Baseline Spin,Contact,5,8 reps,Spatial Awareness,⭐⭐⭐⭐
+95,Field,Spin Series,Crossover-Spin,Linking,4,8 reps,Transitional Speed,⭐⭐⭐⭐
+96,Field,Spin Series,Between Legs-Spin,Linking,4,8 reps,Transitional Speed,⭐⭐⭐⭐
+97,Field,Spin Series,Behind Back-Spin,Linking,4,8 reps,Transitional Speed,⭐⭐⭐⭐
+98,Field,Spin Series,Half-Spin Fake,Deception,4,10 reps,Core Deceleration,⭐⭐⭐
+99,Field,Spin Series,Combo Half-Spin,Advanced,4,8 reps,Skill Flow,⭐⭐⭐⭐
+100,Field,Stat Drill,4 Sets of 2 (V-Dribble),Rhythmic,4,2 mins,Endurance Handle,⭐⭐
+101,Field,Stat Drill,4 Sets of 2 (Cross),Rhythmic,4,2 mins,Continuous Tension,⭐⭐
+102,Field,Stat Drill,4 Sets of 2 (In-Out),Rhythmic,4,2 mins,Shoulder Health,⭐⭐
+103,Field,Stat Drill,4 Sets of 2 (Behind),Rhythmic,4,2 mins,Low Back Prep,⭐⭐
+104,Field,Stat Drill,Front Extensions,Length,3,20 reps,Reach Range,⭐⭐⭐
+105,Field,Stat Drill,Side Extensions,Range,3,20 reps,Wide-Base Stability,⭐⭐⭐
+106,Field,Stat Drill,Over the Knee,In-Out,3,30 reps,Vertical Control,⭐⭐⭐
+107,Field,Stat Drill,Up & Back,Side-Push,3,30 reps,Wrist Force,⭐⭐
+108,Field,Stat Drill,Around Leg Circle,Wrap,3,15 ea.,Arm Rotation,⭐⭐⭐
+109,Field,Stat Drill,High to Low Speeds,Pace,3,1 min,Neuromuscular Adapt,⭐⭐⭐
+---,---,---,---,---,---,---,---,---
+111,Gym,Knee Dom.,Power Clean,Barbell,4,3 reps,Power / RFD,⭐⭐⭐⭐⭐
+112,Gym,Knee Dom.,Snatch,Barbell,3,2 reps,Overhead Power,⭐⭐⭐⭐⭐
+113,Gym,Knee Dom.,Back Squat,Barbell,4,5 reps,Absolute Strength,⭐⭐⭐⭐⭐
+114,Gym,Knee Dom.,Front Squat,Barbell,3,6 reps,Core/Anterior Force,⭐⭐⭐⭐
+115,Gym,Hip Dom.,Nordic Curls,Bodyweight,3,8 reps,Hamstring Safety,⭐⭐⭐⭐
+116,Gym,Knee Dom.,Single-Leg Squats,Bodyweight,3,8 ea.,Joint Stability,⭐⭐⭐
+117,Gym,Knee Dom.,Bulgarian Split Squat,Dumbbells,3,10 ea.,Unilateral Power,⭐⭐⭐⭐
+118,Gym,Knee Dom.,Skater Squats,Bodyweight,3,10 ea.,Hip Control,⭐⭐⭐
+119,Gym,Hip Dom.,RDL (Single/Double),Barbell/DB,4,8 reps,Posterior Chain,⭐⭐⭐
+120,Gym,Hip Dom.,Hip Thrusts,Barbell,4,10 reps,Glute Activation,⭐⭐⭐⭐
+121,Gym,Functional,Box Jumps,Box,5,3 reps,Explosive Jump,⭐⭐⭐
+122,Gym,Functional,Med-Ball Throws,Med Ball,4,5 reps,Rotational Torque,⭐⭐⭐
+123,Gym,Functional,Farmer Carries,Heavy DBs,3,40m,Pillar Strength,⭐⭐⭐
+124,Gym,Lower Leg,Calf/Tibialis Raises,DB/BW,3,15 reps,Ankle Durability,⭐⭐
+125,Gym,Core,Hanging Knee Raises,Bar,3,15 reps,Deep Ab Power,⭐⭐⭐
+126,Gym,Core,Plank Holds,Floor,3,60 sec,Core Stability,⭐⭐

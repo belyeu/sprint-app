@@ -1,0 +1,56 @@
+FIELD,Category,Skill / Action,Thrower/Fielder Mechanics,Receiver/Tag Response,Primary Focus,Fitness Stars
+FIELD,Footwork,Shuffle Step,Instep to instep; point toward throw.,Over right shoulder tag,Lateral Alignment,⭐⭐
+,,Instep Kick,Kick throwing foot instep over glove.,Over left shoulder tag,Momentum Transfer,⭐⭐⭐
+,,Power Step,Instep to ball (forehand); move around ball.,Wrap around tag (front to back),Range/Force Production,⭐⭐⭐
+,,Jam Step,Backhand; glove foot steps with ball.,Drop And Up (perfect throw),Depth Control,⭐⭐⭐
+,,Open Step,Backhand; throwing foot lands on catch.,Sweep tag (bad throws),Mobility/Reach,⭐⭐⭐
+,,Jump Turn (In),Catch in front; replace feet inside.,Over right shoulder tag,Quick Transition,⭐⭐⭐⭐
+,,Jump Turn (Out),Catch at side; replace feet outside.,Wrap around tag,Directional Change,⭐⭐⭐⭐
+,Throws,Long,Thumb to thigh.,Wrap around tag,Max Distance/Arm Path,⭐⭐⭐
+,,Short,Thumb to waist.,Over left shoulder tag,Quick Release,⭐⭐
+,,Bow & Arrow,Thumb to ear.,Over right shoulder tag,Accuracy/Loading,⭐⭐
+,,3/4 Sway,Bow & arrow with lower body tilt.,Drop And Up,Off-Platform Torque,⭐⭐⭐
+,,Dart Throws,"Elbow, wrist, and finger snap (no legs).",Over right shoulder tag,Fast Exchange,⭐⭐
+,Running,Straight,Maintaining line on the run.,Over right shoulder tag,Linear Speed,⭐⭐⭐⭐
+,,Glove Side,Moving toward the glove hand side.,Over left shoulder tag,Lateral Efficiency,⭐⭐⭐
+,,Backhand,Moving toward the backhand side.,Wrap around tag,Cross-Body Reach,⭐⭐⭐
+,Flips,Backhand Flip,Quick flick from backhand side.,Over right/left shoulder tag,Touch/Feel,⭐⭐
+,,Forehand Flip,Standard underhand/sidearm flip.,Over left/right shoulder tag,Consistency,⭐⭐
+,,Shovel Pass,Underhand toss using palm/arm.,Drop And Up,Under-Ball Force,⭐⭐
+,,Glove Flip,Using glove to flip ball (Fore/Back).,Drop/Wrap,Reaction Speed,⭐⭐⭐
+,Grounders,Straight On,Right-left gather; right-left throw.,Sweep tag,Fundamental Rhythm,⭐⭐
+,,Forehand,Lead with glove; follow throw footwork.,Wrap around tag,Attacking the Ball,⭐⭐⭐
+,,Backhand,Lead with glove; soft elbow/knee.,Drop And Up,Staying Low,⭐⭐⭐
+,,Short Hop,Straight/Fore/Back; make hops shorter.,Drop And Up,Hand-Eye Timing,⭐⭐⭐⭐
+,,Slide Dives,Right/Left; knees take you down.,Wrap around tag,Emergency Range,⭐⭐⭐⭐⭐
+,,Tripod,Bare hand down; eyes behind glove.,Over right/left shoulder tag,Stability/Low Point,⭐⭐
+,,Screened,Runner right in front of fielder.,Wrap around tag,Focus/Obstacle Nav,⭐⭐⭐
+,Outfield,One Knee,Throwing knee down; weight on heel.,Sweep tag,Sure-Handed Stop,⭐⭐
+,,Do or Die,Throw on run; glove/throw foot forward.,Over left/right shoulder tag,Velocity on the Move,⭐⭐⭐⭐⭐
+,,Routine,Infield style approach.,Drop And Up,Mechanical Control,⭐⭐
+,Fly Balls,Routine,Glove foot forward; catch back of ball.,Sweep tag,High-Point Catch,⭐⭐
+,,Drop Step (R),Point toe; no false steps.,Wrap around tag,Deep Coverage,⭐⭐⭐
+,,Running Catch,Right/Left shoulder; point toe.,Drop And Up,Tracking Speed,⭐⭐⭐⭐
+,,Lateral,Crossover running catch.,Drop And Up,Sideways Range,⭐⭐⭐
+,,Sliding/Dive,Bent leg slide or full extension.,Sweep / Wrap around,Maximal Effort Catch,⭐⭐⭐⭐⭐
+,,Fence Work,Feel fence with bare hand; climb.,Drop And Up,Spatial Awareness,⭐⭐⭐⭐
+,Catchers,Pop-ups,Standard tracking and catch.,N/A,Vertical Orientation,⭐⭐
+,,Pickoffs,Instep down/in line to throw on catch.,N/A,Explosive Pop-Time,⭐⭐⭐⭐
+,,Blocking,Shifting body to center of ball.,N/A,Reaction/Durability,⭐⭐⭐⭐⭐
+---,---,---,---,---,---,---
+GYM,Weight Room,35,Power Clean,Rate of Force Development,Explosive Power,⭐⭐⭐⭐⭐
+,,36,Snatch,Overhead Stability/Power,Total Body Snap,⭐⭐⭐⭐⭐
+,,37,Back Squat,Absolute Lower Body Strength,Absolute Force,⭐⭐⭐⭐⭐
+,,38,Front Squat,Anterior Chain/Core Strength,Core/Quad Drive,⭐⭐⭐⭐
+,,39,Nordic Curls,Eccentric Hamstring Safety,Injury Prevention,⭐⭐⭐⭐
+,,40,Single-Leg Squats,Unilateral Stability,Balance/Alignment,⭐⭐⭐
+,,41,Bulgarian Split,Hip Flexor Stretch/Strength,Single-Leg Power,⭐⭐⭐
+,,42,Skater Squats,Lateral Hip Stability,Frontal Plane Strength,⭐⭐⭐
+,,43,RDL,Posterior Chain Strength,Hinge Mechanic,⭐⭐⭐
+,,44,Hip Thrusts,Glute Power,Horizontal Force,⭐⭐⭐⭐
+,,45,Box Jumps,Vertical Displacement,Elastic Power,⭐⭐⭐
+,,46,Med-Ball Throws,Total Body Explosiveness,Rotational Power,⭐⭐⭐
+,,47,Farmer Carries,Grip & Core Anti-Flexion,Total Stability,⭐⭐⭐
+,,48,Calf/Tibialis,Lower Leg Armor,Ankle Health,⭐⭐
+,,49,Hanging Knee Raises,High-Hip Flexion Strength,Deep Core/Hip Drive,⭐⭐
+,,50,Plank Holds,Isometric Core Stability,Rigid Torso,⭐⭐

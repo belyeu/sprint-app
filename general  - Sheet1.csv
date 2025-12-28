@@ -1,0 +1,65 @@
+#,Environment,Category,Exercise Name,Equipment / Focus,Sets,Reps/Dist.,Primary Focus,Fitness Stars
+1,Field,Lower Body,Walking Lunges,Bodyweight/Space,3,20m,Dynamic Leg Strength,⭐⭐
+2,Field,Lower Body,Reverse Lunges,Balance & Glutes,3,10 ea.,Unilateral Stability,⭐⭐
+3,Field,Lower Body,Step-Ups,Knee Stability,3,8 ea.,Patellar Control,⭐⭐
+4,Field,Upper Body,Push-Ups,Horizontal Press,3,Max-1,Upper Body Power,⭐⭐⭐
+5,Field,Core,Plank (Forearm),Isometric Strength,3,45-60s,Pelvic Stability,⭐⭐
+6,Field,Core,Side Plank,Lateral Stability,3,30s ea.,Oblique Strength,⭐⭐
+7,Field,Core,Russian Twists,Rotational Power,3,20 reps,Torso Rotation,⭐⭐⭐
+8,Field,Core,Deadbugs,Spinal Control,3,12 reps,Lumbar Health,⭐
+9,Field,Core,Bird-Dogs,Posterior Health,3,10 ea.,Spinal Alignment,⭐
+10,Field,Functional,Box Jumps,Vertical Power,4,5 reps,Explosive Leap,⭐⭐⭐
+11,Field,Functional,Medicine Ball Slams,Explosive Core,4,8 reps,High-Velocity Force,⭐⭐⭐
+12,Field,Functional,Burpees,Full Body/Conditioning,3,12 reps,Metabolic Capacity,⭐⭐⭐⭐
+13,Field,Functional,Mountain Climbers,High-Intensity Core,3,30 sec,Core/Hip Frequency,⭐⭐⭐
+14,Field,Mobility,Spiderman Lunges,Hip & Thoracic,2,5 ea.,Full Range Motion,⭐⭐
+15,Field,Mobility,Inchworms,Hamstring & Shoulders,2,8 reps,Posterior Flexibility,⭐⭐
+16,Field,Mobility,Scorpion Stretch,Lower Back/Hips,2,8 ea.,Spinal Decompression,⭐
+17,Field,Mobility,Cat-Cow,Spinal Mobility,2,10 reps,Vertebral Flexion,⭐
+18,Field,Mobility,90/90 Hip Switches,Hip Rotation,2,10 ea.,Internal/External Ro,⭐⭐
+19,Field,Mobility,Leg Swings (F/B),Active Hamstring,2,10 ea.,Linear Hip Flow,⭐
+20,Field,Mobility,Leg Swings (S/S),Adductor Flow,2,10 ea.,Lateral Hip Flow,⭐
+21,Weight Room,Knee Dom.,Barbell Back Squat,Barbell,4,5 reps,Absolute Strength,⭐⭐⭐⭐⭐
+22,Weight Room,Knee Dom.,Barbell Front Squat,Barbell,4,6 reps,Anterior Power,⭐⭐⭐⭐
+23,Weight Room,Knee Dom.,Goblet Squat,DB/KB,3,10 reps,Squat Mechanics,⭐⭐
+24,Weight Room,Knee Dom.,Leg Press,Machine,3,12 reps,Quad Hypertrophy,⭐⭐⭐
+25,Weight Room,Knee Dom.,Leg Extension,Machine,3,15 reps,Isolated Knee Ext.,⭐⭐
+26,Weight Room,Knee Dom.,Bulgarian Split Squat,DBs/Bench,3,8 ea.,Single-Leg Force,⭐⭐⭐⭐
+27,Weight Room,Hip Dom.,Conventional Deadlift,Barbell,4,3-5 reps,Total Body Pull,⭐⭐⭐⭐⭐
+28,Weight Room,Hip Dom.,Sumo Deadlift,Barbell,3,5 reps,Glute/Adductor Power,⭐⭐⭐⭐
+29,Weight Room,Hip Dom.,Romanian Deadlift (RDL),Barbell/DB,3,8 reps,Hamstring Length,⭐⭐⭐
+30,Weight Room,Hip Dom.,Stiff-Leg Deadlift,Barbell,3,8 reps,Lower Back/Ham.,⭐⭐⭐
+31,Weight Room,Hip Dom.,Glute Ham Raise,GHD Bench,3,8 reps,Eccentric Hamstring,⭐⭐⭐⭐⭐
+32,Weight Room,Hip Dom.,Seated/Lying Leg Curl,Machine,3,12 reps,Knee Flexion Strength,⭐⭐
+33,Weight Room,Push,Flat Bench Press,Barbell,4,5 reps,Upper Body Force,⭐⭐⭐⭐
+34,Weight Room,Push,Incline Bench Press,Barbell/DB,3,8 reps,Upper Pec Power,⭐⭐⭐
+35,Weight Room,Push,Dumbbell Chest Press,Dumbbells,3,10 reps,Shoulder Stability,⭐⭐⭐
+36,Weight Room,Push,Overhead Press,Barbell,3,6 reps,Vertical Pressing,⭐⭐⭐⭐
+37,Weight Room,Push,Arnold Press,Dumbbells,3,10 reps,Multi-Angle Delts,⭐⭐⭐
+38,Weight Room,Push,Dips (Chest/Tricep),Parallel Bars,3,10 reps,Vertical Pushing,⭐⭐⭐
+39,Weight Room,Push,Lateral/Front Raises,Dumbbells,3,12 reps,Shoulder Deltoid,⭐⭐
+40,Weight Room,Push,Upright Rows,Barbell/EZ-Bar,3,10 reps,Traps & Delts,⭐⭐⭐
+41,Weight Room,Pull,Pull-Ups / Chin-Ups,Pull-Up Bar,3,Max,Vertical Pull Power,⭐⭐⭐⭐
+42,Weight Room,Pull,Lat Pulldowns,Cable Machine,3,10 reps,Back Hypertrophy,⭐⭐⭐
+43,Weight Room,Pull,Barbell Rows,Barbell,3,8 reps,Horizontal Pull,⭐⭐⭐⭐
+44,Weight Room,Pull,One-Arm Dumbbell Rows,Dumbbell,3,10 ea.,Unilateral Back,⭐⭐⭐
+45,Weight Room,Pull,Seated Cable Rows,Cable Machine,3,12 reps,Postural Strength,⭐⭐⭐
+46,Weight Room,Pull,T-Bar Rows,Landmine/T-Bar,3,8 reps,Mid-Back Thickness,⭐⭐⭐
+47,Weight Room,Pull,Face Pulls,Cable Machine,3,15 reps,Rear Delt/Rotator,⭐⭐
+48,Weight Room,Pull,Rear Delt Flys,DBs/Cable,3,15 reps,Shoulder Health,⭐⭐
+49,Weight Room,Pull,Shrugs,Barbell/DB,3,12 reps,Trap Development,⭐⭐
+50,Weight Room,Arms,Barbell Bicep Curls,Barbell,3,10 reps,Bicep Hypertrophy,⭐⭐
+51,Weight Room,Arms,Hammer Curls,Dumbbells,3,12 reps,Brachialis/Forearm,⭐⭐
+52,Weight Room,Arms,Preacher Curls,EZ-Bar/Bench,3,10 reps,Peak Bicep Focus,⭐⭐
+53,Weight Room,Arms,Concentration Curls,Dumbbell,3,12 reps,Isolated Arm Work,⭐⭐
+54,Weight Room,Arms,Reverse Grip Curls,Barbell/EZ-Bar,3,12 reps,Wrist/Extensor Strength,⭐⭐
+55,Weight Room,Arms,Tricep Pushdowns,Cable Machine,3,12 reps,Lateral Tricep Head,⭐⭐
+56,Weight Room,Arms,Skull Crushers,EZ-Bar/DBs,3,10 reps,Long Head Tricep,⭐⭐⭐
+57,Weight Room,Arms,Overhead Tricep Ext.,DB/Cable,3,12 reps,Tricep Stretch/Force,⭐⭐
+58,Weight Room,Lower Leg,Standing Calf Raise,Machine/DB,3,15 reps,Plantar Flexion,⭐⭐
+59,Weight Room,Lower Leg,Tibialis Raises,KB/Bodyweight,3,20 reps,Ankle Stability,⭐⭐
+60,Weight Room,Core,Hanging Leg Raises,Pull-Up Bar,3,12 reps,Lower Ab Power,⭐⭐⭐
+61,Weight Room,Core,Cable Woodchoppers,Cable Machine,3,12 ea.,Rotational Torque,⭐⭐⭐
+62,Weight Room,Core,Pallof Press,Cable/Band,3,10 ea.,Anti-Rotation,⭐⭐⭐
+63,Weight Room,Functional,Kettlebell Swings,Kettlebell,4,15 reps,Hinge Explosiveness,⭐⭐⭐
+64,Weight Room,Functional,Farmer Carries,Heavy DBs,3,40m,Grip & Pillar Strength,⭐⭐⭐
