@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
-import random
+import time
 from datetime import datetime
 import pytz
+import random
+import os
 
 # --- 1. SETUP & PERSISTENCE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
@@ -12,17 +14,14 @@ def get_now_est():
 
 if 'history' not in st.session_state: st.session_state.history = []
 if 'current_session' not in st.session_state: st.session_state.current_session = None
+if 'active_sport' not in st.session_state: st.session_state.active_sport = ""
 
 # --- 2. DYNAMIC GITHUB CSV LOADER ---
-def load_vault_from_github():
-    username = "belyeu"
-    repo = "sprint-app"
-    branch = "main"
+def load_vault_from_csv():
+    # Base URL for your specific GitHub repo
+    base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/main/"
     
-    # Base URL for Raw GitHub content
-    base_url = f"https://raw.githubusercontent.com/{username}/{repo}/{branch}/"
-    
-    # Map display names to exact GitHub filenames (URL encoded)
+    # List of your specific files
     files = {
         "Basketball": "basketball%20drills%20-%20Sheet1.csv",
         "General": "general%20-%20Sheet1.csv",
@@ -32,36 +31,34 @@ def load_vault_from_github():
     
     vault = {}
 
-    for sport, filename in files.items():
-        url = base_url + filename
+    for sport_name, file_name in files.items():
+        url = base_url + file_name
         try:
-            # Fetch the CSV
             df = pd.read_csv(url)
+            vault[sport_name] = []
             
-            vault[sport] = []
             for _, row in df.iterrows():
-                # Helper to find data regardless of varying column names in your 4 files
+                # Flexible Mapping: Checks different possible column names across your 4 files
                 name = row.get('Drill / Move Name') or row.get('Exercise Name') or row.get('Skill / Action') or row.get('Exercise')
                 desc = row.get('Specific Execution / Detail') or row.get('Equipment / Focus') or row.get('Thrower/Fielder Mechanics') or row.get('Description')
                 
-                # Append to vault if a name was found
                 if pd.notnull(name):
-                    vault[sport].append({
+                    vault[sport_name].append({
                         "ex": str(name),
                         "sets": str(row.get('Sets', '3')),
-                        "base": str(row.get('Reps/Dist.', '10')),
+                        "base": str(row.get('Reps/Dist.', '10')) or str(row.get('Base', '10')),
                         "unit": str(row.get('Unit', 'reps')),
                         "rest": str(row.get('Rest', '60s')),
                         "time_goal": str(row.get('Goal', 'N/A')),
-                        "desc": str(desc) if pd.notnull(desc) else "No additional details provided.",
-                        "focus": str(row.get('Primary Focus', 'Performance'))
+                        "desc": str(desc) if pd.notnull(desc) else "No description provided.",
+                        "focus": str(row.get('Primary Focus', 'Performance')).split(',')
                     })
         except Exception as e:
-            st.sidebar.error(f"⚠️ Error loading {sport}: Check if file exists in repo.")
+            st.sidebar.error(f"⚠️ Error loading {sport_name}: {e}")
             
     return vault
 
-# --- 3. SIDEBAR ---
+# --- 3. SIDEBAR (BLACK LABELS) ---
 with st.sidebar:
     st.markdown(f"""
     <div style="background-color:#F8FAFC; padding:20px; border-radius:15px; border: 2px solid #3B82F6; text-align:center; margin-bottom:25px;">
@@ -71,34 +68,38 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.header("🏟️ SESSION CONTROL")
+    location = st.selectbox("Location", ["Gym", "Softball Field", "Track", "Weight Room"])
     
-    # Load data from Github
-    vault = load_vault_from_github()
+    # Load data from GitHub
+    vault = load_vault_from_csv()
     sport_options = list(vault.keys()) if vault else ["No Data Found"]
     
-    sport_choice = st.selectbox("Select Database", sport_options)
-    num_drills = st.slider("Number of Drills", 1, 10, 5)
+    sport_choice = st.selectbox("Sport Database", sport_options)
+    num_drills = st.slider("Drills per Session", 3, 10, 5)
+    difficulty = st.select_slider("Intensity", options=["Standard", "Elite", "Pro"], value="Elite")
     
     st.divider()
-    if st.button("🔄 GENERATE SESSION", use_container_width=True):
+    if st.button("🔄 GENERATE NEW SESSION", use_container_width=True):
         if sport_choice in vault and vault[sport_choice]:
-            # Randomly select exercises based on slider
-            count = min(len(vault[sport_choice]), num_drills)
-            st.session_state.current_session = random.sample(vault[sport_choice], count)
+            # Select random drills based on the slider
+            sample_size = min(len(vault[sport_choice]), num_drills)
+            st.session_state.current_session = random.sample(vault[sport_choice], sample_size)
+            st.session_state.active_sport = sport_choice
         else:
-            st.error("No data available for this selection.")
+            st.error("No drills found in the selected database.")
 
-# --- 4. MAIN DISPLAY ---
+# --- 4. MAIN DISPLAY LOGIC ---
 if st.session_state.current_session:
-    st.title(f"🚀 {sport_choice} Training Session")
+    st.title(f"🚀 {st.session_state.active_sport} Session: {difficulty}")
     
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"DRILL {i+1}: {drill['ex']}", expanded=True):
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Work", f"{drill['sets']} x {drill['base']}")
-            c2.metric("Rest", drill['rest'])
-            c3.metric("Focus", drill['focus'])
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Work", f"{drill['sets']} x {drill['base']} {drill['unit']}")
+            col2.metric("Rest", drill['rest'])
+            col3.metric("Goal", drill['time_goal'])
             
-            st.info(f"**Execution:** {drill['desc']}")
+            st.markdown(f"**Execution:** {drill['desc']}")
+            st.caption(f"Focus: {', '.join(drill['focus'])}")
 else:
-    st.info("Select a database in the sidebar and click 'Generate Session' to begin.")
+    st.info("Select a Sport Database and click 'Generate New Session' to begin.")
