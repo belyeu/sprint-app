@@ -15,13 +15,13 @@ if 'history' not in st.session_state: st.session_state.history = []
 if 'current_session' not in st.session_state: st.session_state.current_session = None
 if 'active_sport' not in st.session_state: st.session_state.active_sport = ""
 
-# --- 2. SIDEBAR (RESTORED FEATURES) ---
+# --- 2. SIDEBAR ---
 with st.sidebar:
-    # Restored Date/Time
+    # Restored Date/Time Card
     st.markdown(f"""
-    <div style="background-color:#3B82F6; padding:15px; border-radius:10px; text-align:center; margin-bottom:20px;">
-        <h2 style="color:white; margin:0;">{get_now_est().strftime('%I:%M %p')}</h2>
-        <p style="color:white; margin:0; opacity:0.8;">{get_now_est().strftime('%A, %b %d')}</p>
+    <div style="background-color:#1E293B; padding:20px; border-radius:15px; border: 1px solid #3B82F6; text-align:center; margin-bottom:25px;">
+        <h1 style="color:#FFFFFF; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
+        <p style="color:#60A5FA; margin:0; font-weight:bold; letter-spacing:1px;">{get_now_est().strftime('%A, %b %d').upper()}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -34,58 +34,71 @@ with st.sidebar:
     if st.button("🔄 GENERATE NEW SESSION", use_container_width=True):
         st.session_state.current_session = None
 
-# Custom CSS
-st.markdown("""
+# Custom CSS for Dark Mode Integration
+st.markdown(f"""
 <style>
-.drill-header {
-    font-size: 20px !important; font-weight: 800 !important;
-    color: #3B82F6 !important; background-color: #1E293B; 
-    border-left: 8px solid #3B82F6; padding: 12px; margin-top: 20px; border-radius: 4px;
-}
-.stat-box {
-    background-color: #1E293B; padding: 10px; border-radius: 5px; text-align: center; border: 1px solid #334155;
-}
+    /* Main App Background */
+    .stApp {{ background-color: #0F172A !important; }}
+    
+    /* Sidebar Text & Background matching */
+    [data-testid="stSidebar"] {{
+        background-color: #0F172A !important;
+        border-right: 1px solid #1E293B;
+    }}
+    
+    /* Ensuring sidebar labels and text are visible/white */
+    [data-testid="stSidebar"] .stMarkdown p, 
+    [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] h2 {{
+        color: #FFFFFF !important;
+    }}
+
+    .drill-header {{
+        font-size: 20px !important; font-weight: 800 !important;
+        color: #3B82F6 !important; background-color: #1E293B; 
+        border-left: 8px solid #3B82F6; padding: 12px; margin-top: 20px; border-radius: 4px;
+    }}
+    
+    .metric-row {{
+        background-color: #1E293B; padding: 12px; border-radius: 8px; margin: 8px 0; border: 1px solid #334155;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# --- 3. DATABASE ---
+# --- 3. DATABASE (REPS, SETS, TIME GOALS) ---
 def get_vault():
     return {
         "Basketball": [
-            {"ex": "Iverson Cross", "desc": "Wide deceptive step-across.", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "25s per set", "focus": ["Width", "Deception"]},
-            {"ex": "Shammgod", "desc": "Push out R, pull back L.", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "15s per set", "focus": ["Extension", "Speed"]},
-            {"ex": "Pocket Pulls", "desc": "Pull ball to hip pocket.", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "20s per set", "focus": ["Security", "Wrist Snap"]},
-            {"ex": "Trae Young Pullback", "desc": "Lunge forward and snap back.", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "20s per set", "focus": ["Deceleration", "Balance"]}
-            # ... additional basketball items would go here
+            {"ex": "Iverson Cross", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "25s", "desc": "Wide deceptive step-across.", "focus": ["Width", "Low Hips"]},
+            {"ex": "Shammgod", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "15s", "desc": "Push out R, pull back L.", "focus": ["Extension", "Speed"]},
+            {"ex": "Pocket Pulls", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "20s", "desc": "Pull ball to hip pocket.", "focus": ["Security", "Wrist Snap"]},
+            {"ex": "Trae Young Pullback", "sets": 3, "base": 10, "unit": "reps", "rest": 45, "time_goal": "18s", "desc": "Lunge forward and snap back.", "focus": ["Deceleration", "Balance"]}
         ],
         "Softball": [
-            {"ex": "Shuffle Step Throw", "desc": "Instep to instep throw.", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "45s per set", "focus": ["Accuracy", "Footwork"]},
-            {"ex": "Power Step", "desc": "Instep to ball; move around.", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "40s per set", "focus": ["Wrap Around Tag"]},
-            {"ex": "Jam Step Backhand", "desc": "Glove foot steps with ball.", "sets": 4, "base": 12, "unit": "reps", "rest": 30, "time_goal": "30s per set", "focus": ["Drop And Up"]}
-            # ... additional softball items would go here
+            {"ex": "Shuffle Step Throw", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "40s", "desc": "Instep to instep throw.", "focus": ["Over Right Shoulder Tag"]},
+            {"ex": "Power Step", "sets": 3, "base": 15, "unit": "reps", "rest": 30, "time_goal": "35s", "desc": "Instep to ball; move around.", "focus": ["Wrap Around Tag"]}
         ],
         "Track": [
-            {"ex": "Flying 30s", "desc": "Pure Top-End Speed.", "sets": 4, "base": 30, "unit": "m", "rest": 180, "time_goal": "Under 4.0s", "focus": ["Relaxed Upper Body"]},
-            {"ex": "Wicket Flys", "desc": "Max Velocity Maintenance.", "sets": 4, "base": 40, "unit": "m", "rest": 120, "time_goal": "Under 5.2s", "focus": ["Frequency"]}
+            {"ex": "Flying 30s", "sets": 4, "base": 30, "unit": "m", "rest": 180, "time_goal": "4.0s", "desc": "Pure Top-End Speed.", "focus": ["Relaxed Face"]},
+            {"ex": "Wicket Flys", "sets": 4, "base": 40, "unit": "m", "rest": 120, "time_goal": "5.5s", "desc": "Max Velocity Maintenance.", "focus": ["Frequency"]}
         ],
         "General": [
-            {"ex": "Power Clean", "desc": "Rate of Force Development.", "sets": 5, "base": 3, "unit": "reps", "rest": 120, "time_goal": "Explosive", "focus": ["Full Extension"]},
-            {"ex": "Bulgarian Split Squat", "desc": "Unilateral Strength.", "sets": 3, "base": 10, "unit": "reps", "rest": 90, "time_goal": "Controlled", "focus": ["Depth"]}
+            {"ex": "Power Clean", "sets": 5, "base": 3, "unit": "reps", "rest": 120, "time_goal": "Explosive", "desc": "Rate of Force Development.", "focus": ["Extension"]},
+            {"ex": "Nordic Curls", "sets": 3, "base": 6, "unit": "reps", "rest": 90, "time_goal": "30s", "desc": "Eccentric Hamstring Safety.", "focus": ["Slow Descent"]}
         ]
     }
 
-# --- 4. SESSION HANDLING ---
+# --- 4. SESSION LOGIC ---
 vault = get_vault()
-count_needed = 12 if sport_choice in ["Basketball", "Softball"] else 8
+count = 12 if sport_choice in ["Basketball", "Softball"] else 8
 
 if st.session_state.active_sport != sport_choice or st.session_state.current_session is None:
-    available_drills = vault.get(sport_choice, [])
-    st.session_state.current_session = random.sample(available_drills, min(len(available_drills), count_needed))
+    available = vault.get(sport_choice, [])
+    st.session_state.current_session = random.sample(available, min(len(available), count))
     st.session_state.active_sport = sport_choice
 
 # --- 5. MAIN UI ---
 st.title(f"🔥 {difficulty} {sport_choice} Session")
-
 mult = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[difficulty]
 
 for i, drill in enumerate(st.session_state.current_session):
@@ -94,40 +107,41 @@ for i, drill in enumerate(st.session_state.current_session):
     col1, col2, col3 = st.columns([1.5, 1.5, 1])
     
     with col1:
-        # Rep/Set Goals
-        target_reps = int(drill['base'] * mult)
-        st.markdown(f"**Target:** {drill['sets']} Sets x {target_reps} {drill['unit']}")
-        st.markdown(f"⏱️ **Timing Goal:** `{drill['time_goal']}`")
+        st.markdown(f"""
+        <div class="metric-row">
+            <span style="color:#60A5FA">Sets:</span> {drill['sets']} | 
+            <span style="color:#60A5FA">Target:</span> {int(drill['base'] * mult)} {drill['unit']} | 
+            <span style="color:#60A5FA">Goal:</span> {drill['time_goal']}
+        </div>
+        """, unsafe_allow_html=True)
         st.write(f"_{drill['desc']}_")
         
-        # Completed Set Tracker
-        st.markdown("**Mark Completed Sets:**")
+        st.markdown("**Mark Sets Completed:**")
         set_cols = st.columns(drill['sets'])
         for s in range(drill['sets']):
-            set_cols[s].checkbox(f"S{s+1}", key=f"set_{i}_{s}")
+            set_cols[s].checkbox(f"S{s+1}", key=f"s_{i}_{s}")
             
     with col2:
-        # Rest and Timing Goals
-        st.markdown(f"⌛ **Recommended Rest: {drill['rest']}s**")
-        if st.button(f"START REST TIMER", key=f"btn_{i}"):
-            timer_box = st.empty()
-            for s in range(drill['rest'], -1, -1):
-                timer_box.metric("Rest Remaining", f"{s}s")
+        st.markdown(f"⏱️ **Recommended Rest: {drill['rest']}s**")
+        if st.button(f"START TIMER", key=f"t_{i}"):
+            ph = st.empty()
+            for t in range(drill['rest'], -1, -1):
+                ph.metric("Recovery", f"{t}s")
                 time.sleep(1)
-            timer_box.empty()
-            st.success("Set Recovery Complete!")
+            ph.empty()
+            st.success("Recovery Done!")
         
         st.markdown("🎯 **Coach's Eval**")
         for f in drill["focus"]:
-            st.checkbox(f, key=f"eval_{i}_{f}")
+            st.checkbox(f, key=f"f_{i}_{f}")
 
     with col3:
-        st.markdown("🎥 **Action**")
-        st.button("Watch Demo", key=f"demo_{i}")
-        st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"up_{i}")
+        st.markdown("🎥 **Evidence**")
+        st.button("Demo", key=f"d_{i}")
+        st.file_uploader("Upload Clip", type=["mp4", "mov"], key=f"u_{i}")
 
 st.divider()
 if st.button("💾 ARCHIVE COMPLETE SESSION", use_container_width=True):
     st.session_state.history.append({"date": get_now_est(), "sport": sport_choice, "loc": location})
     st.balloons()
-    st.success("Session saved to Performance History!")
+    st.success("Session saved!")
