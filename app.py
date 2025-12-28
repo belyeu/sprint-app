@@ -132,4 +132,22 @@ for i, drill in enumerate(st.session_state.current_session):
         
         with c2:
             st.metric("Target Goal", f"{int(drill['base'] * target_mult)} {drill['unit']}")
-            if st.button("⏱
+            if st.button("⏱️ START REST", key=f"rest_{i}"):
+                ph = st.empty()
+                for s in range(drill["rest"], -1, -1):
+                    ph.metric("Recovery Time", f"{s}s")
+                    time.sleep(1)
+                ph.empty()
+                st.success("Next Set!")
+
+        with c3:
+            st.markdown("🎥 **Action**")
+            if st.button("Watch Demo", key=f"demo_{i}"):
+                st.video(drill["demo"])
+            st.file_uploader("Upload Progress", type=["mp4", "mov"], key=f"upload_{i}")
+
+st.divider()
+if st.button("💾 ARCHIVE COMPLETE SESSION", use_container_width=True):
+    st.session_state.history.append({"date": get_now_est(), "sport": sport_choice, "location": location})
+    st.balloons()
+    st.success("Session saved to performance history!")
