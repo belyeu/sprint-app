@@ -17,11 +17,11 @@ if 'active_sport' not in st.session_state: st.session_state.active_sport = ""
 
 # --- 2. SIDEBAR ---
 with st.sidebar:
-    # Sidebar Date/Time Card
+    # Date/Time Card with Black Text
     st.markdown(f"""
-    <div style="background-color:#1E293B; padding:20px; border-radius:15px; border: 2px solid #3B82F6; text-align:center; margin-bottom:25px;">
-        <h1 style="color:#3B82F6; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
-        <p style="color:#60A5FA; margin:0; font-weight:bold; letter-spacing:1px;">{get_now_est().strftime('%A, %b %d').upper()}</p>
+    <div style="background-color:#F8FAFC; padding:20px; border-radius:15px; border: 2px solid #3B82F6; text-align:center; margin-bottom:25px;">
+        <h1 style="color:#000000; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
+        <p style="color:#1E293B; margin:0; font-weight:bold; letter-spacing:1px;">{get_now_est().strftime('%A, %b %d').upper()}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -34,7 +34,7 @@ with st.sidebar:
     if st.button("🔄 GENERATE NEW SESSION", use_container_width=True):
         st.session_state.current_session = None
 
-# --- 3. CUSTOM CSS (BLUE SIDEBAR TEXT & DARK MODE) ---
+# --- 3. CUSTOM CSS (SIDEBAR TEXT TO BLACK) ---
 st.markdown(f"""
 <style>
     /* Main App Background */
@@ -46,17 +46,18 @@ st.markdown(f"""
         border-right: 1px solid #1E293B;
     }}
     
-    /* GLOBAL SIDEBAR TEXT TO BLUE */
+    /* TARGETING ALL SIDEBAR LABELS & TEXT TO BLACK */
     [data-testid="stSidebar"] .stMarkdown p, 
     [data-testid="stSidebar"] label, 
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] span {{
-        color: #3B82F6 !important;
-        font-weight: 600 !important;
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] .stHeader {{
+        color: #000000 !important;
+        font-weight: 700 !important;
     }}
 
-    /* Main Area Styling */
+    /* Main Area Drill Headers (Keep Blue for contrast) */
     .drill-header {{
         font-size: 20px !important; font-weight: 800 !important;
         color: #3B82F6 !important; background-color: #1E293B; 
@@ -70,7 +71,7 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 4. DATABASE (REPS, SETS, TIME GOALS) ---
+# --- 4. DATABASE (SESSION CONTENT) ---
 def get_vault():
     return {
         "Basketball": [
