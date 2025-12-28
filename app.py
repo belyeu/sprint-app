@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
-import time
 from datetime import datetime
 import pytz
 import random
-import os
 
 # --- 1. SETUP & PERSISTENCE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
@@ -14,43 +12,46 @@ def get_now_est():
 
 if 'history' not in st.session_state: st.session_state.history = []
 if 'current_session' not in st.session_state: st.session_state.current_session = None
-if 'active_sport' not in st.session_state: st.session_state.active_sport = ""
 
-# --- 2. DYNAMIC CSV LOADER ---
-def load_vault_from_csv():
-    # Use raw string or forward slashes for the path to handle spaces and slashes correctly
-    file_path = "sprint-app/track drills - create table of all exercises.csv"
+# --- 2. DYNAMIC GITHUB CSV LOADER ---
+def load_vault_from_github():
+    # Replace [USERNAME] and [REPO] with your actual GitHub details
+    # Example: "https://raw.githubusercontent.com/johndoe/my-drills/main/"
+    base_url = "https://raw.githubusercontent.com/[USERNAME]/[REPO]/main/"
     
-    try:
-        # Load the CSV file
-        df = pd.read_csv(file_path)
-        
-        # Group exercises by Sport/Category column
-        # Ensure your CSV has a 'Sport' column (or adjust the column name below)
-        vault = {}
-        sports = df['Sport'].unique()
-        
-        for sport in sports:
-            sport_df = df[df['Sport'] == sport]
+    files = {
+        "Basketball": "basketball%20drills%20-%20Sheet1.csv",
+        "General": "general%20-%20Sheet1.csv",
+        "Softball": "softball%20drills%20-%20Sheet1.csv",
+        "Track": "track%20drills%20-%20track.csv"
+    }
+    
+    vault = {}
+
+    for sport, filename in files.items():
+        url = base_url + filename
+        try:
+            df = pd.read_csv(url)
+            
+            # Standardization: Ensure columns match the expected app keys
+            # Even if headers vary slightly, we map them here
             vault[sport] = []
-            for _, row in sport_df.iterrows():
+            for _, row in df.iterrows():
+                # Handling different possible column naming conventions in your CSVs
                 vault[sport].append({
-                    "ex": row['Exercise'],
-                    "sets": int(row['Sets']),
-                    "base": int(row['Base']),
-                    "unit": row['Unit'],
-                    "rest": int(row['Rest']),
-                    "time_goal": str(row['Goal']),
-                    "desc": row.get('Description', 'No description provided.'),
-                    "focus": str(row.get('Focus', 'Focus')).split(',') # Assumes comma-separated focus points
+                    "ex": row.get('Exercise') or row.get('Exercise Name') or row.get('Drill / Move Name'),
+                    "sets": int(row.get('Sets', 3)),
+                    "base": int(row.get('Base') or row.get('Reps/Dist.', 10)),
+                    "unit": row.get('Unit', 'reps'),
+                    "rest": int(row.get('Rest', 60)),
+                    "time_goal": str(row.get('Goal', 'N/A')),
+                    "desc": row.get('Detailed Description') or row.get('Specific Execution / Detail') or 'No description.',
+                    "focus": str(row.get('Primary Focus', 'Focus')).split(',')
                 })
-        return vault
-    except FileNotFoundError:
-        st.error(f"⚠️ CSV not found at: {file_path}")
-        return {}
-    except Exception as e:
-        st.error(f"⚠️ Error loading CSV: {e}")
-        return {}
+        except Exception as e:
+            st.sidebar.warning(f"Could not load {sport}: {e}")
+            
+    return vault
 
 # --- 3. SIDEBAR (BLACK LABELS) ---
 with st.sidebar:
@@ -64,8 +65,8 @@ with st.sidebar:
     st.header("🏟️ SESSION CONTROL")
     location = st.selectbox("Location", ["Gym", "Softball Field", "Track", "Weight Room"])
     
-    # Load data from CSV
-    vault = load_vault_from_csv()
+    # Load data from Github
+    vault = load_vault_from_github()
     sport_options = list(vault.keys()) if vault else ["No Data Found"]
     
     sport_choice = st.selectbox("Sport Database", sport_options)
@@ -73,7 +74,25 @@ with st.sidebar:
     
     st.divider()
     if st.button("🔄 GENERATE NEW SESSION", use_container_width=True):
-        st.session_state.current_session = None
+        if sport_choice in vault:
+            # Select 5 random exercises from the chosen sport CSV
+            exercises = random.sample(vault[sport_choice], min(len(vault[sport_choice]), 5))
+            st.session_state.current_session = exercises
+        else:
+            st.error("Please select a valid sport database.")
 
-# --- [UI AND CSS REMAINS THE SAME AS PREVIOUS VERSION] ---
-# (Apply the same CSS and loop logic as provided in the previous production-ready app)
+# --- 4. MAIN DISPLAY ---
+if st.session_state.current_session:
+    st.title(f"🚀 {sport_choice} Session: {difficulty}")
+    
+    for i, drill in enumerate(st.session_state.current_session):
+        with st.expander(f"Drill {i+1}: {drill['ex']}", expanded=True):
+            col1, col2, col3 = columns = st.columns(3)
+            col1.metric("Work", f"{drill['sets']} x {drill['base']} {drill['unit']}")
+            col2.metric("Rest", f"{drill['rest']}s")
+            col3.metric("Goal", drill['time_goal'])
+            
+            st.write(f"**Description:** {drill['desc']}")
+            st.write(f"**Focus:** {', '.join(drill['focus'])}")
+else:
+    st.info("Select a Sport and click 'Generate New Session' in the sidebar to begin.")
