@@ -3,136 +3,121 @@ import pandas as pd
 import random
 import time
 from datetime import datetime
-import pytz
 
-# --- 1. APP CONFIG & SESSION STATE ---
+# --- 1. CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
 if 'user_profile' not in st.session_state:
-    st.session_state.user_profile = {
-        "name": "Elite Athlete",
-        "sport": "General",
-        "level": "Pro",
-        "bio": "Striving for excellence."
-    }
+    st.session_state.user_profile = {"name": "Elite Athlete", "sport": "General", "level": "Pro"}
 
-# --- 2. SIDEBAR: PROFILE, INTENSITY, & TIMER ---
+# --- 2. SIDEBAR (LOCATION, INTENSITY, TIMER) ---
 with st.sidebar:
-    st.header("🎨 APPEARANCE")
-    dark_mode = st.toggle("Enable Dark Mode", value=True)
+    st.markdown("# 🛡️ ATHLETE HUB")
     
+    # PROFILE SECTION
+    with st.expander("👤 User Profile Settings"):
+        st.session_state.user_profile["name"] = st.text_input("Athlete Name", st.session_state.user_profile["name"])
+        st.session_state.user_profile["level"] = st.select_slider("Skill Level", ["Rookie", "Varsity", "College", "Pro"])
+    
+    st.markdown(f"**Athlete:** {st.session_state.user_profile['name']} | **Level:** {st.session_state.user_profile['level']}")
     st.divider()
-    st.header("👤 ATHLETE PROFILE")
-    with st.expander("Edit Profile"):
-        st.session_state.user_profile["name"] = st.text_input("Name", st.session_state.user_profile["name"])
-        st.session_state.user_profile["sport"] = st.selectbox("Sport", ["Basketball", "Softball", "Track", "General"])
-        st.session_state.user_profile["level"] = st.select_slider("Level", ["Rookie", "Varsity", "College", "Pro"])
-        st.session_state.user_profile["bio"] = st.text_area("Training Goal", st.session_state.user_profile["bio"])
 
-    # Profile Display Card
-    st.markdown(f"""
-    <div style="background-color:rgba(59, 130, 246, 0.1); padding:15px; border-radius:10px; border-left: 5px solid #3B82F6; margin-bottom:20px;">
-        <h3 style="margin:0; font-size:18px;">{st.session_state.user_profile['name']}</h3>
-        <p style="margin:0; font-size:14px; opacity:0.8;">{st.session_state.user_profile['sport']} | {st.session_state.user_profile['level']}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
+    # LOCATION / SPORT SELECTOR (The "Missing" Selector)
+    st.header("📍 SESSION SETUP")
+    sport_options = ["General", "Basketball", "Softball", "Track"]
+    selected_sport = st.selectbox("Select Training Location/Sport", sport_options)
+    num_drills = st.slider("Exercises per Session", 12, 15, 13)
+    
+    # INTENSITY METER
     st.header("📊 INTENSITY METER")
-    intensity = st.select_slider("Current Effort", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
-    st.progress({"Low": 25, "Moderate": 50, "High": 75, "Elite": 100}[intensity])
+    effort = st.select_slider("Current Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
+    intensity_map = {"Low": 25, "Moderate": 50, "High": 75, "Elite": 100}
+    st.progress(intensity_map[effort])
+    st.write(f"Training at **{effort}** intensity.")
 
     st.divider()
+
+    # REST TIMER
     st.header("⏱️ REST TIMER")
-    timer_seconds = st.number_input("Set Seconds", min_value=0, value=60, step=5)
-    if st.button("Start Rest Timer", use_container_width=True):
+    timer_val = st.number_input("Seconds", 0, 300, 60, step=5)
+    if st.button("Start Timer", use_container_width=True):
         ph = st.empty()
-        for t in range(timer_seconds, -1, -1):
-            ph.metric("Resting...", f"{t}s")
+        for t in range(timer_val, -1, -1):
+            ph.metric("Rest Remaining", f"{t}s")
             time.sleep(1)
         st.balloons()
-        ph.success("Back to it!")
+        ph.success("Work!")
 
-# --- 3. DYNAMIC THEMING ---
-primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
-card_bg = "#1E293B" if dark_mode else "#F1F5F9"
-text_color = "#F8FAFC" if dark_mode else "#1E293B"
+# --- 3. THEME & DATA LOADING ---
+st.markdown(f"""<style>
+    .stApp {{ background-color: #0F172A; color: #F8FAFC; }}
+    [data-testid="stExpander"] {{ background-color: #1E293B !important; border: 1px solid #3B82F6 !important; border-radius: 12px; }}
+</style>""", unsafe_allow_html=True)
 
-st.markdown(f"""
-    <style>
-    .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    [data-testid="stExpander"] {{ background-color: {card_bg} !important; border-radius: 12px !important; border: 1px solid #3B82F6 !important; }}
-    </style>
-    """, unsafe_allow_html=True)
-
-# --- 4. DATA LOADER ---
 @st.cache_data
-def load_vault():
-    files = {
+def load_data(sport):
+    urls = {
         "General": "https://raw.githubusercontent.com/belyeu/sprint-app/main/general.csv",
         "Basketball": "https://raw.githubusercontent.com/belyeu/sprint-app/main/basketball%20drills%20-%20Sheet1.csv",
         "Softball": "https://raw.githubusercontent.com/belyeu/sprint-app/main/softball.csv",
         "Track": "https://raw.githubusercontent.com/belyeu/sprint-app/main/track%20drills%20-%20track.csv"
     }
-    vault = {}
-    for sport, url in files.items():
-        try:
-            df = pd.read_csv(url)
-            vault[sport] = []
-            for _, row in df.iterrows():
-                vault[sport].append({
-                    "ex": str(row.get('Exercise') or row.get('Drill / Move Name') or "Unknown"),
-                    "desc": str(row.get('Detailed Description') or row.get('Description') or "No details."),
-                    "sets": int(row.get('Sets', 3)) if str(row.get('Sets')).isdigit() else 3,
-                    "reps": str(row.get('Reps/Dist.') or row.get('Base', '10')),
-                    "video": str(row.get('Video URL', "")),
-                    "rest": str(row.get('Rest', '60s'))
-                })
-        except: continue
-    return vault
+    try:
+        df = pd.read_csv(urls[sport])
+        # Clean column names to prevent "Unknown"
+        df.columns = [c.strip() for c in df.columns]
+        data_list = []
+        for _, row in df.iterrows():
+            # Robust mapping for different CSV headers
+            name = row.get('Exercise') or row.get('Drill / Move Name') or row.get('Drill') or "Unnamed Drill"
+            desc = row.get('Detailed Description') or row.get('Description') or "Perform with max effort."
+            sets = row.get('Sets', 3)
+            reps = row.get('Reps/Dist.') or row.get('Base') or "To Failure"
+            video = row.get('Video URL') or ""
+            
+            data_list.append({"ex": name, "desc": desc, "sets": int(sets) if str(sets).isdigit() else 3, "reps": reps, "video": video})
+        return data_list
+    except:
+        return []
 
-# --- 5. SESSION GENERATION ---
-vault = load_vault()
+# --- 4. GENERATE SESSION ---
 with st.sidebar:
-    st.divider()
-    st.header("🏟️ SESSION CONTROL")
-    sport_choice = st.selectbox("Sport Database", list(vault.keys()) if vault else ["General"])
-    num_drills = st.slider("Exercises", 12, 15, 13)
-    if st.button("🚀 GENERATE SESSION", use_container_width=True):
-        if sport_choice in vault:
-            st.session_state.current_session = random.sample(vault[sport_choice], min(len(vault[sport_choice]), num_drills))
-            st.session_state.active_sport = sport_choice
+    if st.button("🚀 GENERATE WORKOUT", use_container_width=True):
+        pool = load_data(selected_sport)
+        if pool:
+            st.session_state.current_session = random.sample(pool, min(len(pool), num_drills))
+            st.session_state.active_sport = selected_sport
+        else:
+            st.error("Could not load data. Check CSV headers.")
 
-# --- 6. MAIN INTERFACE ---
+# --- 5. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session:
-    st.subheader(f"⚡ {st.session_state.user_profile['name']}'s {st.session_state.active_sport} Session")
+    st.subheader(f"⚡ {st.session_state.active_sport} Session | Intensity: {effort}")
     
     for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"EXERCISE {i+1}: {drill['ex']}", expanded=(i == 0)):
-            col1, col2 = st.columns([1, 1])
-            
-            with col1:
-                st.markdown(f"**🎯 Focus:** {drill['desc']}")
-                st.markdown(f"**⏱️ Suggested Rest:** {drill['rest']}")
-                
-                st.markdown("### 🔢 Set Tracker")
+        with st.expander(f"EXERCISE {i+1}: {drill['ex']}", expanded=(i==0)):
+            c1, c2 = st.columns(2)
+            with c1:
+                st.info(f"**Instructions:** {drill['desc']}")
+                st.markdown("#### 🔢 Progress Tracker")
                 for s in range(drill['sets']):
-                    st.checkbox(f"Set {s+1} Complete ({drill['reps']})", key=f"check_{i}_{s}")
+                    st.checkbox(f"Set {s+1} ({drill['reps']})", key=f"check_{selected_sport}_{i}_{s}")
                 
-                st.markdown("### 📤 Upload Your Form")
-                st.file_uploader("Upload clip for analysis", type=['mp4', 'mov'], key=f"upload_{i}")
+                st.markdown("#### 📤 Form Upload")
+                st.file_uploader("Upload Clip", type=['mp4', 'mov'], key=f"up_{i}")
 
-            with col2:
-                st.markdown("### 📺 Demo Video")
-                if "http" in drill['video']:
+            with c2:
+                st.markdown("#### 📺 Demo Video")
+                if "http" in str(drill['video']):
                     st.video(drill['video'])
                 else:
-                    st.info("No demo video link found in database for this drill.")
+                    st.warning("No demo video available for this exercise.")
                 
                 if st.button(f"Log PR for {drill['ex']}", key=f"pr_{i}"):
-                    st.success("Personal Record Saved to Profile!")
+                    st.toast(f"New PR logged for {drill['ex']}!")
 else:
-    st.info(f"Welcome, {st.session_state.user_profile['name']}. Select your sport in the sidebar and click 'Generate Session' to begin.")
+    st.info("👋 Use the sidebar to select your sport and 'Generate Workout' to begin.")
