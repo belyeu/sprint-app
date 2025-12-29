@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import random
 import time
+from datetime import datetime
 
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
@@ -16,8 +17,10 @@ if 'user_profile' not in st.session_state:
     }
 if 'set_counts' not in st.session_state:
     st.session_state.set_counts = {}
+if 'workout_log' not in st.session_state:
+    st.session_state.workout_log = []
 
-# --- 2. SIDEBAR: APPEARANCE, PROFILE, & FILTERS ---
+# --- 2. SIDEBAR: APPEARANCE & FILTERS ---
 with st.sidebar:
     st.header("🎨 APPEARANCE")
     dark_mode = st.toggle("Enable Dark Mode", value=True)
@@ -62,7 +65,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA LOADING LOGIC ---
+# --- 4. DATA LOADING ---
 def load_data(sport):
     urls = {
         "General": "https://raw.githubusercontent.com/belyeu/sprint-app/main/general.csv",
@@ -72,11 +75,9 @@ def load_data(sport):
     }
     try:
         df = pd.read_csv(urls[sport])
-        df.columns = [c.strip() for c in df.columns] # Clean hidden spaces
-        
+        df.columns = [c.strip() for c in df.columns]
         data_list = []
         for _, row in df.iterrows():
-            # Support multiple header naming conventions
             name = row.get('Exercise') or row.get('Exercise Name') or row.get('Drill / Move Name') or "Unknown Exercise"
             data_list.append({
                 "ex": name,
@@ -101,6 +102,7 @@ with st.sidebar:
             st.session_state.current_session = random.sample(pool, min(len(pool), num_drills))
             st.session_state.active_sport = sport_choice
             st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
+            st.session_state.workout_log = []
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
@@ -122,7 +124,6 @@ if st.session_state.current_session:
                 st.markdown(f"**📝 Description:** {drill['desc']}")
                 st.write(f"**Goal:** {drill['sets']} Sets x {drill['reps']}")
                 
-                st.markdown("---")
                 # 1-BUTTON COUNTER
                 curr_sets = st.session_state.set_counts.get(i, 0)
                 if st.button(f"Log Set ({curr_sets}/{drill['sets']})", key=f"btn_{i}"):
@@ -134,25 +135,69 @@ if st.session_state.current_session:
                     st.success("✅ Exercise Complete!")
 
             with col2:
-                # IN-EXERCISE REST TIMER
-                st.markdown("#### ⏱️ Rest Timer")
-                try:
-                    rest_secs = int(''.join(filter(str.isdigit, str(drill['rest']))))
-                except:
-                    rest_secs = 60
+                # EXERCISE & REST TIMERS
+                t1, t2 = st.columns(2)
                 
-                if st.button(f"Start {rest_secs}s Rest", key=f"tmr_{i}"):
-                    ph = st.empty()
-                    for t in range(rest_secs, -1, -1):
-                        ph.metric("Resting...", f"{t}s")
-                        time.sleep(1)
-                    st.balloons()
-                    ph.success("Back to Work!")
-                
+                with t1:
+                    st.markdown("#### 🏃 Drill Timer")
+                    work_time = st.number_input("Seconds", 5, 300, 30, key=f"work_val_{i}")
+                    if st.button(f"Start Drill", key=f"work_btn_{i}"):
+                        ph = st.empty()
+                        for t in range(work_time, -1, -1):
+                            ph.metric("Go!", f"{t}s")
+                            time.sleep(1)
+                        st.toast("Drill Finished!")
+
+                with t2:
+                    st.markdown("#### ⏱️ Rest Timer")
+                    try:
+                        rest_secs = int(''.join(filter(str.isdigit, str(drill['rest']))))
+                    except:
+                        rest_secs = 60
+                    if st.button(f"Start Rest", key=f"tmr_{i}"):
+                        ph = st.empty()
+                        for t in range(rest_secs, -1, -1):
+                            ph.metric("Resting...", f"{t}s")
+                            time.sleep(1)
+                        st.balloons()
+
                 st.markdown("---")
                 if "http" in str(drill['video']):
                     st.video(drill['video'])
                 st.file_uploader("Upload Form Clip", type=['mp4', 'mov'], key=f"up_{i}")
+
+    # --- 7. POST WORKOUT SUMMARY ---
+    st.divider()
+    if st.button("🏁 FINISH WORKOUT & VIEW SUMMARY", use_container_width=True):
+        st.balloons()
+        st.header("📝 Post-Workout Summary")
+        
+        summary_data = []
+        total_completed = 0
+        for i, drill in enumerate(st.session_state.current_session):
+            completed = st.session_state.set_counts.get(i, 0)
+            total_completed += completed
+            summary_data.append({
+                "Exercise": drill['ex'],
+                "Sets Target": drill['sets'],
+                "Sets Done": completed,
+                "Status": "✅ Complete" if completed >= drill['sets'] else "⚠️ Partial"
+            })
+        
+        # Summary Visuals
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Total Sets", total_completed)
+        m2.metric("Intensity", effort)
+        m3.metric("Date", datetime.now().strftime("%m/%d/%Y"))
+        
+        st.table(pd.DataFrame(summary_data))
+        
+        st.download_button(
+            label="Download Workout Report",
+            data=pd.DataFrame(summary_data).to_csv(index=False),
+            file_name=f"workout_{datetime.now().strftime('%Y%m%d')}.csv",
+            mime="text/csv"
+        )
 
 else:
     st.info("👋 Set your filters in the sidebar and click 'Generate Workout' to begin.")
