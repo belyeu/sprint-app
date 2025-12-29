@@ -4,23 +4,75 @@ import random
 from datetime import datetime
 import pytz
 
-# --- 1. SETUP & PERSISTENCE ---
-st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
+# --- 1. SETUP & THEME ---
+st.set_page_config(
+    page_title="Pro-Athlete Tracker", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Universal Dark Mode & Mobile Responsive CSS
+st.markdown("""
+    <style>
+    /* Global Styles */
+    :root {
+        --primary-blue: #3B82F6;
+        --bg-dark: #0F172A;
+        --card-dark: #1E293B;
+        --text-main: #F8FAFC;
+    }
+
+    /* Target all platforms (iOS/Android/Desktop) */
+    .stApp {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+    }
+
+    /* Drill Cards */
+    [data-testid="stExpander"] {
+        background-color: var(--card-dark) !important;
+        border: 1px solid var(--primary-blue) !important;
+        border-radius: 12px !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* Metric Styling */
+    [data-testid="stMetricValue"] {
+        color: var(--primary-blue) !important;
+        font-weight: bold !important;
+    }
+    
+    .stMetric {
+        background-color: rgba(59, 130, 246, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #020617 !important;
+    }
+    
+    /* Responsive font sizing for mobile */
+    @media (max-width: 640px) {
+        .stMetricValue { font-size: 1.5rem !important; }
+        h1 { font-size: 1.8rem !important; }
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
-if 'active_sport' not in st.session_state:
-    st.session_state.active_sport = ""
 
 # --- 2. DYNAMIC GITHUB CSV LOADER ---
 def load_vault_from_csv():
     # Finalized verified paths
     files = {
-        "Basketball": "https://raw.githubusercontent.com/belyeu/sprint-app/main/basketball%20drills%20-%20Sheet1.csv",
         "General": "https://raw.githubusercontent.com/belyeu/sprint-app/main/general.csv",
+        "Basketball": "https://raw.githubusercontent.com/belyeu/sprint-app/main/basketball%20drills%20-%20Sheet1.csv",
         "Softball": "https://raw.githubusercontent.com/belyeu/sprint-app/main/softball.csv",
         "Track": "https://raw.githubusercontent.com/belyeu/sprint-app/main/track%20drills%20-%20track.csv"
     }
@@ -29,104 +81,78 @@ def load_vault_from_csv():
 
     for sport_name, url in files.items():
         try:
-            # Read directly from the raw GitHub CSV link
             df = pd.read_csv(url)
             vault[sport_name] = []
             
             for _, row in df.iterrows():
-                # Flexible Header Mapping for name, description, and category
-                name = row.get('Drill / Move Name') or row.get('Exercise Name') or row.get('Skill / Action') or row.get('Exercise')
-                desc = row.get('Specific Execution / Detail') or row.get('Equipment / Focus') or row.get('Description')
-                cat = row.get('Category') or row.get('Type') or "General"
-                
-                if pd.notnull(name):
-                    vault[sport_name].append({
-                        "ex": str(name),
-                        "cat": str(cat),
-                        "sets": str(row.get('Sets', '3')),
-                        "base": str(row.get('Reps/Dist.')) or str(row.get('Base', '10')),
-                        "unit": str(row.get('Unit', 'reps')),
-                        "rest": str(row.get('Rest', '60s')),
-                        "time_goal": str(row.get('Goal', 'N/A')),
-                        "desc": str(desc) if pd.notnull(desc) else "No description provided.",
-                        "focus": str(row.get('Primary Focus', 'Performance'))
-                    })
+                # Mapping specifically requested fields
+                # fallback values ensure the app doesn't crash if a row is empty
+                vault[sport_name].append({
+                    "ex": str(row.get('Exercise') or row.get('Drill / Move Name') or "Unknown Exercise"),
+                    "desc": str(row.get('Detailed Description') or row.get('Description') or "No description provided."),
+                    "sets": str(row.get('Sets', '3')),
+                    "reps": str(row.get('Reps/Dist.') or row.get('Base', '10')),
+                    "focus": str(row.get('Primary Focus', 'Performance')),
+                    "stars": str(row.get('Fitness Stars', '⭐⭐⭐')),
+                    "unit": str(row.get('Unit', 'reps')),
+                    "rest": str(row.get('Rest', '60s'))
+                })
         except Exception:
-            # Errors will appear in the sidebar if a link fails
-            st.sidebar.error(f"❌ {sport_name} database failed to load.")
+            st.sidebar.error(f"❌ {sport_name} database unavailable.")
             
     return vault
 
-# --- 3. SIDEBAR (CONTROLS) ---
+# --- 3. SIDEBAR CONTROLS ---
 with st.sidebar:
     st.markdown(f"""
-    <div style="background-color:#F8FAFC; padding:20px; border-radius:15px; border: 2px solid #3B82F6; text-align:center; margin-bottom:25px;">
-        <h1 style="color:#000000; margin:0; font-size:28px;">{get_now_est().strftime('%I:%M %p')}</h1>
-        <p style="color:#1E293B; margin:0; font-weight:bold;">{get_now_est().strftime('%A, %b %d').upper()}</p>
+    <div style="background-color:#1E293B; padding:15px; border-radius:10px; border: 1px solid #3B82F6; text-align:center;">
+        <h2 style="color:#F8FAFC; margin:0; font-size:24px;">{get_now_est().strftime('%I:%M %p')}</h2>
+        <p style="color:#94A3B8; margin:0;">{get_now_est().strftime('%A, %b %d')}</p>
     </div>
     """, unsafe_allow_html=True)
     
-    st.header("🏟️ SESSION CONTROL")
-    location = st.selectbox("Location", ["Gym", "Field", "Track", "Weight Room"])
+    st.header("🏟️ SESSION GENERATOR")
     
-    # Load all databases from GitHub
     vault = load_vault_from_csv()
-    sport_options = list(vault.keys()) if vault else ["No Data Found"]
+    sport_options = list(vault.keys()) if vault else ["General"]
     
-    sport_choice = st.selectbox("Sport Database", sport_options)
+    # "General" set as default database
+    default_index = sport_options.index("General") if "General" in sport_options else 0
+    sport_choice = st.selectbox("Select Database", sport_options, index=default_index)
     
-    # Category filter (Dynamic based on selected CSV content)
-    available_cats = []
-    if sport_choice in vault:
-        available_cats = sorted(list(set(d['cat'] for d in vault[sport_choice])))
-    selected_cats = st.multiselect("Filter by Type (Optional)", available_cats)
-    
-    num_drills = st.slider("Drills per Session", 1, 15, 6)
-    intensity = st.select_slider("Intensity", options=["Standard", "Elite", "Pro"], value="Elite")
+    # Minimum requirement of 12-15 exercises
+    num_drills = st.slider("Exercises per Session", 12, 18, 14)
     
     st.divider()
-    if st.button("🔄 GENERATE NEW SESSION", use_container_width=True):
+    if st.button("🚀 GENERATE PRO SESSION", use_container_width=True):
         if sport_choice in vault and vault[sport_choice]:
             pool = vault[sport_choice]
-            
-            # Apply category filter if user selected any
-            if selected_cats:
-                pool = [d for d in pool if d['cat'] in selected_cats]
-            
-            if pool:
-                sample_size = min(len(pool), num_drills)
-                st.session_state.current_session = random.sample(pool, sample_size)
-                st.session_state.active_sport = sport_choice
-            else:
-                st.error("No drills found for the selected categories.")
+            # Handle if the database is smaller than requested number
+            actual_count = min(len(pool), num_drills)
+            st.session_state.current_session = random.sample(pool, actual_count)
+            st.session_state.active_sport = sport_choice
         else:
-            st.error("The selected database is empty or unavailable.")
+            st.error("Database empty or not found.")
 
 # --- 4. MAIN INTERFACE ---
 if st.session_state.current_session:
-    st.title(f"🚀 {st.session_state.active_sport} Session: {intensity}")
-    st.subheader(f"📍 Location: {location}")
-    
-    for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"DRILL {i+1}: {drill['ex']} ({drill['cat']})", expanded=True):
-            col1, col2, col3 = st.columns(3)
-            
-            # Formatted Work metric
-            work_text = f"{drill['sets']} x {drill['base']} {drill['unit']}"
-            col1.metric("Work", work_text)
-            col2.metric("Rest", drill['rest'])
-            col3.metric("Goal", drill['time_goal'])
-            
-            st.markdown(f"**Execution:** {drill['desc']}")
-            st.markdown(f"**Focus:** {drill['focus']}")
-            st.checkbox("Mark Complete", key=f"drill_check_{i}")
-else:
-    st.info("Pick a database in the sidebar and click 'Generate New Session' to begin.")
+    st.title(f"🔥 {st.session_state.active_sport} Session")
+    st.caption(f"Target: {len(st.session_state.current_session)} High-Intensity Exercises")
 
-# --- STYLING ---
-st.markdown("""
-    <style>
-    .stMetric { background-color: #f0f2f6; padding: 10px; border-radius: 10px; }
-    [data-testid="stExpander"] { border: 1px solid #3B82F6; border-radius: 15px; margin-bottom: 10px; }
-    </style>
-    """, unsafe_allow_html=True)
+    for i, drill in enumerate(st.session_state.current_session):
+        with st.expander(f"EXERCISE {i+1}: {drill['ex']}", expanded=(i == 0)):
+            # Row 1: Metrics
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Work", f"{drill['sets']} x {drill['reps']}")
+            c2.metric("Difficulty", drill['stars'])
+            c3.metric("Rest", drill['rest'])
+            
+            # Row 2: Detailed Info
+            st.markdown(f"**🎯 Primary Focus:** {drill['focus']}")
+            st.markdown(f"**📝 Instructions:** {drill['desc']}")
+            
+            # Interactive Finish
+            st.checkbox("Exercise Complete", key=f"drill_{i}")
+
+else:
+    st.info("👋 Welcome! Use the sidebar to generate a 12-15 exercise session. Defaulting to 'General' database.")
