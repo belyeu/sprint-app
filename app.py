@@ -7,6 +7,7 @@ from datetime import datetime
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
+# Persistent Session State initialization
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
 if 'user_profile' not in st.session_state:
@@ -17,8 +18,8 @@ if 'user_profile' not in st.session_state:
     }
 if 'set_counts' not in st.session_state:
     st.session_state.set_counts = {}
-if 'workout_log' not in st.session_state:
-    st.session_state.workout_log = []
+if 'workout_finished' not in st.session_state:
+    st.session_state.workout_finished = False
 
 # --- 2. SIDEBAR: APPEARANCE & FILTERS ---
 with st.sidebar:
@@ -75,10 +76,15 @@ def load_data(sport):
     }
     try:
         df = pd.read_csv(urls[sport])
-        df.columns = [c.strip() for c in df.columns]
+        df.columns = [c.strip() for c in df.columns] # Clean column headers
+        
         data_list = []
         for _, row in df.iterrows():
+            # Catching various column naming possibilities to prevent "Unknown"
             name = row.get('Exercise') or row.get('Exercise Name') or row.get('Drill / Move Name') or "Unknown Exercise"
+            loc = str(row.get('Location', 'Gym'))
+            
+            # Add to list
             data_list.append({
                 "ex": name,
                 "desc": row.get('Detailed Description') or row.get('Description') or "No details.",
@@ -87,7 +93,8 @@ def load_data(sport):
                 "sets": int(row.get('Sets', 3)) if str(row.get('Sets')).isdigit() else 3,
                 "reps": row.get('Reps/Dist.') or "10",
                 "rest": row.get('Rest') or "60s",
-                "video": row.get('Video URL') or ""
+                "video": row.get('Video URL') or "",
+                "location": loc
             })
         return data_list
     except:
@@ -98,11 +105,14 @@ with st.sidebar:
     st.divider()
     if st.button("🚀 GENERATE WORKOUT", use_container_width=True):
         pool = load_data(sport_choice)
-        if pool:
-            st.session_state.current_session = random.sample(pool, min(len(pool), num_drills))
+        # Filter pool by selected location if applicable
+        filtered_pool = [d for d in pool if d['location'] in location_filter] or pool
+        
+        if filtered_pool:
+            st.session_state.current_session = random.sample(filtered_pool, min(len(filtered_pool), num_drills))
             st.session_state.active_sport = sport_choice
             st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
-            st.session_state.workout_log = []
+            st.session_state.workout_finished = False
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
@@ -112,7 +122,7 @@ g1, g2 = st.columns(2)
 g1.metric("High School Goal", st.session_state.user_profile["hs_goal"])
 g2.metric("College Goal", st.session_state.user_profile["college_goal"])
 
-if st.session_state.current_session:
+if st.session_state.current_session and not st.session_state.workout_finished:
     st.subheader(f"⚡ {st.session_state.active_sport} Session | Location: {', '.join(location_filter)}")
     
     for i, drill in enumerate(st.session_state.current_session):
@@ -124,6 +134,7 @@ if st.session_state.current_session:
                 st.markdown(f"**📝 Description:** {drill['desc']}")
                 st.write(f"**Goal:** {drill['sets']} Sets x {drill['reps']}")
                 
+                st.markdown("---")
                 # 1-BUTTON COUNTER
                 curr_sets = st.session_state.set_counts.get(i, 0)
                 if st.button(f"Log Set ({curr_sets}/{drill['sets']})", key=f"btn_{i}"):
@@ -140,10 +151,10 @@ if st.session_state.current_session:
                 
                 with t1:
                     st.markdown("#### 🏃 Drill Timer")
-                    work_time = st.number_input("Seconds", 5, 300, 30, key=f"work_val_{i}")
+                    work_time = st.number_input("Seconds", 5, 600, 30, key=f"work_val_{i}")
                     if st.button(f"Start Drill", key=f"work_btn_{i}"):
                         ph = st.empty()
-                        for t in range(work_time, -1, -1):
+                        for t in range(int(work_time), -1, -1):
                             ph.metric("Go!", f"{t}s")
                             time.sleep(1)
                         st.toast("Drill Finished!")
@@ -164,40 +175,55 @@ if st.session_state.current_session:
                 st.markdown("---")
                 if "http" in str(drill['video']):
                     st.video(drill['video'])
+                else:
+                    st.caption("No demo video available.")
                 st.file_uploader("Upload Form Clip", type=['mp4', 'mov'], key=f"up_{i}")
 
-    # --- 7. POST WORKOUT SUMMARY ---
+    # --- 7. POST WORKOUT SUMMARY LOGIC ---
     st.divider()
     if st.button("🏁 FINISH WORKOUT & VIEW SUMMARY", use_container_width=True):
-        st.balloons()
-        st.header("📝 Post-Workout Summary")
-        
-        summary_data = []
-        total_completed = 0
-        for i, drill in enumerate(st.session_state.current_session):
-            completed = st.session_state.set_counts.get(i, 0)
-            total_completed += completed
-            summary_data.append({
-                "Exercise": drill['ex'],
-                "Sets Target": drill['sets'],
-                "Sets Done": completed,
-                "Status": "✅ Complete" if completed >= drill['sets'] else "⚠️ Partial"
-            })
-        
-        # Summary Visuals
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Total Sets", total_completed)
-        m2.metric("Intensity", effort)
-        m3.metric("Date", datetime.now().strftime("%m/%d/%Y"))
-        
-        st.table(pd.DataFrame(summary_data))
-        
+        st.session_state.workout_finished = True
+        st.rerun()
+
+elif st.session_state.workout_finished:
+    st.balloons()
+    st.header("📝 Post-Workout Summary")
+    
+    summary_data = []
+    total_completed = 0
+    for i, drill in enumerate(st.session_state.current_session):
+        completed = st.session_state.set_counts.get(i, 0)
+        total_completed += completed
+        summary_data.append({
+            "Exercise": drill['ex'],
+            "Sets Target": drill['sets'],
+            "Sets Done": completed,
+            "Status": "✅ Complete" if completed >= drill['sets'] else "⚠️ Partial"
+        })
+    
+    # Summary Visuals
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Total Sets Done", total_completed)
+    m2.metric("Intensity Level", effort)
+    m3.metric("Session Date", datetime.now().strftime("%m/%d/%Y"))
+    
+    st.table(pd.DataFrame(summary_data))
+    
+    # Action Buttons
+    c1, c2 = st.columns(2)
+    with c1:
         st.download_button(
-            label="Download Workout Report",
+            label="📥 Download CSV Report",
             data=pd.DataFrame(summary_data).to_csv(index=False),
             file_name=f"workout_{datetime.now().strftime('%Y%m%d')}.csv",
-            mime="text/csv"
+            mime="text/csv",
+            use_container_width=True
         )
+    with c2:
+        if st.button("🔄 Start New Session", use_container_width=True):
+            st.session_state.current_session = None
+            st.session_state.workout_finished = False
+            st.rerun()
 
 else:
-    st.info("👋 Set your filters in the sidebar and click 'Generate Workout' to begin.")
+    st.info("👋 Set your filters in the sidebar and click 'Generate Workout' to begin your training.")
