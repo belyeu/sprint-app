@@ -1,0 +1,65 @@
+#,Environment,Category,Exercise Name,Equipment / Focus,Sets,Reps/Dist.,Primary Focus,Stars,Detailed Description,High School Goals,College Goals
+1,Field,Lower Body,Walking Lunges,Bodyweight,3,20m,Dynamic Strength,⭐⭐,Forward steps with back knee hovering 1 inch off ground.,Maintain torso posture for 20m.,Weighted (20lb DBs) for 20m.
+2,Field,Lower Body,Reverse Lunges,Balance & Glutes,3,10 ea.,Unilateral Stability,⭐⭐,Step back and drop hip vertically; drive through front heel.,No lateral wobbling at the knee.,1.0x Bodyweight on Barbell.
+3,Field,Lower Body,Step-Ups,Knee Stability,3,8 ea.,Patellar Control,⭐⭐,Drive up onto box; slow 3-sec descent to the floor.,Level hips throughout move.,"15-20"" box with 25lb DBs."
+4,Field,Upper Body,Push-Ups,Horizontal Press,3,Max-1,Upper Body Power,⭐⭐⭐,Chest to floor; elbows at 45 degrees; core locked tight.,25+ consecutive reps.,50+ reps or weighted (+25lbs).
+5,Field,Core,Plank (Forearm),Isometric Strength,3,45-60s,Pelvic Stability,⭐⭐,Glutes squeezed; no sagging in the lower back.,60 seconds unbroken.,120 seconds with 25lb plate.
+6,Field,Core,Side Plank,Lateral Stability,3,30s ea.,Oblique Strength,⭐⭐,Elbow under shoulder; hips stacked and driven high.,45 seconds per side.,60s per side with leg lift.
+7,Field,Core,Russian Twists,Rotational Power,3,20 reps,Torso Rotation,⭐⭐⭐,V-sit position; rotate shoulders fully side-to-side.,20 reps with 10lb Med Ball.,20 reps with 25lb Plate.
+8,Field,Core,Deadbugs,Spinal Control,3,12 reps,Lumbar Health,⭐,Opposite arm/leg reach while pushing back into floor.,Lower back never leaves floor.,"20 slow, perfectly synced reps."
+9,Field,Core,Bird-Dogs,Posterior Health,3,10 ea.,Spinal Alignment,⭐,On all fours; reach and hold for 2s with flat back.,Square hips to the ground.,10 reps with 5-sec holds.
+10,Field,Functional,Box Jumps,Vertical Power,4,5 reps,Explosive Leap,⭐⭐⭐,Rapid dip and explosion; land softly in a partial squat.,24-inch Box.,30-36 inch Box.
+11,Field,Functional,Med Ball Slams,Explosive Core,4,8 reps,Velocity Force,⭐⭐⭐,Reach high on toes; slam ball down using only core.,10lb ball; high velocity.,20lb ball; max impact.
+12,Field,Functional,Burpees,Conditioning,3,12 reps,Metabolic Cap.,⭐⭐⭐⭐,Chest to floor; explosive jump with overhead clap.,12 reps in < 45 seconds.,20 reps in < 60 seconds.
+13,Field,Functional,Mountain Climbers,High-Int. Core,3,30 sec,Hip Frequency,⭐⭐⭐,Drive knees to chest rapidly while in push-up plank.,High knee frequency; flat back.,60+ knee drives in 30 seconds.
+14,Field,Mobility,Spiderman Lunges,Hip & Thoracic,2,5 ea.,Full Range Motion,⭐⭐,Deep lunge; elbow to instep; rotate arm to sky.,Elbow touches floor.,Deep stretch with fluid rotation.
+15,Field,Mobility,Inchworms,Post. Flex,2,8 reps,Hamstring/Shoulder,⭐⭐,Walk hands out to plank and feet up to hands.,Keep legs straight throughout.,"Hands walk 12"" past shoulders."
+16,Field,Mobility,Scorpion Stretch,Lower Back,2,8 ea.,Decompression,⭐,Lying face down; reach foot toward opposite hand.,Foot touches floor behind you.,"Fluid, rhythmic hip transition."
+17,Field,Mobility,Cat-Cow,Spinal Mobility,2,10 reps,Vertebral Flexion,⭐,Cycle between arched and rounded back with breath.,Full spinal articulation.,Synchronized deep breathing.
+18,Field,Mobility,90/90 Switches,Hip Rotation,2,10 ea.,Int/Ext Rotation,⭐⭐,Seated; rotate knees side to side without using hands.,Upright torso; no hand assist.,Hips stay glued to floor.
+19,Field,Mobility,Leg Swings (F/B),Linear Flow,2,10 ea.,Active Hamstring,⭐,Swing leg forward/backward with locked knee.,Toe to eye level.,Controlled core; no torso sway.
+20,Field,Mobility,Leg Swings (S/S),Lateral Flow,2,10 ea.,Adductor Flow,⭐,Swing leg side-to-side across the body.,Full range lateral reach.,Foot reaches shoulder height.
+21,Weight Room,Knee Dom.,Barbell Back Squat,Barbell,4,5 reps,Absolute Strength,⭐⭐⭐⭐⭐,Bar on traps; descend until hip crease is below knee.,1.0x Bodyweight.,1.5x Bodyweight.
+22,Weight Room,Knee Dom.,Barbell Front Squat,Barbell,4,6 reps,Anterior Power,⭐⭐⭐⭐,Bar on front delts; elbows up; vertical torso.,0.8x Bodyweight.,1.2x Bodyweight.
+23,Weight Room,Knee Dom.,Goblet Squat,DB/KB,3,10 reps,Mechanics,⭐⭐,Hold weight at chest; push knees out on descent.,35lb DB for 10 reps.,70lb DB for 10 reps.
+24,Weight Room,Knee Dom.,Leg Press,Machine,3,12 reps,Quad Hypertrophy,⭐⭐⭐,Controlled descent; do not lock out knees at top.,1.5x Bodyweight.,3.0x Bodyweight.
+25,Weight Room,Knee Dom.,Leg Extension,Machine,3,15 reps,Isolated Knee,⭐⭐,Squeeze quads at full extension; slow release.,80 lbs for 15 reps.,150 lbs for 15 reps.
+26,Weight Room,Knee Dom.,Bulgarian Split Squat,DBs/Bench,3,8 ea.,Single-Leg Force,⭐⭐⭐⭐,Rear foot elevated; focus on depth and front quad.,25lb DBs for 8 reps.,60lb DBs for 8 reps.
+27,Weight Room,Hip Dom.,Conv. Deadlift,Barbell,4,3-5 reps,Total Body Pull,⭐⭐⭐⭐⭐,Flat back; drive through floor; lockout at hips.,1.25x Bodyweight.,2.0x Bodyweight.
+28,Weight Room,Hip Dom.,Sumo Deadlift,Barbell,3,5 reps,Glute/Adductor,⭐⭐⭐⭐,Wide stance; vertical shins; focus on glute drive.,1.25x Bodyweight.,2.0x Bodyweight.
+29,Weight Room,Hip Dom.,RDL,Barbell/DB,3,8 reps,Hamstring Length,⭐⭐⭐,Hinge at hips; lower bar to mid-shin; feel stretch.,0.75x Bodyweight.,1.25x Bodyweight.
+30,Weight Room,Hip Dom.,Stiff-Leg Deadlift,Barbell,3,8 reps,Lower Back/Ham.,⭐⭐⭐,Similar to RDL but with nearly locked knees.,0.5x Bodyweight.,1.0x Bodyweight.
+31,Weight Room,Hip Dom.,Glute Ham Raise,GHD Bench,3,8 reps,Eccentric Ham.,⭐⭐⭐⭐⭐,Use hams to pull body up; slow 4-sec descent.,3 assisted reps.,10 unassisted reps.
+32,Weight Room,Hip Dom.,Leg Curl,Machine,3,12 reps,Knee Flexion,⭐⭐,Pull heels to glutes; keep hips pressed into pad.,70 lbs for 12 reps.,130 lbs for 12 reps.
+33,Weight Room,Push,Flat Bench Press,Barbell,4,5 reps,Upper Body Force,⭐⭐⭐⭐,Touch chest; explosive press; feet planted.,0.9x Bodyweight.,1.25x Bodyweight.
+34,Weight Room,Push,Incline Bench Press,Barbell/DB,3,8 reps,Upper Pec Power,⭐⭐⭐,45-degree angle; focus on upper chest stretch.,0.7x Bodyweight.,1.0x Bodyweight.
+35,Weight Room,Push,DB Chest Press,Dumbbells,3,10 reps,Shoulder Stability,⭐⭐⭐,Neutral or 45-degree grip; deeper ROM than bar.,35lb DBs for 10 reps.,75lb DBs for 10 reps.
+36,Weight Room,Push,Overhead Press,Barbell,3,6 reps,Vertical Pressing,⭐⭐⭐⭐,Stand tall; press bar overhead; head through at top.,0.5x Bodyweight.,0.8x Bodyweight.
+37,Weight Room,Push,Arnold Press,Dumbbells,3,10 reps,Multi-Angle,⭐⭐⭐,Rotate palms from facing you to facing away.,20lb DBs for 10 reps.,45lb DBs for 10 reps.
+38,Weight Room,Push,Dips,Parallel Bars,3,10 reps,Vertical Pushing,⭐⭐⭐,Lean forward for chest; stay vertical for triceps.,10 Bodyweight reps.,15 reps with 25lb plate.
+39,Weight Room,Push,Lateral/Front Raises,Dumbbells,3,12 reps,Shoulder Deltoid,⭐⭐,Raise arms to shoulder height; no swinging.,10lb DBs; no momentum.,25lb DBs; strict form.
+40,Weight Room,Push,Upright Rows,EZ-Bar,3,10 reps,Traps & Delts,⭐⭐⭐,Pull bar to chin; lead with elbows.,45 lbs for 10 reps.,95 lbs for 10 reps.
+41,Weight Room,Pull,Pull-Ups / Chin-Ups,Bar,3,Max,Vertical Pull,⭐⭐⭐⭐,Full extension to chin over bar; no kipping.,8 consecutive reps.,15+ reps or +45lbs.
+42,Weight Room,Pull,Lat Pulldowns,Machine,3,10 reps,Hypertrophy,⭐⭐⭐,Pull bar to upper chest; squeeze lats.,100 lbs for 10 reps.,180 lbs for 10 reps.
+43,Weight Room,Pull,Barbell Rows,Barbell,3,8 reps,Horizontal Pull,⭐⭐⭐⭐,45-degree hinge; pull bar to belly button.,0.75x Bodyweight.,1.1x Bodyweight.
+44,Weight Room,Pull,1-Arm DB Rows,Dumbbell,3,10 ea.,Unilateral Back,⭐⭐⭐,Pull DB to hip; keep shoulders square.,40lb DB for 10 reps.,90lb DB for 10 reps.
+45,Weight Room,Pull,Seated Cable Rows,Machine,3,12 reps,Postural,⭐⭐⭐,Sit tall; pull handle to stomach; squeeze blades.,100 lbs for 12 reps.,180 lbs for 12 reps.
+46,Weight Room,Pull,T-Bar Rows,Landmine,3,8 reps,Thickness,⭐⭐⭐,Straddle bar; pull with narrow grip to chest.,1.0x Bodyweight.,1.5x Bodyweight.
+47,Weight Room,Pull,Face Pulls,Cable,3,15 reps,Rear Delt,⭐⭐,Pull rope to forehead; pull ends apart.,40 lbs; perfect squeeze.,80 lbs; hold contraction.
+48,Weight Room,Pull,Rear Delt Flys,DBs,3,15 reps,Shoulder Health,⭐⭐,Bent over; fly arms out like wings.,5lb DBs; no swing.,15lb DBs; strict pause.
+49,Weight Room,Pull,Shrugs,Barbell/DB,3,12 reps,Trap Dev.,⭐⭐,Elevate shoulders to ears; hold 1s.,1.0x Bodyweight.,1.75x Bodyweight.
+50,Weight Room,Arms,Barbell Bicep Curls,Barbell,3,10 reps,Hypertrophy,⭐⭐,Full ROM; no rocking torso.,45 lbs for 10 reps.,95 lbs for 10 reps.
+51,Weight Room,Arms,Hammer Curls,Dumbbells,3,12 reps,Brachialis,⭐⭐,Neutral grip (thumbs up); squeeze at top.,20lb DBs for 12 reps.,45lb DBs for 12 reps.
+52,Weight Room,Arms,Preacher Curls,Bench,3,10 reps,Peak Focus,⭐⭐,Arms on pad; isolates bicep completely.,35 lbs for 10 reps.,75 lbs for 10 reps.
+53,Weight Room,Arms,Concentration Curls,Dumbbell,3,12 reps,Isolated Work,⭐⭐,Seated; elbow against inner thigh.,15lb DB for 12 reps.,35lb DB for 12 reps.
+54,Weight Room,Arms,Reverse Grip Curls,Barbell,3,12 reps,Wrist/Extensor,⭐⭐,Overhand grip; builds thick forearms.,35 lbs for 12 reps.,75 lbs for 12 reps.
+55,Weight Room,Arms,Tricep Pushdowns,Cable,3,12 reps,Lateral Head,⭐⭐,Lock elbows at sides; extend arms fully.,50 lbs for 12 reps.,100 lbs for 12 reps.
+56,Weight Room,Arms,Skull Crushers,EZ-Bar,3,10 reps,Long Head,⭐⭐⭐,Lower bar to forehead; extend upward.,45 lbs for 10 reps.,95 lbs for 10 reps.
+57,Weight Room,Arms,Overhead Ext.,DB/Cable,3,12 reps,Stretch/Force,⭐⭐,Weight behind head; extend arms to sky.,25lb DB for 12 reps.,65lb DB for 12 reps.
+58,Weight Room,Lower Leg,Standing Calf Raise,Machine,3,15 reps,Plantar Flexion,⭐⭐,Rise onto toes; 2-sec pause at top.,1.0x Bodyweight.,1.5x Bodyweight.
+59,Weight Room,Lower Leg,Tibialis Raises,Bodyweight,3,20 reps,Ankle Stability,⭐⭐,Lean against wall; lift toes toward shins.,20 reps unbroken.,20 reps with 10lb KB.
+60,Weight Room,Core,Hanging Leg Raises,Bar,3,12 reps,Lower Ab,⭐⭐⭐,Hang from bar; lift toes to touch bar.,Knees to chest (12).,Toes to bar (12).
+61,Weight Room,Core,Woodchoppers,Cable,3,12 ea.,Rotational,⭐⭐⭐,Diagonal pull across body; pivot back foot.,30 lbs for 12 reps.,60 lbs for 12 reps.
+62,Weight Room,Core,Pallof Press,Cable,3,10 ea.,Anti-Rotation,⭐⭐⭐,Hold handle at chest; press out and resist pull.,20 lbs; zero torso tilt.,40 lbs; zero torso tilt.
+63,Weight Room,Functional,KB Swings,Kettlebell,4,15 reps,Hinge Explosive,⭐⭐⭐,Hinge at hips; snap glutes to swing bell.,35lb KB for 15 reps.,70lb KB for 15 reps.
+64,Weight Room,Functional,Farmer Carries,Heavy DBs,3,40m,Grip/Pillar,⭐⭐⭐,"Fast, controlled walk with heavy load.",0.5x Bodyweight/hand.,0.8x Bodyweight/hand.
