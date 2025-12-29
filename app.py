@@ -17,7 +17,7 @@ if 'active_sport' not in st.session_state:
 
 # --- 2. DYNAMIC GITHUB CSV LOADER ---
 def load_vault_from_csv():
-    # Updated paths to use the new simplified filenames
+    # Finalized verified paths
     files = {
         "Basketball": "https://raw.githubusercontent.com/belyeu/sprint-app/main/basketball%20drills%20-%20Sheet1.csv",
         "General": "https://raw.githubusercontent.com/belyeu/sprint-app/main/general.csv",
@@ -29,14 +29,14 @@ def load_vault_from_csv():
 
     for sport_name, url in files.items():
         try:
-            # Fetching raw data directly from GitHub
+            # Read directly from the raw GitHub CSV link
             df = pd.read_csv(url)
             vault[sport_name] = []
             
             for _, row in df.iterrows():
-                # Flexible header mapping for different CSV layouts
+                # Flexible Header Mapping for name, description, and category
                 name = row.get('Drill / Move Name') or row.get('Exercise Name') or row.get('Skill / Action') or row.get('Exercise')
-                desc = row.get('Specific Execution / Detail') or row.get('Equipment / Focus') or row.get('Thrower/Fielder Mechanics') or row.get('Description')
+                desc = row.get('Specific Execution / Detail') or row.get('Equipment / Focus') or row.get('Description')
                 cat = row.get('Category') or row.get('Type') or "General"
                 
                 if pd.notnull(name):
@@ -52,8 +52,8 @@ def load_vault_from_csv():
                         "focus": str(row.get('Primary Focus', 'Performance'))
                     })
         except Exception:
-            # Shows error in sidebar if a specific file won't load
-            st.sidebar.error(f"❌ {sport_name} failed to load.")
+            # Errors will appear in the sidebar if a link fails
+            st.sidebar.error(f"❌ {sport_name} database failed to load.")
             
     return vault
 
@@ -69,17 +69,16 @@ with st.sidebar:
     st.header("🏟️ SESSION CONTROL")
     location = st.selectbox("Location", ["Gym", "Field", "Track", "Weight Room"])
     
-    # Load all databases
+    # Load all databases from GitHub
     vault = load_vault_from_csv()
     sport_options = list(vault.keys()) if vault else ["No Data Found"]
     
     sport_choice = st.selectbox("Sport Database", sport_options)
     
-    # Optional Filtering by Category
+    # Category filter (Dynamic based on selected CSV content)
     available_cats = []
     if sport_choice in vault:
         available_cats = sorted(list(set(d['cat'] for d in vault[sport_choice])))
-    
     selected_cats = st.multiselect("Filter by Type (Optional)", available_cats)
     
     num_drills = st.slider("Drills per Session", 1, 15, 6)
@@ -90,7 +89,7 @@ with st.sidebar:
         if sport_choice in vault and vault[sport_choice]:
             pool = vault[sport_choice]
             
-            # Apply category filter
+            # Apply category filter if user selected any
             if selected_cats:
                 pool = [d for d in pool if d['cat'] in selected_cats]
             
@@ -99,9 +98,9 @@ with st.sidebar:
                 st.session_state.current_session = random.sample(pool, sample_size)
                 st.session_state.active_sport = sport_choice
             else:
-                st.error("No drills found for these categories.")
+                st.error("No drills found for the selected categories.")
         else:
-            st.error("Selected database is empty or could not be loaded.")
+            st.error("The selected database is empty or unavailable.")
 
 # --- 4. MAIN INTERFACE ---
 if st.session_state.current_session:
@@ -111,17 +110,20 @@ if st.session_state.current_session:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"DRILL {i+1}: {drill['ex']} ({drill['cat']})", expanded=True):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Work", f"{drill['sets']} x {drill['base']} {drill['unit']}")
+            
+            # Formatted Work metric
+            work_text = f"{drill['sets']} x {drill['base']} {drill['unit']}"
+            col1.metric("Work", work_text)
             col2.metric("Rest", drill['rest'])
             col3.metric("Goal", drill['time_goal'])
             
-            st.markdown(f"**Execution Detail:** {drill['desc']}")
-            st.markdown(f"**Primary Focus:** {drill['focus']}")
+            st.markdown(f"**Execution:** {drill['desc']}")
+            st.markdown(f"**Focus:** {drill['focus']}")
             st.checkbox("Mark Complete", key=f"drill_check_{i}")
 else:
-    st.info("Pick a database in the sidebar and click 'Generate New Session' to start.")
+    st.info("Pick a database in the sidebar and click 'Generate New Session' to begin.")
 
-# --- CSS STYLING ---
+# --- STYLING ---
 st.markdown("""
     <style>
     .stMetric { background-color: #f0f2f6; padding: 10px; border-radius: 10px; }
