@@ -3,7 +3,7 @@ import pandas as pd
 import random
 import time
 
-# --- 1. CONFIG & SESSION STATE ---
+# --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide")
 
 if 'current_session' not in st.session_state:
@@ -11,26 +11,25 @@ if 'current_session' not in st.session_state:
 if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {
         "name": "Elite Athlete", 
-        "sport": "General", 
-        "level": "Pro",
-        "hs_goal": "State Championship",
+        "hs_goal": "Elite Performance",
         "college_goal": "D1 Scholarship"
     }
 if 'set_counts' not in st.session_state:
     st.session_state.set_counts = {}
 
-# --- 2. SIDEBAR: PROFILE, LOCATION, & INTENSITY ---
+# --- 2. SIDEBAR: APPEARANCE, PROFILE, & FILTERS ---
 with st.sidebar:
-    st.markdown("# 🛡️ ATHLETE HUB")
+    st.header("🎨 APPEARANCE")
+    dark_mode = st.toggle("Enable Dark Mode", value=True)
     
-    with st.expander("👤 Profile & Goals"):
+    st.divider()
+    st.header("👤 ATHLETE PROFILE")
+    with st.expander("Edit Goals"):
         st.session_state.user_profile["name"] = st.text_input("Name", st.session_state.user_profile["name"])
         st.session_state.user_profile["hs_goal"] = st.text_input("HS Goal", st.session_state.user_profile["hs_goal"])
         st.session_state.user_profile["college_goal"] = st.text_input("College Goal", st.session_state.user_profile["college_goal"])
-    
-    st.divider()
 
-    # FILTERS: SPORT AND LOCATION
+    st.divider()
     st.header("📍 SESSION FILTERS")
     sport_choice = st.selectbox("Select Sport", ["General", "Basketball", "Softball", "Track"])
     location_filter = st.multiselect(
@@ -41,20 +40,29 @@ with st.sidebar:
     num_drills = st.slider("Exercises", 12, 15, 13)
     
     st.divider()
-
-    # INTENSITY METER
     st.header("📊 INTENSITY METER")
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     intensity_map = {"Low": 25, "Moderate": 50, "High": 75, "Elite": 100}
     st.progress(intensity_map[effort])
 
-    if st.button("🚀 GENERATE WORKOUT", use_container_width=True):
-        # Data loading triggered here
-        pool = [] # Placeholder for load_data function logic
-        # Logic to load and filter would go here
-        st.session_state.set_counts = {} # Reset counters
+# --- 3. DYNAMIC THEMING ---
+primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
+card_bg = "#1E293B" if dark_mode else "#F1F5F9"
+text_color = "#F8FAFC" if dark_mode else "#1E293B"
+border_color = "#3B82F6" if dark_mode else "#CBD5E1"
 
-# --- 3. DATA LOADING LOGIC ---
+st.markdown(f"""
+    <style>
+    .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
+    [data-testid="stExpander"] {{ 
+        background-color: {card_bg} !important; 
+        border: 1px solid {border_color} !important; 
+        border-radius: 12px !important; 
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
+# --- 4. DATA LOADING LOGIC ---
 def load_data(sport):
     urls = {
         "General": "https://raw.githubusercontent.com/belyeu/sprint-app/main/general.csv",
@@ -64,15 +72,16 @@ def load_data(sport):
     }
     try:
         df = pd.read_csv(urls[sport])
-        df.columns = [c.strip() for c in df.columns]
+        df.columns = [c.strip() for c in df.columns] # Clean hidden spaces
+        
         data_list = []
         for _, row in df.iterrows():
-            # Robust mapping for "Exercise" or "Exercise Name"
-            name = row.get('Exercise') or row.get('Exercise Name') or row.get('Drill / Move Name') or "Unnamed Drill"
+            # Support multiple header naming conventions
+            name = row.get('Exercise') or row.get('Exercise Name') or row.get('Drill / Move Name') or "Unknown Exercise"
             data_list.append({
                 "ex": name,
-                "desc": row.get('Detailed Description') or row.get('Description') or "No description.",
-                "focus": row.get('Primary Focus') or "Performance",
+                "desc": row.get('Detailed Description') or row.get('Description') or "No details.",
+                "focus": row.get('Primary Focus') or "Core Performance",
                 "stars": row.get('Fitness Stars') or "⭐⭐⭐",
                 "sets": int(row.get('Sets', 3)) if str(row.get('Sets')).isdigit() else 3,
                 "reps": row.get('Reps/Dist.') or "10",
@@ -83,51 +92,67 @@ def load_data(sport):
     except:
         return []
 
-# --- 4. MAIN INTERFACE ---
-st.markdown(f"<h1 style='text-align: center;'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
+# --- 5. GENERATION LOGIC ---
+with st.sidebar:
+    st.divider()
+    if st.button("🚀 GENERATE WORKOUT", use_container_width=True):
+        pool = load_data(sport_choice)
+        if pool:
+            st.session_state.current_session = random.sample(pool, min(len(pool), num_drills))
+            st.session_state.active_sport = sport_choice
+            st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
 
-# Display Goals
+# --- 6. MAIN INTERFACE ---
+st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
+
+# Dashboard Goals
 g1, g2 = st.columns(2)
-g1.info(f"**HS Goal:** {st.session_state.user_profile['hs_goal']}")
-g2.success(f"**College Goal:** {st.session_state.user_profile['college_goal']}")
+g1.metric("High School Goal", st.session_state.user_profile["hs_goal"])
+g2.metric("College Goal", st.session_state.user_profile["college_goal"])
 
 if st.session_state.current_session:
+    st.subheader(f"⚡ {st.session_state.active_sport} Session | Location: {', '.join(location_filter)}")
+    
     for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"EXERCISE {i+1}: {drill['ex']} ({drill['stars']})", expanded=(i==0)):
-            col1, col2 = st.columns([1, 1])
+        with st.expander(f"EXERCISE {i+1}: {drill['ex']} {drill['stars']}", expanded=(i==0)):
+            col1, col2 = st.columns(2)
             
             with col1:
                 st.markdown(f"**🎯 Focus:** {drill['focus']}")
                 st.markdown(f"**📝 Description:** {drill['desc']}")
                 st.write(f"**Goal:** {drill['sets']} Sets x {drill['reps']}")
                 
-                # 1-BUTTON COUNTER
                 st.markdown("---")
-                curr = st.session_state.set_counts.get(i, 0)
-                if st.button(f"Complete Set ({curr}/{drill['sets']})", key=f"btn_{i}"):
-                    if curr < drill['sets']:
-                        st.session_state.set_counts[i] = curr + 1
+                # 1-BUTTON COUNTER
+                curr_sets = st.session_state.set_counts.get(i, 0)
+                if st.button(f"Log Set ({curr_sets}/{drill['sets']})", key=f"btn_{i}"):
+                    if curr_sets < drill['sets']:
+                        st.session_state.set_counts[i] += 1
                         st.rerun()
                 
-                if curr >= drill['sets']:
-                    st.success("Exercise Finished!")
+                if curr_sets >= drill['sets']:
+                    st.success("✅ Exercise Complete!")
 
             with col2:
                 # IN-EXERCISE REST TIMER
                 st.markdown("#### ⏱️ Rest Timer")
                 try:
-                    seconds = int(''.join(filter(str.isdigit, drill['rest'])))
+                    rest_secs = int(''.join(filter(str.isdigit, str(drill['rest']))))
                 except:
-                    seconds = 60
+                    rest_secs = 60
                 
-                if st.button(f"Start {seconds}s Rest", key=f"tmr_{i}"):
+                if st.button(f"Start {rest_secs}s Rest", key=f"tmr_{i}"):
                     ph = st.empty()
-                    for t in range(seconds, -1, -1):
+                    for t in range(rest_secs, -1, -1):
                         ph.metric("Resting...", f"{t}s")
                         time.sleep(1)
                     st.balloons()
+                    ph.success("Back to Work!")
                 
                 st.markdown("---")
                 if "http" in str(drill['video']):
                     st.video(drill['video'])
-                st.file_uploader("Upload Form", type=['mp4', 'mov'], key=f"up_{i}")
+                st.file_uploader("Upload Form Clip", type=['mp4', 'mov'], key=f"up_{i}")
+
+else:
+    st.info("👋 Set your filters in the sidebar and click 'Generate Workout' to begin.")
