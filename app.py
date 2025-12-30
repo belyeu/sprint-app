@@ -49,39 +49,50 @@ with st.sidebar:
     )
     num_drills = st.slider("Number of Exercises", 5, 20, 13)
 
+    # --- RESTORED INTENSITY METER ---
     st.divider()
     st.header("📊 INTENSITY METER")
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     intensity_map = {"Low": 25, "Moderate": 50, "High": 75, "Elite": 100}
     st.progress(intensity_map[effort])
 
-# --- 4. DYNAMIC THEMING ---
+# --- 4. DYNAMIC THEMING & VISIBILITY FIXES ---
 if dark_mode:
-    primary_bg, card_bg, text_color, sub_text, accent, expander_text = "#0F172A", "#1E293B", "#F8FAFC", "#94A3B8", "#3B82F6", "#FFFFFF"
+    primary_bg, card_bg, text_color, sub_text, accent, btn_text = "#0F172A", "#1E293B", "#F8FAFC", "#94A3B8", "#3B82F6", "#FFFFFF"
 else:
-    primary_bg, card_bg, text_color, sub_text, accent, expander_text = "#FFFFFF", "#F1F5F9", "#0F172A", "#475569", "#2563EB", "#1E293B"
+    primary_bg, card_bg, text_color, sub_text, accent, btn_text = "#FFFFFF", "#F1F5F9", "#0F172A", "#475569", "#2563EB", "#FFFFFF"
 
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
-    /* FIX: Exercise Name Visibility in Expanders */
-    [data-testid="stExpander"] summary p {{
-        color: {expander_text} !important;
-        font-weight: 700 !important;
-        font-size: 1.15rem !important;
-        opacity: 1 !important;
-    }}
-    
+    /* FIX: Expander Header Visibility */
     [data-testid="stExpander"] {{ 
         background-color: {card_bg} !important; 
         border: 1px solid {accent}44 !important; 
         border-radius: 12px !important; 
     }}
-    
+    [data-testid="stExpander"] summary p {{
+        color: {text_color} !important;
+        font-weight: 700 !important;
+        font-size: 1.15rem !important;
+    }}
+
+    /* FIX: Button Visibility (No hover required) */
+    div.stButton > button {{
+        background-color: {accent} !important;
+        color: {btn_text} !important;
+        border-radius: 8px !important;
+        border: none !important;
+        font-weight: 600 !important;
+        width: 100%;
+        transition: transform 0.1s;
+    }}
+    div.stButton > button:active {{ transform: scale(0.98); }}
+
+    /* Metadata Styling */
     .metric-label {{ font-size: 0.75rem; color: {sub_text}; font-weight: bold; text-transform: uppercase; }}
     .metric-value {{ font-size: 1rem; color: {accent}; font-weight: 600; margin-bottom: 12px; }}
-    .stMarkdown p, .stMarkdown li {{ color: {text_color} !important; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -100,106 +111,93 @@ def load_data(sport):
         for _, row in df.iterrows():
             img_options = IMAGE_ASSETS.get(sport, [])
             assigned_img = random.choice(img_options) if img_options else None
-            
             data_list.append({
                 "ex": row.get('Exercise Name') or row.get('Exercise') or "Unknown Exercise",
                 "env": row.get('Env.') or row.get('Location') or "General",
-                "category": row.get('Category') or "Athleticism",
+                "category": row.get('Category') or "Skill",
                 "cns": row.get('CNS') or "Medium",
                 "sets": int(row.get('Sets', 3)) if str(row.get('Sets')).isdigit() else 3,
                 "reps": row.get('Reps/Dist') or row.get('Reps/Dist.') or "N/A",
-                "time": row.get('Time') or "N/A",
-                "focus": row.get('Primary Focus') or "Skill Development",
-                "stars": row.get('Stars') or row.get('Fitness Stars') or "⭐⭐⭐",
+                "time": row.get('Time') or "60s",
+                "focus": row.get('Primary Focus') or "Performance",
+                "stars": row.get('Stars') or "⭐⭐⭐",
                 "pre_req": row.get('Pre-Req') or "None",
                 "hs_goals": row.get('HS Goals') or "N/A",
                 "college_goals": row.get('College Goals') or "N/A",
-                "desc": row.get('Description') or row.get('Detailed Description') or "No details.",
-                "demo": row.get('Demo') or row.get('Video URL') or "",
+                "desc": row.get('Description') or "No details.",
+                "demo": row.get('Demo') or "",
                 "static_img": assigned_img
             })
         return data_list
-    except Exception:
-        return []
+    except: return []
 
 # --- 6. GENERATION LOGIC ---
-with st.sidebar:
-    if st.button("🚀 GENERATE WORKOUT", use_container_width=True):
-        pool = load_data(sport_choice)
-        filtered_pool = [d for d in pool if d['env'] in location_filter] or pool
-        st.session_state.current_session = random.sample(filtered_pool, min(len(filtered_pool), num_drills))
-        st.session_state.active_sport = sport_choice
-        st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
-        st.session_state.workout_finished = False
+if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
+    pool = load_data(sport_choice)
+    filtered_pool = [d for d in pool if d['env'] in location_filter] or pool
+    st.session_state.current_session = random.sample(filtered_pool, min(len(filtered_pool), num_drills))
+    st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
+    st.session_state.workout_finished = False
 
 # --- 7. MAIN INTERFACE ---
 st.markdown(f"<h1 style='text-align: center; color: {accent};'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
-        # Header text visibility fix applied via CSS selector "summary p"
-        with st.expander(f"EXERCISE {i+1}: {drill['ex']} | {drill['stars']}", expanded=(i==0)):
+        with st.expander(f"{drill['ex']} | {drill['stars']}", expanded=(i==0)):
             
+            # Metadata Grid
             col_img, col_meta = st.columns([1, 2])
-            
             with col_img:
-                if drill['static_img']:
-                    st.image(drill['static_img'], use_container_width=True)
-                else:
-                    st.markdown(f'<div style="height:150px; background:{card_bg}; border:2px dashed {sub_text}44; border-radius:10px; display:flex; align-items:center; justify-content:center; color:{sub_text};">No Preview</div>', unsafe_allow_html=True)
+                if drill['static_img']: st.image(drill['static_img'], use_container_width=True)
+                else: st.markdown(f'<div style="height:140px; background:{card_bg}; border:2px dashed {sub_text}44; border-radius:10px;"></div>', unsafe_allow_html=True)
 
             with col_meta:
                 m1, m2 = st.columns(2)
                 with m1:
-                    st.markdown(f"<div class='metric-label'>ENVIRONMENT</div><div class='metric-value'>{drill['env']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-label'>CNS LOAD</div><div class='metric-value'>{drill['cns']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-label'>CATEGORY</div><div class='metric-value'>{drill['category']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-label'>PRE-REQ</div><div class='metric-value'>{drill['pre_req']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>ENV</div><div class='metric-value'>{drill['env']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>CNS</div><div class='metric-value'>{drill['cns']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>TARGET</div><div class='metric-value'>{drill['sets']} Sets</div>", unsafe_allow_html=True)
                 with m2:
-                    st.markdown(f"<div class='metric-label'>TARGET SETS</div><div class='metric-value'>{drill['sets']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-label'>REPS/DIST</div><div class='metric-value'>{drill['reps']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-label'>TIME</div><div class='metric-value'>{drill['time']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='metric-label'>PRIMARY FOCUS</div><div class='metric-value'>{drill['focus']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>CATEGORY</div><div class='metric-value'>{drill['category']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>VOLUME</div><div class='metric-value'>{drill['reps']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>REST GOAL</div><div class='metric-value'>{drill['time']}</div>", unsafe_allow_html=True)
 
             st.divider()
-            
-            g1, g2 = st.columns(2)
-            g1.info(f"**HS Goals:** {drill['hs_goals']}")
-            g2.success(f"**College Goals:** {drill['college_goals']}")
             st.markdown(f"**Description:** {drill['desc']}")
             
-            st.divider()
+            # RESTORED REST TIMER & LOGGING
             c1, c2 = st.columns(2)
             with c1:
                 curr_sets = st.session_state.set_counts.get(i, 0)
-                if st.button(f"Log Set ({curr_sets}/{drill['sets']})", key=f"btn_{i}", use_container_width=True):
+                if st.button(f"Log Set ({curr_sets}/{drill['sets']})", key=f"log_{i}"):
                     if curr_sets < drill['sets']:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
                 
-                if drill['demo'] and "http" in str(drill['demo']):
-                    st.video(drill['demo'])
+                if drill['demo']: st.video(drill['demo'])
 
             with c2:
-                st.markdown("#### ⏱️ Timer")
-                t_duration = st.number_input("Seconds", 5, 600, 60, key=f"t_val_{i}")
-                if st.button("Start Timer", key=f"t_btn_{i}", use_container_width=True):
+                st.markdown("#### ⏱️ Rest Timer")
+                # Extract digits for timer
+                try: r_time = int(''.join(filter(str.isdigit, drill['time'])))
+                except: r_time = 60
+                
+                if st.button(f"Start {r_time}s Rest", key=f"timer_{i}"):
                     ph = st.empty()
-                    for t in range(int(t_duration), -1, -1):
-                        ph.metric("Timer", f"{t}s")
+                    for t in range(r_time, -1, -1):
+                        ph.metric("Resting...", f"{t}s")
                         time.sleep(1)
-                    st.toast("Time finished!")
+                    st.toast("Rest Over! Next Set.")
+                    st.balloons()
 
-    if st.button("🏁 FINISH SESSION", use_container_width=True):
+    if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         st.session_state.workout_finished = True
         st.rerun()
 
 elif st.session_state.workout_finished:
-    st.header("📝 Session Complete")
-    st.table(pd.DataFrame(st.session_state.current_session)[['ex', 'category', 'sets']])
-    if st.button("Restart Dashboard"):
+    st.success("Session Logged! Great Work.")
+    if st.button("New Session"):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
-else:
-    st.info("👋 Select sport and location in the sidebar to begin.")
