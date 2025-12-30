@@ -9,13 +9,18 @@ st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="�
 
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
+if 'user_profile' not in st.session_state:
+    st.session_state.user_profile = {
+        "name": "Elite Athlete", 
+        "hs_goal": "State Championship",
+        "college_goal": "D1 Recruitment"
+    }
 if 'set_counts' not in st.session_state:
     st.session_state.set_counts = {}
 if 'workout_finished' not in st.session_state:
     st.session_state.workout_finished = False
 
-# --- 2. IMAGE MAPPING LOGIC ---
-# Mapping the provided images to categories
+# --- 2. IMAGE MAPPING ---
 IMAGE_ASSETS = {
     "Softball": ["IMG_3874.jpeg", "IMG_3875.jpeg"],
     "General": ["IMG_3876.jpeg", "IMG_3877.jpeg"],
@@ -28,16 +33,23 @@ with st.sidebar:
     dark_mode = st.toggle("Dark Mode", value=True)
     
     st.divider()
+    st.header("👤 ATHLETE PROFILE")
+    with st.expander("Update Goals"):
+        st.session_state.user_profile["name"] = st.text_input("Name", st.session_state.user_profile["name"])
+        st.session_state.user_profile["hs_goal"] = st.text_input("HS Goal", st.session_state.user_profile["hs_goal"])
+        st.session_state.user_profile["college_goal"] = st.text_input("College Goal", st.session_state.user_profile["college_goal"])
+
+    st.divider()
     st.header("📍 SESSION FILTERS")
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "General"])
     location_filter = st.multiselect(
-        "Facility Location", 
+        "Facility Location (Env.)", 
         ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor"],
         default=["Gym", "Field", "Track"]
     )
     num_drills = st.slider("Number of Exercises", 5, 20, 13)
 
-# --- 4. REFINED DYNAMIC THEMING ---
+# --- 4. DYNAMIC THEMING ---
 if dark_mode:
     primary_bg, card_bg, text_color, sub_text, accent, expander_text = "#0F172A", "#1E293B", "#F8FAFC", "#94A3B8", "#3B82F6", "#FFFFFF"
 else:
@@ -46,11 +58,19 @@ else:
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    [data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent}44 !important; border-radius: 12px !important; }}
-    [data-testid="stExpander"] summary p {{ color: {expander_text} !important; font-weight: 700 !important; font-size: 1.1rem !important; }}
+    [data-testid="stExpander"] {{ 
+        background-color: {card_bg} !important; 
+        border: 1px solid {accent}44 !important; 
+        border-radius: 12px !important; 
+    }}
+    [data-testid="stExpander"] summary p {{
+        color: {expander_text} !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+    }}
     .metric-label {{ font-size: 0.75rem; color: {sub_text}; font-weight: bold; text-transform: uppercase; }}
     .metric-value {{ font-size: 1rem; color: {accent}; font-weight: 600; margin-bottom: 12px; }}
-    .exercise-img {{ border-radius: 10px; border: 1px solid {accent}44; margin-bottom: 15px; }}
+    .stMarkdown p, .stMarkdown li {{ color: {text_color} !important; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -67,9 +87,8 @@ def load_data(sport):
         df.columns = [c.strip() for c in df.columns]
         data_list = []
         for _, row in df.iterrows():
-            # Determine which image to show based on sport/category
-            img_list = IMAGE_ASSETS.get(sport, [])
-            assigned_img = random.choice(img_list) if img_list else None
+            img_options = IMAGE_ASSETS.get(sport, [])
+            assigned_img = random.choice(img_options) if img_options else None
             
             data_list.append({
                 "ex": row.get('Exercise Name') or row.get('Exercise') or "Unknown Exercise",
@@ -84,12 +103,13 @@ def load_data(sport):
                 "pre_req": row.get('Pre-Req') or "None",
                 "hs_goals": row.get('HS Goals') or "N/A",
                 "college_goals": row.get('College Goals') or "N/A",
-                "desc": row.get('Description') or "No details.",
+                "desc": row.get('Description') or row.get('Detailed Description') or "No details.",
                 "demo": row.get('Demo') or row.get('Video URL') or "",
                 "static_img": assigned_img
             })
         return data_list
-    except: return []
+    except Exception:
+        return []
 
 # --- 6. GENERATION LOGIC ---
 with st.sidebar:
@@ -97,6 +117,7 @@ with st.sidebar:
         pool = load_data(sport_choice)
         filtered_pool = [d for d in pool if d['env'] in location_filter] or pool
         st.session_state.current_session = random.sample(filtered_pool, min(len(filtered_pool), num_drills))
+        st.session_state.active_sport = sport_choice
         st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
         st.session_state.workout_finished = False
 
@@ -107,14 +128,14 @@ if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE {i+1}: {drill['ex']} | {drill['stars']}", expanded=(i==0)):
             
-            # Top Section: Image and Metadata
+            # Layout: Image and Metadata
             col_img, col_meta = st.columns([1, 2])
             
             with col_img:
                 if drill['static_img']:
                     st.image(drill['static_img'], use_container_width=True)
                 else:
-                    st.rect(height=150) # Placeholder
+                    st.markdown(f'<div style="height:150px; background:{card_bg}; border:2px dashed {sub_text}44; border-radius:10px; display:flex; align-items:center; justify-content:center; color:{sub_text};">No Preview</div>', unsafe_allow_html=True)
 
             with col_meta:
                 m1, m2 = st.columns(2)
@@ -122,17 +143,19 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     st.markdown(f"<div class='metric-label'>ENVIRONMENT</div><div class='metric-value'>{drill['env']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>CNS LOAD</div><div class='metric-value'>{drill['cns']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>CATEGORY</div><div class='metric-value'>{drill['category']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>PRE-REQ</div><div class='metric-value'>{drill['pre_req']}</div>", unsafe_allow_html=True)
                 with m2:
                     st.markdown(f"<div class='metric-label'>TARGET SETS</div><div class='metric-value'>{drill['sets']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>REPS/DIST</div><div class='metric-value'>{drill['reps']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-label'>TIME</div><div class='metric-value'>{drill['time']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>PRIMARY FOCUS</div><div class='metric-value'>{drill['focus']}</div>", unsafe_allow_html=True)
 
             st.divider()
             
-            # Bottom Section: Detailed Info
-            d1, d2 = st.columns(2)
-            d1.info(f"**HS Goals:** {drill['hs_goals']}")
-            d2.success(f"**College Goals:** {drill['college_goals']}")
+            # Goals & Description
+            g1, g2 = st.columns(2)
+            g1.info(f"**HS Goals:** {drill['hs_goals']}")
+            g2.success(f"**College Goals:** {drill['college_goals']}")
             st.markdown(f"**Description:** {drill['desc']}")
             
             # Action Area
@@ -144,8 +167,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     if curr_sets < drill['sets']:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
+                
                 if drill['demo'] and "http" in str(drill['demo']):
                     st.video(drill['demo'])
+                else:
+                    st.caption("No video demo available.")
 
             with c2:
                 st.markdown("#### ⏱️ Timer")
@@ -163,7 +189,10 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
 elif st.session_state.workout_finished:
     st.header("📝 Session Complete")
-    if st.button("Restart"):
+    st.table(pd.DataFrame(st.session_state.current_session)[['ex', 'category', 'sets']])
+    if st.button("Restart Dashboard"):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
+else:
+    st.info("👋 Select sport and location in the sidebar to begin.")
