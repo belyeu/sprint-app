@@ -42,42 +42,55 @@ with st.sidebar:
     st.divider()
     st.header("📍 SESSION FILTERS")
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "General"])
+    
+    # Filter Logic: Default to 'Gym' and 'Field' to ensure user sees data initially
     location_filter = st.multiselect(
         "Facility Location (Env.)", 
         ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor"],
-        default=["Gym", "Field", "Track"]
+        default=["Gym", "Field"]
     )
     num_drills = st.slider("Number of Exercises", 5, 20, 13)
 
     st.divider()
     st.header("📊 INTENSITY METER")
-    # Intensity now controls Volume (Sets) AND Load (Reps/Time)
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     
-    # Map intensity to a multiplier
+    # Map intensity to a multiplier for scaling reps/sets
     intensity_mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}
-    st.progress(intensity_mult[effort] / 1.5) # Normalized for progress bar
+    st.progress(intensity_mult[effort] / 1.5)
 
-# --- 4. DYNAMIC THEMING ---
+# --- 4. DYNAMIC THEMING & CSS ---
 if dark_mode:
-    primary_bg, card_bg, text_color, sub_text, accent, btn_text, expander_title = "#0F172A", "#1E293B", "#F8FAFC", "#94A3B8", "#3B82F6", "#FFFFFF", "#FFFFFF"
+    primary_bg, card_bg, text_color, sub_text, accent, btn_text = "#0F172A", "#1E293B", "#F8FAFC", "#94A3B8", "#3B82F6", "#FFFFFF"
 else:
-    primary_bg, card_bg, text_color, sub_text, accent, btn_text, expander_title = "#FFFFFF", "#F1F5F9", "#0F172A", "#475569", "#2563EB", "#FFFFFF", "#2563EB"
+    primary_bg, card_bg, text_color, sub_text, accent, btn_text = "#FFFFFF", "#F1F5F9", "#0F172A", "#475569", "#2563EB", "#FFFFFF"
 
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
-    /* Expander Header */
-    [data-testid="stExpander"] {{ 
-        background-color: {card_bg} !important; 
-        border: 1px solid {accent}44 !important; 
-        border-radius: 12px !important; 
+    /* --- HEADER VISIBILITY FIX --- */
+    /* Styles the clickable header bar of the expander */
+    div[data-testid="stExpander"] details summary {{
+        background-color: {accent} !important; /* Blue Background */
+        color: white !important; /* White Text */
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 10px;
     }}
-    [data-testid="stExpander"] summary p {{
-        color: {expander_title} !important; /* Blue in light, White in dark */
-        font-weight: 700 !important;
-        font-size: 1.15rem !important;
+    
+    /* Ensures the SVG arrow icon is also white */
+    div[data-testid="stExpander"] details summary svg {{
+        fill: white !important;
+        color: white !important;
+    }}
+    
+    /* Content box inside the expander */
+    div[data-testid="stExpander"] {{
+        background-color: {card_bg} !important;
+        border: 1px solid {accent}44 !important;
+        border-radius: 12px !important;
+        border-top: none !important; /* Seamless look */
     }}
 
     /* Buttons */
@@ -96,35 +109,28 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 5. HELPER: INTELLIGENT SCALING ---
+# --- 5. DATA SCALING HELPERS ---
 def scale_value(val_str, multiplier, is_set=False):
-    """Parses a string, finds numbers, scales them by intensity, and rebuilds the string."""
+    """Parses text, finds numbers, and scales them by intensity."""
     if is_set:
-        # Simple integer logic for sets
         val = int(val_str) if str(val_str).isdigit() else 3
         if multiplier < 1.0: return max(2, val - 1)
         if multiplier > 1.3: return val + 2
         if multiplier > 1.0: return val + 1
         return val
 
-    # For Reps/Time (e.g., "10 reps", "60s", "12-15")
     val_str = str(val_str)
-    # Find all numbers in the string
     nums = re.findall(r'\d+', val_str)
-    
-    if not nums: return val_str # Return original if no numbers (e.g., "Failure")
+    if not nums: return val_str 
     
     new_val_str = val_str
     for num in nums:
         original = int(num)
-        # Round scaled value to nearest whole number
         scaled = int(round(original * multiplier))
-        # Replace only the exact match
         new_val_str = new_val_str.replace(num, str(scaled), 1)
-        
     return new_val_str
 
-# --- 6. DATA LOADING ---
+# --- 6. DATA LOADING & FILTERING ---
 def load_data(sport, multiplier):
     urls = {
         "Basketball": "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/basketball.csv",
@@ -134,28 +140,27 @@ def load_data(sport, multiplier):
     }
     try:
         df = pd.read_csv(urls[sport]).fillna("N/A")
+        # Clean column names
         df.columns = [c.strip() for c in df.columns]
+        
         data_list = []
         for _, row in df.iterrows():
             img_options = IMAGE_ASSETS.get(sport, [])
             assigned_img = random.choice(img_options) if img_options else None
             
-            # --- APPLY INTENSITY SCALING ---
-            # 1. Sets
-            raw_sets = row.get('Sets', 3)
-            adj_sets = scale_value(raw_sets, multiplier, is_set=True)
-            
-            # 2. Reps (Scale numbers inside string)
-            raw_reps = row.get('Reps/Dist') or row.get('Reps/Dist.') or "N/A"
-            adj_reps = scale_value(raw_reps, multiplier)
-            
-            # 3. Time (Scale duration if present)
-            raw_time = str(row.get('Time')) or "60s"
-            adj_time = scale_value(raw_time, multiplier)
+            # --- ENV CLEANING ---
+            # Strip whitespace to ensure "Gym " matches "Gym"
+            raw_env = row.get('Env.') or row.get('Location') or "General"
+            env_clean = str(raw_env).strip()
+
+            # --- INTENSITY SCALING ---
+            adj_sets = scale_value(row.get('Sets', 3), multiplier, is_set=True)
+            adj_reps = scale_value(row.get('Reps/Dist') or row.get('Reps/Dist.') or "N/A", multiplier)
+            adj_time = scale_value(str(row.get('Time')) or "60s", multiplier)
 
             data_list.append({
                 "ex": row.get('Exercise Name') or row.get('Exercise') or "Unknown",
-                "env": row.get('Env.') or row.get('Location') or "General",
+                "env": env_clean,
                 "category": row.get('Category') or "Athleticism",
                 "cns": row.get('CNS') or "Medium",
                 "sets": adj_sets,
@@ -180,26 +185,30 @@ with st.sidebar:
         multiplier = intensity_mult[effort]
         pool = load_data(sport_choice, multiplier)
         
-        # Filter by location
-        filtered_pool = [d for d in pool if d['env'] in location_filter] or pool
+        # --- STRICT FILTERING FIX ---
+        # Only keep exercises where 'env' is in the selected list.
+        # Removed the "or pool" fallback so filtering is strict.
+        filtered_pool = [d for d in pool if d['env'] in location_filter]
         
-        # Random Sample
-        selected = random.sample(filtered_pool, min(len(filtered_pool), num_drills))
-        
-        # --- GROUPING LOGIC (L) & (R) ---
-        # Sorting by Exercise Name ensures (L) and (R) stay together
-        selected.sort(key=lambda x: x['ex'])
-        
-        st.session_state.current_session = selected
-        st.session_state.set_counts = {i: 0 for i in range(len(selected))}
-        st.session_state.workout_finished = False
+        if not filtered_pool:
+            st.error(f"No exercises found for {sport_choice} in {', '.join(location_filter)}. Try adding 'General' or 'Gym'.")
+            st.session_state.current_session = None
+        else:
+            # Random Sample
+            selected = random.sample(filtered_pool, min(len(filtered_pool), num_drills))
+            # Sort by Name to group (L) and (R)
+            selected.sort(key=lambda x: x['ex'])
+            
+            st.session_state.current_session = selected
+            st.session_state.set_counts = {i: 0 for i in range(len(selected))}
+            st.session_state.workout_finished = False
 
 # --- 8. MAIN INTERFACE ---
 st.markdown(f"<h1 style='text-align: center; color: {accent};'>🏆 PRO-ATHLETE TRACKER</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
-        # Header text color handled by CSS (Blue in Light, White in Dark)
+        # Header background is now BLUE, Text is WHITE via CSS above
         with st.expander(f"{drill['ex']} | {drill['stars']}", expanded=(i==0)):
             
             col_img, col_meta = st.columns([1, 2])
@@ -216,21 +225,18 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     st.markdown(f"<div class='metric-label'>CNS LOAD</div><div class='metric-value'>{drill['cns']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>CATEGORY</div><div class='metric-value'>{drill['category']}</div>", unsafe_allow_html=True)
                 with m2:
-                    # These values are now ADJUSTED by Intensity
                     st.markdown(f"<div class='metric-label'>TARGET SETS</div><div class='metric-value'>{drill['sets']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>REPS/DIST</div><div class='metric-value'>{drill['reps']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='metric-label'>TIME/REST</div><div class='metric-value'>{drill['time']}</div>", unsafe_allow_html=True)
 
             st.divider()
             
-            # Goals & Description
             g1, g2 = st.columns(2)
             g1.info(f"**HS Standard:** {drill['hs_goals']}")
             g2.success(f"**College Standard:** {drill['college_goals']}")
             st.markdown(f"**Focus:** {drill['focus']} | **Pre-Req:** {drill['pre_req']}")
             st.markdown(f"**Description:** {drill['desc']}")
             
-            # User Upload
             with st.expander("📤 Upload My Form (Video/Photo)"):
                 st.file_uploader(f"Upload media for {drill['ex']}", type=['mp4', 'mov', 'jpg', 'png'], key=f"upload_{i}")
 
@@ -239,31 +245,27 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             # --- CONTROLS ---
             c1, c2 = st.columns(2)
             
-            # 1. Parse Time for Timers
+            # Parse time for timer
             try: 
-                # Extract first number found in the adjusted time string
                 r_time = int(re.search(r'\d+', drill['time']).group())
             except: 
-                r_time = 60 # Default fallback
+                r_time = 60
 
             with c1:
                 curr_sets = st.session_state.set_counts.get(i, 0)
                 
-                # "LOG SET" -> Updates count AND starts Rest Timer
+                # Log Set + Auto Timer
                 if st.button(f"✅ Log Set ({curr_sets}/{drill['sets']})", key=f"btn_{i}"):
                     if curr_sets < drill['sets']:
-                        # Auto-Rest Timer
                         timer_ph = st.empty()
-                        if curr_sets + 1 < drill['sets']: # Don't rest after last set
+                        if curr_sets + 1 < drill['sets']: 
                             for t in range(r_time, -1, -1):
                                 timer_ph.metric(f"🛑 RESTING ({drill['time']})", f"{t}s")
                                 time.sleep(1)
                             st.toast("Rest Over! GO!")
-                        
                         st.session_state.set_counts[i] += 1
                         st.rerun()
                 
-                # Video Player
                 if drill['demo'].startswith('http'):
                     try: st.video(drill['demo'])
                     except: st.caption("Video unavailable.")
@@ -271,8 +273,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     st.caption("No video demo.")
 
             with c2:
-                # "RECOMMENDED TIMER" -> Replaces manual input
-                # This allows using the timer for the drill itself (e.g. Plank) without logging a set
                 st.markdown("#### ⏱️ Drill Timer")
                 st.markdown(f"<span style='font-size:0.8rem; color:{sub_text}'>Recommended: {drill['time']}</span>", unsafe_allow_html=True)
                 
@@ -290,13 +290,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
 elif st.session_state.workout_finished:
     st.header("📝 Session Complete")
-    # Summary Table
     summary = pd.DataFrame(st.session_state.current_session)[['ex', 'category', 'sets', 'reps']]
     st.table(summary)
-    
     if st.button("Restart Dashboard"):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👋 Select sport and location in the sidebar to begin.")
+    st.info("👋 Select sport and location to generate workout.")
