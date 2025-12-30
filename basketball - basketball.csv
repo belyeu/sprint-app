@@ -1,0 +1,127 @@
+number,Exercise Name,Env.,Category,CNS,Sets,Reps/Dist,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Demo
+1,H/L Walk (R),Gym,Warm-up,Low,2,20m,--,Dynamic Mobility,⭐,None,Fluid,No sway,Lateral walk with CG shifts.,Link
+2,H/L Walk (L),Gym,Warm-up,Low,2,20m,--,Dynamic Mobility,⭐,None,Fluid,No sway,Lateral walk with CG shifts.,Link
+3,H/L Backpedal (R),Gym,Warm-up,Low,2,15m,--,Post. Chain Prep,⭐⭐,None,Balanced,Quick reach,Backward reach with low hips.,Link
+4,H/L Backpedal (L),Gym,Warm-up,Low,2,15m,--,Post. Chain Prep,⭐⭐,None,Balanced,Quick reach,Backward reach with low hips.,Link
+5,Forward Skip (R),Gym,Warm-up,Low,2,20m,--,Rhythmic Coord.,⭐,None,Sync,High knee,Skipping while keeping ball at hip.,Link
+6,Forward Skip (L),Gym,Warm-up,Low,2,20m,--,Rhythmic Coord.,⭐,None,Sync,High knee,Skipping while keeping ball at hip.,Link
+7,Backward Skip (R),Gym,Warm-up,Low,2,15m,--,Rev. Elasticity,⭐⭐,None,Balanced,Explosive,Reverse skip for ankle stiffness.,Link
+8,Backward Skip (L),Gym,Warm-up,Low,2,15m,--,Rev. Elasticity,⭐⭐,None,Balanced,Explosive,Reverse skip for ankle stiffness.,Link
+9,Side Shuffle (R),Gym,Warm-up,Low,2,20m,--,Adductor Warm-up,⭐,None,Smooth,Quick click,Lateral slide with ball protection.,Link
+10,Side Shuffle (L),Gym,Warm-up,Low,2,20m,--,Adductor Warm-up,⭐,None,Smooth,Quick click,Lateral slide with ball protection.,Link
+11,Stat. High,Gym,Crossover,Low,3,--,30s,Power & Handle,⭐⭐,None,60 reps,85+ reps,Heavy shoulder-height dribbles.,Link
+12,Stat. Medium,Gym,Crossover,Low,3,--,30s,Control Rhythm,⭐⭐,None,75 reps,100+ reps,Waist-height rhythmic dribbles.,Link
+13,Stat. Low,Gym,Crossover,Low,3,--,30s,Finger Dexterity,⭐⭐⭐,None,90 reps,120+ reps,"Ankle-height ""machine gun"" dribbles.",Link
+14,Pocket Pull (R-L),Gym,Crossover,Low,3,15r,--,Hand Quickness,⭐⭐⭐,None,1.0s/r,0.6s/r,Pulling ball to the hip pocket.,Link
+15,Pocket Pull (L-R),Gym,Crossover,Low,3,15r,--,Hand Quickness,⭐⭐⭐,None,1.0s/r,0.6s/r,Pulling ball to the hip pocket.,Link
+16,Cross Step Jab (R),Gym,Crossover,Med,4,10r,--,Ankle Stability,⭐⭐⭐,None,Sturdy,Twitchy,Jabbing foot while crossing over.,Link
+17,Cross Step Jab (L),Gym,Crossover,Med,4,10r,--,Ankle Stability,⭐⭐⭐,None,Sturdy,Twitchy,Jabbing foot while crossing over.,Link
+18,Shuffle Cross,Gym,Crossover,Med,3,20m,--,Active Footwork,⭐⭐⭐,None,Fluid,No heel-touch,Crossovers while lateral shuffling.,Link
+19,Push Cross (R),Gym,Crossover,Med,4,10r,--,Burst Speed,⭐⭐⭐,None,<2.0s,<1.7s,Pushing ball out into a sprint.,Link
+20,Push Cross (L),Gym,Crossover,Med,4,10r,--,Burst Speed,⭐⭐⭐,None,<2.0s,<1.7s,Pushing ball out into a sprint.,Link
+21,Iverson Cross (R),Gym,Crossover,Med,4,8r,--,Deceleration,⭐⭐⭐⭐,#14,3ft Shift,5ft Shift,High float cross with a wide step.,Link
+22,Iverson Cross (L),Gym,Crossover,Med,4,8r,--,Deceleration,⭐⭐⭐⭐,#14,3ft Shift,5ft Shift,High float cross with a wide step.,Link
+23,Trae Pullback (R),Gym,Crossover,Med,4,10r,--,Space Creation,⭐⭐⭐⭐,#14,2ft Sep.,4ft Sep.,Crossover into a sharp retreat.,Link
+24,Trae Pullback (L),Gym,Crossover,Med,4,10r,--,Space Creation,⭐⭐⭐⭐,#14,2ft Sep.,4ft Sep.,Crossover into a sharp retreat.,Link
+25,Double Tap (R),Gym,Crossover,Med,3,12r,--,Rhythm Disruption,⭐⭐⭐,#11,Sharp,"Elite ""Stutter""",Two quick taps before a move.,Link
+26,Double Tap (L),Gym,Crossover,Med,3,12r,--,Rhythm Disruption,⭐⭐⭐,#11,Sharp,"Elite ""Stutter""",Two quick taps before a move.,Link
+27,V-Dribble (R),Gym,Crossover,Low,3,20r,--,1-Hand Control,⭐⭐,None,Controlled,Wide/Fast,Side-to-side V with one hand.,Link
+28,V-Dribble (L),Gym,Crossover,Low,3,20r,--,1-Hand Control,⭐⭐,None,Controlled,Wide/Fast,Side-to-side V with one hand.,Link
+29,Shammgod (R-L),Gym,Crossover,High,4,8r,--,Hand Eye Timing,⭐⭐⭐⭐⭐,#14,Clean catch,<0.3s Snap,"Throw ball out, snatch back.",Link
+30,Shammgod (L-R),Gym,Crossover,High,4,8r,--,Hand Eye Timing,⭐⭐⭐⭐⭐,#14,Clean catch,<0.3s Snap,"Throw ball out, snatch back.",Link
+31,Pound Cross,Gym,Combo,Med,3,15r,--,Forceful Handle,⭐⭐⭐,#11,Hard pound,Knee height,Pound dribble into a hard cross.,Link
+32,Btwn-Cross-Front,Gym,Combo,Med,4,10r,--,Neural Loading,⭐⭐⭐⭐,#11,Fluid,<1.2s/seq,Sequence: Between then Cross.,Link
+33,Pound-Between,Gym,Combo,Med,3,15r,--,Flow State,⭐⭐⭐,#11,Solid,Rapid pace,Sequence: Pound then Between.,Link
+34,In-Out Cross,Gym,Combo,Med,4,10r,--,Weight Shift,⭐⭐⭐⭐,#11,Shoulder dip,Ankle-breaker,Sequence: In-out then Cross.,Link
+35,Stat. Between,Gym,Between,Low,3,--,30s,Tight Exchange,⭐⭐,None,45 reps,70+ reps,Continuous between (no feet).,Link
+36,Contin. Between,Gym,Between,Low,3,--,30s,Rapid Turnover,⭐⭐⭐,#35,60 reps,90+ reps,Continuous between with speed.,Link
+37,Boxer Between,Gym,Between,Med,3,20m,--,Integrated Agility,⭐⭐⭐,#35,Low hips,Quick feet,Between legs while moving feet.,Link
+38,Lunge Btwn (R),Gym,Between,Med,4,10r,--,Quad Strength,⭐⭐⭐,None,Deep lunge,No ground-touch,Between during forward lunge.,Link
+39,Lunge Btwn (L),Gym,Between,Med,4,10r,--,Quad Strength,⭐⭐⭐,None,Deep lunge,No ground-touch,Between during forward lunge.,Link
+40,Side Jab Btwn (R),Gym,Between,Med,4,10r,--,Lateral Force,⭐⭐⭐,None,Sharp jab,Hip shift,Jabbing side while crossing.,Link
+41,Side Jab Btwn (L),Gym,Between,Med,4,10r,--,Lateral Force,⭐⭐⭐,None,Sharp jab,Hip shift,Jabbing side while crossing.,Link
+42,Backwards Btwn,Gym,Between,Med,3,15m,--,Backpedal Control,⭐⭐,None,Balanced,Quick reach,Between legs while walking back.,Link
+43,Outside-In Btwn,Gym,Between,High,3,15r,--,Advanced Pathing,⭐⭐⭐⭐,#35,Controlled,Rapid Wrap,Reversing the between path.,Link
+44,In-Out Move (R),Gym,On Move,Low,4,15m,--,Shoulder Decept.,⭐⭐⭐,None,Dip,Knee-level,In-out fake while moving.,Link
+45,In-Out Move (L),Gym,On Move,Low,4,15m,--,Shoulder Decept.,⭐⭐⭐,None,Dip,Knee-level,In-out fake while moving.,Link
+46,Retreat In-Out,Gym,On Move,Med,4,20m,--,Step-Back Mech.,⭐⭐⭐⭐,None,Space,<0.5s move,Retreat then immediately in-out.,Link
+47,Under Leg Stop,Gym,On Move,High,4,10r,--,Hard Decelerat.,⭐⭐⭐⭐,#76,2-step stop,1-step stop,Hard stop with a between move.,Link
+48,Sharp Behind (R),Gym,Behind,Low,4,15r,--,Low CG,⭐⭐⭐,None,Low path,Below glute,Snap ball behind low.,Link
+49,Sharp Behind (L),Gym,Behind,Low,4,15r,--,Low CG,⭐⭐⭐,None,Low path,Below glute,Snap ball behind low.,Link
+50,Wrap Behind (R),Gym,Behind,Med,4,10r,--,Core Torque,⭐⭐⭐,None,Wide wrap,Pivot speed,Full wrap around the body.,Link
+51,Wrap Behind (L),Gym,Behind,Med,4,10r,--,Core Torque,⭐⭐⭐,None,Wide wrap,Pivot speed,Full wrap around the body.,Link
+52,Float Dribble (R),Gym,Fakes,Med,4,15m,--,Hang Time,⭐⭐⭐,None,0.5s float,1.0s float,Floating the ball during move.,Link
+53,Float Dribble (L),Gym,Fakes,Med,4,15m,--,Hang Time,⭐⭐⭐,None,0.5s float,1.0s float,Floating the ball during move.,Link
+54,Rip & Drive (R),Gym,Fakes,High,5,10m,--,1st Step Speed,⭐⭐⭐⭐,None,<1.9s,<1.65s,Low rip into a sprint.,Link
+55,Rip & Drive (L),Gym,Fakes,High,5,10m,--,1st Step Speed,⭐⭐⭐⭐,None,<1.9s,<1.65s,Low rip into a sprint.,Link
+56,Spin Post (R),Gym,Post-Up,Med,4,8r,--,Pivot Mech.,⭐⭐⭐,None,Fluid,Tight turn,Spin into a post-up position.,Link
+57,Spin Post (L),Gym,Post-Up,Med,4,8r,--,Pivot Mech.,⭐⭐⭐,None,Fluid,Tight turn,Spin into a post-up position.,Link
+58,Stutter (R),Gym,Transit.,Med,4,20m,--,Eccentric Ctrl,⭐⭐⭐,None,Quick feet,Buzz saw feet,Pitter-patter feet to freeze.,Link
+59,Stutter (L),Gym,Transit.,Med,4,20m,--,Eccentric Ctrl,⭐⭐⭐,None,Quick feet,Buzz saw feet,Pitter-patter feet to freeze.,Link
+60,Delayed Btwn,Gym,Transit.,Med,4,20m,--,Rate Change,⭐⭐⭐⭐,#35,Smooth,Hesitation,Hesitating during a between move.,Link
+61,Slide & Drive,Gym,Slides,Med,4,15m,--,Change of Plane,⭐⭐⭐,None,Balanced,Explosive,Lateral slide into forward drive.,Link
+62,Slide-Cross,Gym,Slides,Med,4,15m,--,Lat. Explosion,⭐⭐⭐,#14,Wide cross,Snap speed,Slide into a sharp crossover.,Link
+63,Slide-Between,Gym,Slides,Med,4,15m,--,Ball Protection,⭐⭐⭐,#35,Protected,Low/Tight,Slide into a between move.,Link
+64,B-S-B Series,Gym,Slides,High,4,15m,--,Flow Coord.,⭐⭐⭐⭐,#48,Fluid,Mastery,Behind-Slide-Behind sequence.,Link
+65,Slide-In-Out,Gym,Slides,Med,4,15m,--,Misdirection,⭐⭐⭐,#44,Convincing,Elite dip,Slide into an in-out fake.,Link
+66,Slide-Double,Gym,Slides,High,4,15m,--,Combo Stability,⭐⭐⭐⭐,None,Stable,Elite flow,Slide into any double move.,Link
+67,Between Float,Gym,Floats,Med,3,20m,--,Air Control,⭐⭐⭐,#35,Balanced,Hang time,Hanging the ball between legs.,Link
+68,Behind Float,Gym,Floats,Med,3,20m,--,Air Control,⭐⭐⭐,#48,Balanced,Hang time,Hanging the ball behind back.,Link
+69,Opp. Foot Jab,Gym,Jabs,Med,4,10r,--,Split Stance,⭐⭐⭐,None,Balanced,Explosive,Jabbing with the opposite foot.,Link
+70,Same Foot Jab,Gym,Jabs,Low,4,10r,--,Suddenness,⭐⭐,None,Clean,Sharp,Jabbing with the same-side foot.,Link
+71,Side Jab (Stat),Gym,Jabs,Low,4,10r,--,Shiftiness,⭐⭐,None,Wide,Low hips,Stationary lateral jab.,Link
+72,Cross-Opp Jab,Gym,Jabs,High,4,10r,--,Complex Seq.,⭐⭐⭐⭐,#14,Fluid,Elite timing,Cross into an opposite foot jab.,Link
+73,Btwn-Opp Jab,Gym,Jabs,High,4,10r,--,Complex Seq.,⭐⭐⭐⭐,#35,Fluid,Elite timing,Between into an opposite foot jab.,Link
+74,Behind-Opp Jab,Gym,Jabs,High,4,10r,--,Complex Seq.,⭐⭐⭐⭐,#48,Fluid,Elite timing,Behind into an opposite foot jab.,Link
+75,In-Out Jab,Gym,Jabs,High,4,10r,--,Torque Gen.,⭐⭐⭐⭐,#44,Hard dip,Heavy foot,In-out move with a hard jab.,Link
+76,Same Side Stop,Gym,Stops,Med,5,10r,--,Knee Stability,⭐⭐⭐,None,0.5s Frz,1-step,Stop on same side as ball.,Link
+77,Opp. Side Stop,Gym,Stops,Med,5,10r,--,Braking Force,⭐⭐⭐,None,0.5s Frz,1-step,Stop on opposite side of ball.,Link
+78,Behind Stop,Gym,Stops,High,5,10r,--,Dynamic Bal.,⭐⭐⭐⭐,#48,Stable,No stumble,Behind back move to a full stop.,Link
+79,Under Leg Stop,Gym,Stops,High,5,10r,--,Mech. Tension,⭐⭐⭐⭐,#35,Stable,1-step,Under leg move to a full stop.,Link
+80,Half Turn Stop,Gym,Stops,Med,5,10r,--,Rotation Ctrl,⭐⭐⭐,None,Controlled,Quick pivot,Spin-style pivot to a full stop.,Link
+81,Hip Swivel,Gym,Retreat,Med,4,10r,--,Hip Mobility,⭐⭐⭐,None,Fluid,Snap swivel,Swivel hips to square up.,Link
+82,Sprint Back (L),Gym,Retreat,Med,4,15m,--,Rear Power,⭐⭐⭐,None,Low,Explosive,Sprinting backward with L-pivot.,Link
+83,Sprint Back (R),Gym,Retreat,Med,4,15m,--,Rear Power,⭐⭐⭐,None,Low,Explosive,Sprinting backward with R-pivot.,Link
+84,Screen Retreat,Gym,Retreat,Med,4,15m,--,Periph. Vision,⭐⭐⭐,None,Eyes up,Tactical,Retreat as if off a screen.,Link
+85,Double Retreat,Gym,Retreat,High,4,20m,--,Skill Integr.,⭐⭐⭐⭐,None,Stable,Elite pace,Two retreat moves in sequence.,Link
+86,Drive/Relocate,Gym,Retreat,High,4,20m,--,Conditioning,⭐⭐⭐⭐,None,High effort,Game speed,Drive hard then relocate out.,Link
+87,Shoulder Walk,Gym,Twitchy,Med,3,20m,--,Upper/Lower Sync,⭐⭐⭐,None,Rocking,Rhythmic,Moving shoulders while walking.,Link
+88,Slide-Twitch,Gym,Twitchy,High,3,20m,--,Rhythm Break,⭐⭐⭐⭐,None,Convincing,Elite snap,Slide with a twitchy hesitation.,Link
+89,Btwn-Cross Tw.,Gym,Twitchy,High,3,15m,--,Hand Speed,⭐⭐⭐⭐,#14,Rapid,Machine gun,Rapid fire Between-Cross move.,Link
+90,Drop-Between,Gym,Drops,High,4,12r,--,Explosive Drop,⭐⭐⭐⭐,#35,Low dip,Elite speed,Dropping shoulders into between.,Link
+91,Drop-Cross,Gym,Drops,High,4,12r,--,Center of Mass,⭐⭐⭐⭐,#14,Low dip,Elite speed,Dropping shoulders into cross.,Link
+92,Push Out Cross,Gym,Drops,High,4,10r,--,Acceleration,⭐⭐⭐⭐,#14,Explosive,<1.5s drive,Cross into an immediate sprint.,Link
+93,Basic Spin,Gym,Spins,Med,5,8r,--,360 Stability,⭐⭐⭐,None,Balanced,Tight spin,Spin while driving forward.,Link
+94,Baseline Spin,Gym,Spins,High,5,8r,--,Spatial Aware.,⭐⭐⭐⭐,#93,Controlled,No sideline,Spin along the baseline.,Link
+95,Cross-Spin,Gym,Spins,High,4,8r,--,Transit. Speed,⭐⭐⭐⭐,#93,Fluid,Elite combo,Crossover into a spin move.,Link
+96,Between-Spin,Gym,Spins,High,4,8r,--,Transit. Speed,⭐⭐⭐⭐,#93,Fluid,Elite combo,Between move into a spin move.,Link
+97,Behind-Spin,Gym,Spins,High,4,8r,--,Transit. Speed,⭐⭐⭐⭐,#93,Fluid,Elite combo,Behind move into a spin move.,Link
+98,Half-Spin Fake,Gym,Spins,Med,4,10r,--,Core Decel.,⭐⭐⭐,None,Convincing,Sharp snap,Faking a spin then pulling back.,Link
+99,Combo Half-Spin,Gym,Spins,High,4,8r,--,Skill Flow,⭐⭐⭐⭐,#98,Fluid,Mastery,Half-spin into another move.,Link
+100,4x2 V-Dribble,Gym,Stats,Low,4,--,2m,Endur. Handle,⭐⭐,None,Consistent,120+ bpm,2 mins of rhythmic V-dribbles.,Link
+101,4x2 Crossover,Gym,Stats,Low,4,--,2m,Contin. Tension,⭐⭐,None,Consistent,140+ bpm,2 mins of rhythmic crossovers.,Link
+102,4x2 In-Out,Gym,Stats,Low,4,--,2m,Shoulder Health,⭐⭐,None,Consistent,High speed,2 mins of rhythmic in-outs.,Link
+103,4x2 Behind,Gym,Stats,Low,4,--,2m,Low Back Prep,⭐⭐,None,Consistent,No fatigue,2 mins of rhythmic behind-backs.,Link
+104,Front Extens.,Gym,Stats,Low,3,20r,--,Reach Range,⭐⭐⭐,None,Full reach,Controlled,Reaching ball far out front.,Link
+105,Side Extens.,Gym,Stats,Low,3,20r,--,Wide Stability,⭐⭐⭐,None,Full reach,Low base,Reaching ball far to the sides.,Link
+106,Over Knee In-Out,Gym,Stats,Low,3,30r,--,Vertical Ctrl,⭐⭐⭐,None,High bounce,Sharp,In-out over the knee height.,Link
+107,Up & Back Push,Gym,Stats,Low,3,30r,--,Wrist Force,⭐⭐,None,Clean,Fast,Push-pull dribble along side.,Link
+108,Leg Circles,Gym,Stats,Low,3,15r,--,Arm Rotation,⭐⭐⭐,None,Fast wrap,No fumbles,Wrapping ball around one leg.,Link
+109,High/Low Pace,Gym,Stats,Low,3,--,1m,NM Adaptation,⭐⭐⭐,None,Contrast,Mastery,Switching speeds on command.,Link
+110,Double Ball,Gym,Bonus,Med,3,30s,--,Dual Coord.,⭐⭐⭐⭐,#11,Sync'd,Indep.,Dribbling two balls at once.,Link
+111,Power Clean,Weight Room,Knee Dom.,Elite,4,3r,--,RFD / Power,⭐⭐⭐⭐⭐,#113,1.0x BW,1.35x BW,Explosive floor-to-shoulder lift.,
+112,Snatch,Weight Room,Knee Dom.,Elite,3,2r,--,Overhead Power,⭐⭐⭐⭐⭐,#111,0.75x BW,1.0x BW,Explosive floor-to-overhead lift.,
+113,Back Squat,Weight Room,Knee Dom.,Elite,4,5r,--,Absolute Str.,⭐⭐⭐⭐⭐,None,1.3x BW,1.8x BW,Barbell squat to depth.,
+114,Front Squat,Weight Room,Knee Dom.,High,3,6r,--,Anterior Force,⭐⭐⭐⭐,#113,Upright,1.25x BW,Barbell squat with front rack.,
+115,Nordic Curls,Weight Room,Hip Dom.,High,3,8r,--,Hamstring Saf.,⭐⭐⭐⭐,None,Controlled,Full ROM,Eccentric-focused leg curls.,
+116,Single Leg Squat,Weight Room,Knee Dom.,Med,3,8r,--,Joint Stability,⭐⭐⭐,None,Balanced,Weighted,Pistol or bench-supported squat.,Link
+117,Bulgarian SS,Weight Room,Knee Dom.,High,3,10r,--,Unilat. Power,⭐⭐⭐⭐,None,Stable,0.5x BW,Rear-foot elevated split squat.,Link
+118,Skater Squats,Weight Room,Knee Dom.,Med,3,10r,--,Hip Control,⭐⭐⭐,None,Touch,Weighted,One-leg squat with rear reach.,Link
+119,RDL,Weight Room,Hip Dom.,Med,4,8r,--,Post. Chain,⭐⭐⭐,None,Flat back,1.5x BW,Romanian Deadlift for hinge.,
+120,Hip Thrusts,Weight Room,Hip Dom.,High,4,10r,--,Glute Activ.,⭐⭐⭐⭐,None,1.5x BW,2.5x BW,Bench-supported barbell thrust.,
+121,Box Jumps,Weight Room,Funct.,Med,5,3r,--,Explosive Jump,⭐⭐⭐,None,"30"" Box","40"" Box",High platform vertical jump.,Link
+122,Med Ball Throw,Weight Room,Funct.,Med,4,5r,--,Rot. Torque,⭐⭐⭐,None,High wall,Max speed,Rotational power throw.,Link
+123,Farmer Carry,Weight Room,Funct.,Med,3,40m,--,Pillar Strength,⭐⭐⭐,None,No sway,BW load,Walking with heavy weights.,Link
+124,Calf/Tib Raises,Weight Room,Lower Leg,Low,3,15r,--,Ankle Durab.,⭐⭐,None,25 reps,Weighted,Calf and front-shin isolation.,Link
+125,Hanging Knee,Weight Room,Core,Med,3,15r,--,Deep Ab Power,⭐⭐⭐,None,Controlled,To chest,Hanging from bar knee-tucks.,Link
+126,Plank Holds,Weight Room,Core,Low,3,--,60s,Core Stability,⭐⭐,None,60s,Hollow,Isometric core brace.,Link

@@ -1,0 +1,51 @@
+number,Category,Exercise Name,Description,Env.,CNS,Sets,Reps/Dist,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Demo
+1,Warm-Up,Leg Swings,Linear/lateral swings to open hip capsule.,track,Low,2,10 ea.,--,Hip Mobility,⭐,None,90° range,>110° range,Link
+2,Warm-Up,Walking Knee Hugs,Pull knee to chest while rising on toes.,track,Low,2,15m,--,Glute Activation,⭐,None,Balanced hold,Explosive pull,Link
+3,Warm-Up,Cradle Walks,Rotate knee/hip to pull shin to chest.,track,Low,2,15m,--,Ext. Hip Rotation,⭐⭐,None,Shin parallel,Toe-up balance,Link
+4,Warm-Up,Spiderman Reach,Lunge with deep thoracic rotation.,track,Low,2,5 ea.,--,T-Spine Mobility,⭐⭐,None,Elbow to instep,Elbow to floor,Link
+5,Warm-Up,Frankenstein,Kick straight feet to opposite hands.,track,Low,2,15m,--,Hamstring Flex.,⭐,None,Reach 90°,"Fast ""snap""",Link
+6,Warm-Up,Inchworms,"Hinge, walk hands to plank, feet walk in.",track,Low,2,8r,--,Post. Chain,⭐⭐,None,"Within 12""",Feet to palms,Link
+7,Warm-Up,Lateral Lunges,"Step wide, sink hips back and down.",track,Low,2,8 ea.,--,Adductor Mob.,⭐⭐,None,Thigh parallel,Crease < Knee,Link
+8,CNS,Pogo Jumps,Rapid vertical hops using only ankles.,track,Med,3,20r,--,Ankle Stiffness,⭐⭐,None,< 0.20s GCT,< 0.16s GCT,Link
+9,CNS,A-March,High-knee walking with aggressive arm drive.,track,Low,3,20m,--,Run Posture,⭐⭐,None,Piston strike,Rigid torso,Link
+10,CNS,B-Skips,"High-knee skip with active ""clawing"" action.",track,Med,3,20m,--,Hamstring Rec.,⭐⭐⭐,None,Audible strike,2m per skip,Link
+11,CNS,Fast Leg Cycles,"Rapid single-leg ""cycling"" in air.",track,Med,3,10m,--,Turnover Speed,⭐⭐⭐,None,Smooth path,Piston speed,Link
+12,CNS,Build-Ups,Gradual accel sprints (60% to 95%).,track,Med,3,40m,--,Neural Priming,⭐⭐⭐,None,90% by 30m,98% by 35m,Link
+13,Track: Accel,Ankle Dribbles,"Small, fast steps staying over the ankle.",track,Med,3,20m,--,Ground Contact,⭐⭐,None,< 4.8s,< 4.1s,Link
+14,Track: Accel,A-Skips (Speed),Aggressive skipping; driving foot down hard.,track,Med,3,20m,--,Vertical Force,⭐⭐⭐,None,Loud hits,0.18s contact,Link
+15,Track: Accel,Wicket Walks,Stepping over 6-12 inch hurdles.,track,Low,3,10 Hurd,--,Pelvic Align.,⭐⭐⭐,None,No hip dipping,Knee > Hurdle,Link
+16,Track: Accel,Low-Speed Wickets,Running over mini-hurdles at ~80% speed.,track,Med,4,10 Hurd,--,Stride Mech.,⭐⭐⭐,None,1.6-1.8m space,1.9-2.1m space,Link
+17,Track: Accel,Speed Skips (H),Skipping for maximum vertical height.,track,High,3,20m,--,Vertical Power,⭐⭐⭐,None,2.5ft height,3.5ft+ height,Link
+18,Track: Accel,Speed Skips (D),Skipping for maximum horizontal distance.,track,High,3,30m,--,Horizontal Power,⭐⭐⭐,None,12-14 skips,< 10 skips,Link
+19,Track: Accel,Wall Drive,"45° lean, rapid high-knee drives.",track,Med,5,--,10s,Accel Angle,⭐⭐⭐,None,Maintain 45°,Freq > 4Hz,Link
+20,Track: Accel,Hill Sprints (S),"Short, steep uphill sprints.",track,High,8,20m,--,Drive Power,⭐⭐⭐⭐,None,Sub 4.3s,Sub 3.9s,Link
+21,Track: Accel,Falling Starts,"Lean forward until ""falling"" into sprint.",track,Med,5,15m,--,Weight Dist.,⭐⭐⭐,None,10m: 1.95s,10m: 1.75s,Link
+22,Track: Accel,3-Point Starts,"One hand on ground, drive out low.",track,High,6,30m,--,Explosive Exit,⭐⭐⭐⭐,None,10m: 1.85s,10m: 1.65s,Link
+23,Track: Accel,Light Sled Push,Pushing 10-20% body weight.,track,High,6,20m,--,Horizontal Force,⭐⭐⭐⭐,None,Maintain lean,Sub 3.5s (15m),Link
+24,Track: Max V,Straight-Legs,"""Prime Times""—glute-driven snap down.",track,Med,3,30m,--,Ground Force,⭐⭐⭐,None,Rigid legs,< 15 bounds,Link
+25,Track: Max V,Prog. Wickets,Hurdles spaced further for top speed.,track,High,5,20 wkts,--,Stride Length,⭐⭐⭐⭐,None,1.8-2.0m space,2.2-2.4m space,Link
+26,Track: Max V,Wicket Flys,Max speed over wickets after build-up.,track,Elite,4,40m,--,Max Velocity,⭐⭐⭐⭐⭐,None,0.12s-0.14s,0.10s-0.11s,Link
+27,Track: Max V,Flying 30s,Max speed for 30m after build-up.,track,Elite,5,30m,--,Top Speed,⭐⭐⭐⭐⭐,None,3.40s-3.60s,3.00s-3.15s,Link
+28,Track: Max V,Ins-and-Outs,20m Max / 20m Float / 20m Max.,track,Elite,4,60m,--,Speed Maint.,⭐⭐⭐⭐⭐,None,< 7.2s total,< 6.4s total,Link
+29,Track: Max V,Gradual Hills,"Long, shallow hills for power-endurance.",track,High,5,60m,--,Speed Endur.,⭐⭐⭐⭐,None,Maintain form,Sub 8.5s,Link
+30,Track: Max V,Mod. Sled Push,Heavier sled for explosive steps.,track,High,5,10m,--,Specific Str.,⭐⭐⭐⭐,None,Piston drive,Sub 2.8s,Link
+31,Track: Max V,Sprint-Float,30m zones to build speed capacity.,track,High,4,90m,--,Relaxed Velocity,⭐⭐⭐⭐,None,< 11.2s total,< 10.0s total,Link
+32,Track: Max V,Curve Wickets,Wickets on the bend/curve.,track,High,4,10 wkts,--,Centrifugal Tech,⭐⭐⭐⭐,None,Lean into bend,Maintain V,Link
+33,Track: Max V,Sprint Reps,150m at 90-95% intensity.,track,Elite,4,150m,--,Lactate Thresh.,⭐⭐⭐⭐⭐,None,18.5s-19.5s,16.0s-16.8s,Link
+34,Track: Max V,Tempo Strides,"70% intensity, perfect mechanics.",track,Low,10,100m,--,Aerobic Recov.,⭐⭐⭐,None,15.5s-17.0s,13.5s-14.5s,Link
+35,Weight Room,Power Clean,Explosive lift to shoulders.,Weight Room,Elite,5,3r,--,Triple Ext.,⭐⭐⭐⭐⭐,None,1.0x BW,1.3x BW,Link
+36,Weight Room,Snatch,Floor to overhead in one motion.,Weight Room,Elite,4,2r,--,Rate of Force,⭐⭐⭐⭐⭐,None,0.75x BW,1.0x BW,Link
+37,Weight Room,Back Squat,Heavy squat for absolute force.,Weight Room,Elite,5,5r,--,Absolute Str.,⭐⭐⭐⭐,None,1.3x BW,1.8x BW,Link
+38,Weight Room,Front Squat,"Upright torso, quad dominant.",Weight Room,High,4,6r,--,Anterior Str.,⭐⭐⭐⭐,None,1.1x BW,1.5x BW,Link
+39,Weight Room,Nordic Curls,Eccentric hamstring lowering.,Weight Room,High,3,8r,--,Injury Prev.,⭐⭐⭐⭐,None,3s descent,5s / Unassist,Link
+40,Weight Room,Single-Leg Sq.,Squat on one leg for stability.,Weight Room,Med,3,8 ea.,--,Unilat. Balance,⭐⭐⭐,None,Thigh parallel,Weighted 20lb,Link
+41,Weight Room,Bulgarian SS,Rear foot elevated split squat.,Weight Room,High,3,10r,--,Hip Mobility,⭐⭐⭐,None,0.5x BW load,1.0x BW load,Link
+42,Weight Room,Skater Squats,"Single-leg squat, knee to floor.",Weight Room,Med,3,8r,--,Lat. Stability,⭐⭐⭐,None,Clean touch,Weighted / 5s,Link
+43,Weight Room,RDL,Hinge at hips to target hamstrings.,Weight Room,Med,4,10r,--,Post. Chain,⭐⭐⭐,None,1.0x BW,1.5x BW,Link
+44,Weight Room,Hip Thrusts,Weighted bridge for glute force.,Weight Room,High,4,10r,--,Horiz. Strength,⭐⭐⭐,None,1.5x BW,2.5x BW,Link
+45,Weight Room,Box Jumps,Jump onto high box.,Weight Room,Med,4,5r,--,Explosive Power,⭐⭐⭐,None,"28""-32"" Box","40""-44"" Box",Link
+46,Weight Room,Med-Ball Throw,Throw for height or distance.,Weight Room,Med,4,5r,--,Explosive Core,⭐⭐⭐,None,10lb / 15m,12lb / 20m,Link
+47,Weight Room,Farmer Carry,Heavy walk to build core strength.,Weight Room,Med,3,40m,--,Anti-Rotation,⭐⭐⭐,None,0.6x BW / hand,1.0x BW / hand,Link
+48,Weight Room,Calf/Tibialis,Front/back lower leg strength.,Weight Room,Low,3,20r,--,Force Transfer,⭐⭐,None,20r Bodyweight,Weighted ISO,Link
+49,Weight Room,Hanging Knee,Lift knees to chest from bar.,Weight Room,Med,3,15r,--,Hip Flexors,⭐⭐,None,Controlled,Knees to Elbow,Link
+50,Weight Room,Plank Holds,Isometric hold for rigid torso.,Weight Room,Low,3,--,60s,Core Stability,⭐⭐,None,Perfect spine,Weighted 45lb,Link

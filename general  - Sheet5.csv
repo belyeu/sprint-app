@@ -1,0 +1,65 @@
+number,enviroment,Category,Exercise Name,Description,CNS,Sets,Reps,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Demo
+1,Field,Lower Body,Walking Lunges,Large steps; back knee grazes floor.,Med,3,10ea,--,Unilat. Strength,⭐⭐,None,Balanced torso,#ERROR!,🎥
+2,Field,Lower Body,Reverse Lunges,Step back to target glute/hip stability.,Low,3,10ea,--,Balance & Glutes,⭐⭐,None,No wobble,Perfect tracking,🎥
+3,Field,Lower Body,Step-Ups,Drive through top foot on box/bench.,Low,3,10ea,--,Knee Stability,⭐⭐,None,Control descent,Explosive drive,🎥
+4,Field,Upper Body,Push-Ups,Chest to floor; rigid plank line.,Med,3,20r,--,Horizontal Press,⭐⭐,None,25 reps,50 reps,🎥
+5,Field,Core,Plank (Forearm),Static hold; neutral spine/pelvis.,Low,3,--,60s,Isometric Str.,⭐,None,60s steady,120s steady,🎥
+6,Field,Core,Side Plank,Stack feet; hips high and square.,Low,3,--,45s,Lat. Stability,⭐,None,45s ea. side,90s ea. side,🎥
+7,Field,Core,Russian Twists,Seated rotation; heels off ground.,Med,3,20r,--,Rotational Power,⭐⭐,None,Controlled,Weighted 15lb,🎥
+8,Field,Core,Deadbugs,Alt. arm/leg reach; back flat to floor.,Low,3,12r,--,Spinal Control,⭐,None,No low back arch,3s tempo reach,🎥
+9,Field,Core,Bird-Dogs,Opposite reach from quadruped.,Low,3,12r,--,Posterior Health,⭐,None,Zero hip sway,5s hold reach,🎥
+10,Field,Functional,Box Jumps,Explosive jump; land soft on box.,High,4,5r,--,Vertical Power,⭐⭐⭐,None,"24"" Box","32"" Box",🎥
+11,Field,Functional,Med-Ball Slams,Aggressive downward throw via core.,Med,4,10r,--,Explosive Core,⭐⭐⭐,None,10lb Ball,15lb Ball,🎥
+12,Field,Functional,Burpees,Chest to floor to vertical jump.,High,3,15r,60s,Conditioning,⭐⭐⭐,None,15 reps/min,25 reps/min,🎥
+13,Field,Functional,Mtn Climbers,Rapid knee drives in plank position.,Med,3,40r,30s,High-Int. Core,⭐⭐,None,Fast/Fluid,100% intensity,🎥
+14,Field,Mobility,Spiderman Lunge,Deep lunge with elbow to instep.,Low,2,8ea,--,Hip & Thoracic,⭐⭐,None,Elbow to floor,Fluid reach,🎥
+15,Field,Mobility,Inchworms,Walk hands to plank; feet to hands.,Low,2,8r,--,Post. Chain Mob,⭐⭐,None,Palms to floor,Toes to hands,🎥
+16,Field,Mobility,Scorpion Stretch,Prone; reach foot to opposite hand.,Low,2,10r,--,Lower Back/Hips,⭐,None,Knee touches,Foot to floor,🎥
+17,Field,Mobility,Cat-Cow,Spinal flexion and extension.,Low,2,10r,--,Spinal Mobility,⭐,None,Full range,Fluid segments,🎥
+18,Field,Mobility,90/90 Switches,Seated hip internal/external rot.,Low,2,10r,--,Hip Rotation,⭐⭐,None,Knees to floor,Hands off floor,🎥
+19,Field,Mobility,Leg Swings F/B,Front to back active swings.,Low,2,15ea,--,Hamstring Mob,⭐,None,90° Range,>110° Range,🎥
+20,Field,Mobility,Leg Swings S/S,Side to side adductor swings.,Low,2,15ea,--,Adductor Flow,⭐,None,No hip tilt,Max extension,🎥
+21,Gym,Knee Dom.,Back Squat,Barbell; high or low bar position.,Elite,4,5r,--,Absolute Force,⭐⭐⭐⭐⭐,https://www.google.com/search?q=%2337,1.0x BW,1.5x BW,🎥
+22,Gym,Knee Dom.,Front Squat,Barbell; front rack; upright torso.,High,4,6r,--,Core/Quad Drive,⭐⭐⭐⭐,https://www.google.com/search?q=%2321,0.8x BW,1.25x BW,🎥
+23,Gym,Knee Dom.,Goblet Squat,DB at chest; focus on depth/form.,Med,3,12r,--,Movement Pattern,⭐⭐,None,Deep / No wink,50% BW Load,🎥
+24,Gym,Knee Dom.,Leg Press,Machine based knee extension.,Med,3,10r,--,Volume Hyper.,⭐⭐,None,1.5x BW,2.5x BW,🎥
+25,Gym,Knee Dom.,Leg Extension,Isolated quad work.,Low,3,15r,--,Quad Isolation,⭐,None,Full lockout,Slow eccentric,🎥
+26,Gym,Knee Dom.,Bulgarian SS,Rear foot elevated; focus on depth.,High,3,8ea,--,Unilateral Pwr,⭐⭐⭐,None,Bodyweight,0.5x BW added,🎥
+27,Gym,Hip Dom.,Deadlift (Conv),Barbell; pull from floor.,Elite,4,5r,--,Total Body Str,⭐⭐⭐⭐⭐,https://www.google.com/search?q=%2330,1.2x BW,1.8x BW,🎥
+28,Gym,Hip Dom.,Sumo Deadlift,Wide stance; vertical torso.,Elite,4,5r,--,Glute/Adductor,⭐⭐⭐⭐⭐,https://www.google.com/search?q=%2327,1.2x BW,1.8x BW,🎥
+29,Gym,Hip Dom.,RDL,Hinge; bar to mid-shin; ham focus.,Med,4,10r,--,Hinge Mechanic,⭐⭐⭐,None,1.0x BW,1.5x BW,🎥
+30,Gym,Hip Dom.,Stiff-Leg DL,Minimal knee bend; deep stretch.,Med,3,10r,--,Hamstring Hyper,⭐⭐⭐,https://www.google.com/search?q=%2329,Touch toes,Below mid-shin,🎥
+31,Gym,Hip Dom.,Glute Ham Raise,Concentric ham-pull on bench.,High,3,8r,--,Posterior Str,⭐⭐⭐⭐,None,Assisted,Unassisted,🎥
+32,Gym,Hip Dom.,Leg Curl,Seated or lying isolation.,Low,3,15r,--,Ham Isolation,⭐,None,No hip lift,Controlled rep,🎥
+33,Gym,Push,Flat Bench Press,Barbell; touch chest; full lock.,High,4,5r,--,Upper Force,⭐⭐⭐⭐,None,1.0x BW,1.3x BW,🎥
+34,Gym,Push,Incline Bench,Barbell or DB; 45 degree angle.,Med,4,8r,--,Upper Chest,⭐⭐⭐,https://www.google.com/search?q=%2333,0.8x BW,1.1x BW,🎥
+35,Gym,Push,DB Chest Press,Independent arms; more range.,Med,3,10r,--,Stability Press,⭐⭐⭐,None,30% BW ea.,45% BW ea.,🎥
+36,Gym,Push,Overhead Press,Standing Barbell; strict press.,High,4,5r,--,Shoulder Str.,⭐⭐⭐⭐,None,0.6x BW,0.85x BW,🎥
+37,Gym,Push,Arnold Press,Rotational DB shoulder press.,Med,3,12r,--,Shoulder Health,⭐⭐⭐,None,20lb DBs,40lb DBs,🎥
+38,Gym,Push,Dips,Parallel bars; chest lean.,Med,3,12r,--,Press Power,⭐⭐⭐,None,10 Bodyweight,#ERROR!,🎥
+39,Gym,Push,Lat/Front Raise,Isolation for lateral/front delt.,Low,3,15r,--,Delt Isolation,⭐,None,10lb DBs,25lb DBs,🎥
+40,Gym,Push,Upright Rows,Barbell; pull to mid-chest.,Low,3,12r,--,Traps/Delts,⭐⭐,None,Control weight,No swing,🎥
+41,Gym,Pull,Pull-Ups,Dead hang to chin over bar.,Med,3,10r,--,Vertical Pull,⭐⭐⭐,None,8 Bodyweight,15 Bodyweight,🎥
+42,Gym,Pull,Lat Pulldowns,Machine vertical pull.,Low,3,12r,--,Lats/Posture,⭐⭐,None,0.8x BW,1.1x BW,🎥
+43,Gym,Pull,Barbell Rows,45-degree hinge; pull to waist.,High,4,8r,--,Back Thickness,⭐⭐⭐,None,0.7x BW,1.1x BW,🎥
+44,Gym,Pull,One-Arm DB Row,Braced; elbow to ceiling.,Med,3,10ea,--,Unilat. Back,⭐⭐,None,30% BW DB,50% BW DB,🎥
+45,Gym,Pull,Seated Cable Row,Horizontal pull; squeeze scapula.,Low,3,12r,--,Horizontal Pull,⭐⭐,None,Perfect form,Stack+,🎥
+46,Gym,Pull,T-Bar Rows,Straddle bar; pull via chest pad.,Med,3,10r,--,Mid-Back Str.,⭐⭐,None,1.0x BW added,2.0x BW added,🎥
+47,Gym,Pull,Face Pulls,Cable to forehead; thumbs back.,Low,3,15r,--,Rear Delts,⭐,None,Control tempo,No lean back,🎥
+48,Gym,Pull,Rear Delt Flys,Bent over DB or machine.,Low,3,15r,--,Post. Shoulder,⭐,None,10lb DBs,20lb DBs,🎥
+49,Gym,Pull,Shrugs,Vertical trap lift.,Low,3,12r,--,Trap Str.,⭐,None,1.0x BW,1.5x BW,🎥
+50,Gym,Arms,Barbell Curls,Strict curl; EZ or Straight bar.,Low,3,12r,--,Bicep Peak,⭐,None,40% BW,60% BW,🎥
+51,Gym,Arms,Hammer Curls,Neutral grip; targets brachialis.,Low,3,12ea,--,Forearm/Bicep,⭐,None,25lb DBs,45lb DBs,🎥
+52,Gym,Arms,Preacher Curls,Braced on bench; no swing.,Low,3,12r,--,Isolated Bicep,⭐,None,Full extension,Perfect pump,🎥
+53,Gym,Arms,Concentration,Seated; arm against inner thigh.,Low,3,15ea,--,Peak Squeeze,⭐,None,Max squeeze,Slow tempo,🎥
+54,Gym,Arms,Reverse Curls,Pronated grip; builds grip/arm.,Low,3,12r,--,Brachioradialis,⭐,None,Strict form,40lb EZ Bar,🎥
+55,Gym,Arms,Tricep Pushdown,Cable; elbow locked at side.,Low,3,15r,--,Lateral Tricep,⭐,None,No lean,Stack control,🎥
+56,Gym,Arms,Skull Crushers,EZ bar to forehead; lying.,Med,3,12r,--,Long Head Tri,⭐⭐,None,Control tempo,0.5x BW,🎥
+57,Gym,Arms,Overhead Tri,DB or Cable reach behind head.,Low,3,15r,--,Tricep Stretch,⭐,None,Full range,35lb DB,🎥
+58,Gym,Lower Leg,Calf Raises,Standing/Seated ankle extension.,Low,3,20r,--,Gastrocnemius,⭐,None,1.0x BW load,1.5x BW load,🎥
+59,Gym,Lower Leg,Tibialis Raises,Toes to ceiling; prevents shinsplints.,Low,3,25r,--,Shint Str.,⭐,None,25 reps BW,Weighted,🎥
+60,Gym,Core,Hanging Leg Raise,Legs to bar from dead hang.,Med,3,10r,--,Lower Ab Str.,⭐⭐⭐,None,L-Sit hold,Toes to Bar,🎥
+61,Gym,Core,Cable Woodchop,High to low rotational pull.,Med,3,12ea,--,Oblique Power,⭐⭐,None,Control weight,Explosive rip,🎥
+62,Gym,Core,Pallof Press,Resist lateral cable pull.,Low,3,10ea,5s,Anti-Rotation,⭐⭐,None,No trunk shift,Max resistance,🎥
+63,Gym,Functional,KB Swings,Hinge; explosive glute snap.,High,4,15r,--,Power Endur.,⭐⭐⭐,https://www.google.com/search?q=%2329,35lb KB,53lb KB,🎥
+64,Gym,Functional,Farmer Carries,Heavy walk; core braced.,Med,3,40m,60s,Total Stability,⭐⭐⭐,None,0.5x BW / Hand,1.0x BW / Hand,🎥

@@ -1,0 +1,57 @@
+number,Category,Exercise Name,Description,Env.,CNS,Sets,Reps,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Demo
+1,Footwork,Shuffle Step,Instep to instep; point toward throw.,Field,Low,3,10r,--,Lat. Alignment,⭐,None,Fluid; no click,Sub-1.5s release,🎥
+2,Footwork,Instep Kick,Kick throwing foot instep over glove.,Field,Low,3,10r,--,Momentum Trans,⭐⭐,https://www.google.com/search?q=%231,Target on line,65+ MPH Velo,🎥
+3,Footwork,Power Step,Instep to ball; move around ball.,Field,Med,3,10r,--,Force Prod.,⭐⭐⭐,https://www.google.com/search?q=%232,Clean trans.,Pro-Step Mech,🎥
+4,Footwork,Jam Step,Backhand; glove foot steps with ball.,Field,Med,3,12r,--,Depth Control,⭐⭐⭐,None,50 MPH Fungo,65+ MPH Pick,🎥
+5,Footwork,Open Step,Opening hips to reach wide lateral.,Field,Low,3,8r,--,Mobility/Reach,⭐⭐⭐,None,Balanced hold,Full ext. reach,🎥
+6,Footwork,Jump Turn (In),Air-born foot replacement (Inside).,Field,High,4,8r,--,Quick Trans.,⭐⭐⭐⭐,https://www.google.com/search?q=%231,<0.8s Turn,<0.5s Turn,🎥
+7,Footwork,Jump Turn (Out),Air-born foot replacement (Outside).,Field,High,4,8r,--,Directional,⭐⭐⭐⭐,https://www.google.com/search?q=%236,Clear lane,Elite control,🎥
+8,Throws,Long Throw,Full arm path; thumb to thigh circle.,Field,High,3,15r,--,Max Distance,⭐⭐⭐,None,150ft accuracy,200ft+ Rope,🎥
+9,Throws,Short Snap,Shortened arc; thumb to waist snap.,Field,Low,4,15r,--,Quick Release,⭐⭐,None,<0.6s Release,<0.4s Release,🎥
+10,Throws,Bow & Arrow,Tight load; thumb to ear (Catcher).,Field,Med,4,12r,--,Accuracy,⭐⭐,None,Chest height,Sub-1.8s Pop,🎥
+11,Throws,3/4 Sway,Tilt lower body/Shoulder dip throw.,Field,Med,3,10r,--,Off-Platform,⭐⭐⭐,None,Accurate run,Max speed acc.,🎥
+12,Throws,Dart Throws,Elbow and finger snap only.,Field,Low,3,20r,--,Fast Exchange,⭐⭐,None,Zero wind-up,Effortless touch,🎥
+13,Running,Straight,Maintaining a linear line on run.,Field,High,5,30m,<4s,Linear Speed,⭐⭐⭐⭐,None,Sub-3.0s H-1st,Sub-2.8s H-1st,🎥
+14,Running,Glove Side,Pursuit angle toward glove side.,Field,High,4,20m,<5s,Lat. Efficiency,⭐⭐⭐,https://www.google.com/search?q=%2313,Sub-4.5s Shut.,Sub-4.2s Shut.,🎥
+15,Running,Backhand,Crossover to reach backhand side.,Field,High,4,20m,<5s,Cross-Reach,⭐⭐⭐,https://www.google.com/search?q=%2314,Secure catch,Full dive secure,🎥
+16,Flips,Backhand Flip,Wrist flick; minimal arm motion.,Field,Low,3,15r,--,Touch/Feel,⭐⭐⭐,None,Accurate @ 10ft,Effortless flick,🎥
+17,Flips,Forehand Flip,"Stiff wrist, palm to target; flat.",Field,Low,3,15r,--,Consistency,⭐⭐,None,"No ""rainbow""",Sub-0.5s flip,🎥
+18,Flips,Shovel Pass,Underhand toss using stiff palm.,Field,Low,3,10r,--,Under-Ball,⭐⭐,None,Accurate weight,Lead in stride,🎥
+19,Flips,Glove Flip,Flick ball directly out of glove.,Field,Med,4,12r,--,Reaction,⭐⭐⭐,https://www.google.com/search?q=%2316,100% catch,Fore/Back Master,🎥
+20,Grounders,Straight On,Right-left gather; funnel to chest.,Field,Low,4,15r,--,Fund. Rhythm,⭐⭐,None,10/10 Clean,Fluidity,🎥
+21,Grounders,Forehand,Lead with glove; attack the hop.,Field,Med,4,12r,--,Attacking,⭐⭐⭐,https://www.google.com/search?q=%2320,Play the hop,Sub-2.0s Play,🎥
+22,Grounders,Backhand,Thumb down; staying low/deep.,Field,Med,4,12r,--,Staying Low,⭐⭐⭐,https://www.google.com/search?q=%2321,Stay in base,Full speed pick,🎥
+23,Grounders,Short Hop,Pick ball immediately after dirt.,Field,High,5,10r,--,Timing,⭐⭐⭐⭐,None,8/10 clean,10/10 clean,🎥
+24,Grounders,Slide Dives,Dropping to slide to stop ball.,Field,High,3,6r,--,Emergency,⭐⭐⭐⭐⭐,None,Stop the ball,Throw from knee,🎥
+25,Grounders,Tripod,Bare hand down; eyes behind glove.,Field,Low,3,10r,--,Stability,⭐⭐,None,Eye at glove,Instant trans.,🎥
+26,Outfield,Routine Fly,Glove foot forward; catch back.,Field,Low,3,10r,--,High-Point,⭐⭐,None,Secure catch,Pro-tracking,🎥
+27,Outfield,Drop Step (R),Point toe; no false steps deep.,Field,Med,4,8ea,--,Deep Coverage,⭐⭐⭐,None,Point toe,Zero false step,🎥
+28,Outfield,Running Catch,Tracking over-shoulder at stride.,Field,High,4,10r,--,Tracking Speed,⭐⭐⭐⭐,https://www.google.com/search?q=%2327,Shoulder align,Elite traject.,🎥
+29,Outfield,Lateral Cross,Crossover running catch to gap.,Field,Med,4,10r,--,Sideways Range,⭐⭐⭐,None,No wasted step,Speed pursuit,🎥
+30,Outfield,Sliding Catch,Bent leg slide or full extension.,Field,High,3,5r,--,Maximal Effort,⭐⭐⭐⭐⭐,None,Secure ball,Pop up throw,🎥
+31,Outfield,Fence Work,Feel fence; track/climb/leap.,Field,Med,3,6r,--,Spatial Aware,⭐⭐⭐⭐,None,Feel fence,Climb/Leap,🎥
+32,Catcher,Pop-ups,Vertical orientation; tracking.,Field,Med,3,8r,--,Vertical Or.,⭐⭐⭐,None,Spin control,Track in wind,🎥
+33,Catcher,Pickoffs,Instep down; explosive pop.,Field,High,4,8r,--,Explosive Pop,⭐⭐⭐⭐,https://www.google.com/search?q=%2310,Sub-2.0s Pop,Sub-1.8s Pop,🎥
+34,Catcher,Blocking,Shifting body to center dirt ball.,Field,Elite,5,10r,--,Reaction,⭐⭐⭐⭐⭐,None,Dead ball,Center 100%,🎥
+35,Gym,Power Clean,Barbell; explosive pull to rack.,Gym,Elite,5,3r,--,Triple Ext.,⭐⭐⭐⭐⭐,https://www.google.com/search?q=%2337,0.75x BW,1.1x BW,🎥
+36,Gym,Snatch,Floor to overhead one motion.,Gym,Elite,4,2r,--,Rate of Force,⭐⭐⭐⭐⭐,https://www.google.com/search?q=%2335,0.5x BW,0.8x BW,🎥
+37,Gym,Back Squat,Barbell; hips below parallel.,Gym,Elite,5,5r,--,Absolute Force,⭐⭐⭐⭐⭐,None,1.0x BW (5r),1.5x BW (5r),🎥
+38,Gym,Front Squat,Upright torso; barbell front rack.,Gym,High,4,6r,--,Core/Quad,⭐⭐⭐⭐,https://www.google.com/search?q=%2337,Upright torso,1.25x BW,🎥
+39,Gym,Nordic Curls,Eccentric focus; slow descent.,Gym,High,3,8r,--,Injury Prev.,⭐⭐⭐⭐,None,3s descent,5s / Unassist,🎥
+40,Gym,Single-Leg Sq,Unilateral squat for stability.,Gym,Med,3,8ea,--,Unilat Balance,⭐⭐⭐,None,Thigh parallel,Weighted 20lb,🎥
+41,Gym,Bulgarian SS,Rear foot elevated split squat.,Gym,High,3,10r,--,Single-Leg Pwr,⭐⭐⭐,None,0.5x BW load,1.0x BW load,🎥
+42,Gym,Skater Squats,Single-leg; rear knee to floor.,Gym,Med,3,8r,--,Lat. Stability,⭐⭐⭐,None,Clean touch,Weighted / 5s,🎥
+43,Gym,RDL,Hinge at hips; target post. chain.,Gym,Med,4,10r,--,Hinge Mech,⭐⭐⭐,None,Flat back,1.5x BW,🎥
+44,Gym,Hip Thrusts,Weighted bridge for glute force.,Gym,High,4,10r,--,Horiz. Force,⭐⭐⭐⭐,None,1.5x BW,2.5x BW,🎥
+45,Gym,Box Jumps,Jump onto high box; land soft.,Gym,High,5,3r,--,Elastic Power,⭐⭐⭐,None,"24"" Box","32"" Box",🎥
+46,Gym,Med-Ball Throw,Explosive rotational/overhead.,Gym,Med,4,5r,--,Rotational Pwr,⭐⭐⭐,None,10lb / 15m,12lb / 20m,🎥
+47,Gym,Farmer Carry,Heavy walk; maintain neutral spine.,Gym,Med,3,40m,<60s,Total Stability,⭐⭐⭐,None,0.5x BW/Hand,0.8x BW/Hand,🎥
+48,Gym,Calf/Tibialis,Lower leg isolation; durability.,Gym,Low,3,20r,--,Ankle Health,⭐⭐,None,20 Reps BW,Weighted ISO,🎥
+50,Gym,Plank Holds,Isometric hold; flat torso.,Gym,Low,3,--,60s,Core Stability,⭐⭐,None,60s Flat,Weighted 45lb,🎥
+51,Skill,Receiving,Quiet hands; framing strike zone.,Field,Low,5,20r,--,Framing,⭐⭐,None,Soft hands,Elite framing,🎥
+52,Tagging,Over R-Should,Tag for throws over right shoulder.,Field,Low,3,10r,--,Tag Quickness,⭐,None,Quick tag,No contact,🎥
+53,Tagging,Over L-Should,Tag for throws over left shoulder.,Field,Low,3,10r,--,Tag Quickness,⭐,None,Quick tag,Blind tag feel,🎥
+54,Tagging,Wrap Around,Sweep/wrap tag mechanics.,Field,Med,3,10r,--,Tag Control,⭐⭐,None,Secure tag,Sweep tech,🎥
+55,Tagging,Drop And Up,Block base; apply tag.,Field,Med,3,10r,--,Tag Strength,⭐⭐,None,Block base,Avoid slide,🎥
+56,Tagging,Sweep Tag,Maximal reach lateral tag.,Field,High,4,8r,--,Range,⭐⭐⭐,None,Full reach,Fast snap tag,🎥
+56,Tagging,Sweep Tag,Maximal reach lateral tag.,Field,High,4,8r,--,Extension Range,⭐⭐⭐,None,Full reach,Fast snap tag,
