@@ -1,4 +1,4 @@
-number,env,Category,Exercise Name,Description,CNS,Sets,Reps,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Demo
+number,Env.,Category,Exercise Name,Description,CNS,Sets,Reps,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Demo
 1,Field,Lower Body,Walking Lunges,Large steps; back knee grazes floor.,Med,3,10ea,--,Unilat. Strength,⭐⭐,None,Balanced torso,#ERROR!,🎥
 2,Field,Lower Body,Reverse Lunges,Step back to target glute/hip stability.,Low,3,10ea,--,Balance & Glutes,⭐⭐,None,No wobble,Perfect tracking,🎥
 3,Field,Lower Body,Step-Ups,Drive through top foot on box/bench.,Low,3,10ea,--,Knee Stability,⭐⭐,None,Control descent,Explosive drive,🎥
@@ -63,4 +63,5 @@ number,env,Category,Exercise Name,Description,CNS,Sets,Reps,Time,Primary Focus,S
 62,Gym,Core,Pallof Press,Resist lateral cable pull.,Low,3,10ea,5s,Anti-Rotation,⭐⭐,None,No trunk shift,Max resistance,🎥
 63,Gym,Functional,KB Swings,Hinge; explosive glute snap.,High,4,15r,--,Power Endur.,⭐⭐⭐,https://www.google.com/search?q=%2329,35lb KB,53lb KB,🎥
 64,Gym,Functional,Farmer Carries,Heavy walk; core braced.,Med,3,40m,60s,Total Stability,⭐⭐⭐,None,0.5x BW / Hand,1.0x BW / Hand,🎥
+
 
