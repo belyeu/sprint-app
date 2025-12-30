@@ -49,25 +49,36 @@ with st.sidebar:
     )
     num_drills = st.slider("Number of Exercises", 5, 20, 13)
 
+    st.divider()
+    st.header("📊 INTENSITY METER")
+    effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
+    intensity_map = {"Low": 25, "Moderate": 50, "High": 75, "Elite": 100}
+    st.progress(intensity_map[effort])
+
 # --- 4. DYNAMIC THEMING ---
 if dark_mode:
     primary_bg, card_bg, text_color, sub_text, accent, expander_text = "#0F172A", "#1E293B", "#F8FAFC", "#94A3B8", "#3B82F6", "#FFFFFF"
 else:
-    primary_bg, card_bg, text_color, sub_text, accent, expander_text = "#FFFFFF", "#F1F5F9", "#0F172A", "#475569", "#2563EB", "#0F172A"
+    primary_bg, card_bg, text_color, sub_text, accent, expander_text = "#FFFFFF", "#F1F5F9", "#0F172A", "#475569", "#2563EB", "#1E293B"
 
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
+    
+    /* FIX: Exercise Name Visibility in Expanders */
+    [data-testid="stExpander"] summary p {{
+        color: {expander_text} !important;
+        font-weight: 700 !important;
+        font-size: 1.15rem !important;
+        opacity: 1 !important;
+    }}
+    
     [data-testid="stExpander"] {{ 
         background-color: {card_bg} !important; 
         border: 1px solid {accent}44 !important; 
         border-radius: 12px !important; 
     }}
-    [data-testid="stExpander"] summary p {{
-        color: {expander_text} !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
-    }}
+    
     .metric-label {{ font-size: 0.75rem; color: {sub_text}; font-weight: bold; text-transform: uppercase; }}
     .metric-value {{ font-size: 1rem; color: {accent}; font-weight: 600; margin-bottom: 12px; }}
     .stMarkdown p, .stMarkdown li {{ color: {text_color} !important; }}
@@ -126,9 +137,9 @@ st.markdown(f"<h1 style='text-align: center; color: {accent};'>🏆 PRO-ATHLETE 
 
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
+        # Header text visibility fix applied via CSS selector "summary p"
         with st.expander(f"EXERCISE {i+1}: {drill['ex']} | {drill['stars']}", expanded=(i==0)):
             
-            # Layout: Image and Metadata
             col_img, col_meta = st.columns([1, 2])
             
             with col_img:
@@ -152,13 +163,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
             st.divider()
             
-            # Goals & Description
             g1, g2 = st.columns(2)
             g1.info(f"**HS Goals:** {drill['hs_goals']}")
             g2.success(f"**College Goals:** {drill['college_goals']}")
             st.markdown(f"**Description:** {drill['desc']}")
             
-            # Action Area
             st.divider()
             c1, c2 = st.columns(2)
             with c1:
@@ -170,8 +179,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 
                 if drill['demo'] and "http" in str(drill['demo']):
                     st.video(drill['demo'])
-                else:
-                    st.caption("No video demo available.")
 
             with c2:
                 st.markdown("#### ⏱️ Timer")
