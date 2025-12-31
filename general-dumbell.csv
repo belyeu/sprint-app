@@ -1,0 +1,61 @@
+Rank,Exercise Name,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo,env
+1,Bicep Curl,Beg,Biceps,Low,3,12,--,45s,Bicep Peak,⭐,None,Size,Definition,Standard bicep isolation.,Palms forward; curl to shoulders; elbows pinned.,🎥,w_room
+2,Hammer Curl,Beg,Biceps,Low,3,12,--,45s,Long Head,⭐,None,Forearm Mass,Width,Targets brachialis and forearm width.,"Neutral grip; curl ""thumb-up"" to shoulder.",🎥,w_room
+3,Dumbbell Row,Beg,Back,Med,3,10ea,--,60s,Lat Thickness,⭐⭐,None,Posture,Pull Strength,Unilateral back builder.,One hand on bench; pull weight to hip.,🎥,w_room
+4,Bench Press,Beg,Chest,Med,4,10,--,90s,Chest Mass,⭐⭐,Push Up,Force Prod.,Stability,Stable compound chest press.,Lie flat; press weights; elbows at 45°.,🎥,w_room
+5,Shoulder Press,Beg,Shoulders,Med,3,10,--,60s,Vertical Pow,⭐⭐,None,Press Volume,Sh. Health,Overhead deltoid development.,Press from ear level to overhead; core tight.,🎥,w_room
+6,Dumbbell Fly,Beg,Chest,Low,3,12,--,45s,Chest Stretch,⭐,Bench Press,Flexibility,Pec Detail,Isolates pectorals via a wide arc.,"Lower in arc until stretch; ""hug"" to center.",🎥,w_room
+7,Skullcrusher,Inter,Triceps,Low,3,12,--,45s,Tri Isolation,⭐,None,Arm Size,Lockout Pow,Targets the tricep long head.,Lie on bench; lower to forehead; extend.,🎥,w_room
+8,Front Raise,Beg,Shoulders,Low,3,12,--,30s,Ant. Delt,⭐,None,Front Cap,Sh. Shape,Isolate the front shoulder.,Raise to shoulder height; do not swing.,🎥,w_room
+9,Seated Tri Press,Beg,Triceps,Low,3,12,--,45s,Long Head Ext,⭐,None,Arm Mass,Tricep Depth,Overhead tricep extension.,Sit; hold DB overhead; lower behind head.,🎥,w_room
+10,Incline Bench,Inter,Chest,Med,3,10,--,60s,Upper Pec,⭐⭐,Bench Press,Front Delt,Upper Fill,Targets the clavicular head.,Bench at 45°; press from upper chest.,🎥,w_room
+11,Dumbbell Lunge,Beg,Quads,Med,3,12ea,--,60s,Unilat. Legs,⭐⭐,Lunge,Balance,Step Power,Weighted lower body strength.,Step forward; back knee to floor; shin vertical.,🎥,w_room
+12,Rear Delt Raise,Beg,Shoulders,Low,3,15,--,30s,Post. Chain,⭐,None,Posture,Sh. Health,Isolates back of the shoulder.,Hinge forward; pull weights out like wings.,🎥,w_room
+13,Bent Over Row,Inter,Back,High,3,10,--,60s,Back Density,⭐⭐,DB Row,Bracing,Total Pull,Bilateral back thickness builder.,Hinge at hips; pull to waist; flat back.,🎥,w_room
+14,Kickbacks,Beg,Triceps,Low,3,15ea,--,30s,Tri Squeeze,⭐,None,Definition,Detail,Focuses on the tricep contraction.,Hinge; elbow high; extend arm straight back.,🎥,w_room
+15,Romanian DL,Inter,Hamstrings,High,3,12,--,60s,Posterior Pow,⭐⭐⭐,Hinge,Ham. Stretch,Hip Snap,Foundational hip-hinge movement.,Hinge at hips; slide weights down legs.,🎥,w_room
+16,Shoulder Raise,Beg,Shoulders,Low,3,15,--,30s,Lat. Delt,⭐,None,Width,Sh. Cap,Medial deltoid isolation.,Raise to sides; lead with elbows.,🎥,w_room
+17,Seated Curl,Beg,Biceps,Low,3,12,--,45s,Strict Bicep,⭐,Bicep Curl,No Momentum,Peak Dev.,Removes leg drive from the curl.,Sit; perform curl; rotate wrists at top.,🎥,w_room
+18,Dumbbell Squat,Beg,Quads,Med,3,15,--,60s,Leg Foundation,⭐⭐,Body Squat,Depth,Quad Volume,Beginner-friendly weighted squat.,Hold weights at sides; sit back on heels.,🎥,w_room
+19,Concentrat. Curl,Beg,Biceps,Low,3,12ea,--,30s,Peak Isolation,⭐,Bicep Curl,Bicep Shape,Detail,Focuses on the bicep peak.,Sit; brace elbow on thigh; curl upward.,🎥,w_room
+20,Dumbbell Shrug,Beg,Trapezius,Low,3,15,2s Hold,45s,Trap Height,⭐,None,Neck Health,Trapezius Dev,Upper trap isolation.,Hold at sides; lift shoulders to ears.,🎥,w_room
+21,Arnold Press,Inter,Shoulders,Med,3,10,--,60s,Full Delt,⭐⭐,Sh. Press,Range of Mot.,Sh. Health,Rotational overhead press.,Start palms in; rotate palms out as you press.,🎥,w_room
+22,Squat to Press,Inter,Full Body,High,4,10,--,90s,Full Power,⭐⭐⭐,Squat,Coordination,Athleticism,Explosive full-body movement.,Squat; use momentum to press overhead.,🎥,w_room
+23,Lateral Raise,Beg,Shoulders,Low,3,15,--,30s,Side Delt,⭐,None,Width,Sh. Width,"Builds the ""cap"" of the shoulder.",Lift to sides; micro-bend in elbows.,🎥,w_room
+24,Incline Curl,Inter,Biceps,Low,3,12,--,45s,Bicep Stretch,⭐,Bicep Curl,Range of Mot.,Long Head Dev,Increases the stretch on the bicep.,Sit on incline; let arms hang; curl up.,🎥,w_room
+25,Single Leg RDL,Inter,Hamstrings,High,3,10ea,--,60s,Balance/Hame,⭐⭐⭐,RDL,Ankle Stab.,Hip Control,Unilateral posterior chain work.,Balance on one leg; hinge; non-standing leg back.,🎥,w_room
+26,Upright Row,Beg,Trapezius,Low,3,12,--,45s,Upper Back,⭐,None,Trap Growth,Sh. Volume,Pulls for traps and side delts.,Pull to chin; elbows pointing high.,🎥,w_room
+27,1-Arm Tri Ext,Beg,Triceps,Low,3,12ea,--,30s,Symmetry,⭐,Tri Press,Balance,Unilat. Detail,Single-arm tricep isolation.,One weight overhead; lower behind head.,🎥,w_room
+28,Cross Body Curl,Beg,Biceps,Low,3,12ea,--,45s,Brachialis,⭐,Hammer Curl,Bicep Peak,Forearm Str,Hits the outer bicep and brachialis.,Curl across chest toward opposite shoulder.,🎥,w_room
+29,Sumo Squat,Beg,Glutes/Quads,Med,3,15,--,60s,Inner Thigh,⭐⭐,Squat,Hip Mobility,Adductor Str,Wide-stance squat variation.,Wide stance; toes out; hold weights between legs.,🎥,w_room
+30,Back Fly,Inter,Shoulders,Low,3,15,--,45s,Rear Delt,⭐,None,Posture,Scap. Stability,Chest-supported rear delt work.,Lean on incline bench; reverse fly motion.,🎥,w_room
+31,Incline Fly,Inter,Chest,Low,3,12,--,45s,Upper Pec Iso,⭐⭐,DB Fly,Upper Stretch,Pec Fibers,Targets upper chest fibers.,Bench at 45°; perform wide fly motion.,🎥,w_room
+32,Curl to Press,Inter,Shoulders,Med,3,12,--,60s,Coordination,⭐⭐,Bicep Curl,Fluidity,Combo Move,Bicep and shoulder compound move.,Bicep curl then transition into overhead press.,🎥,w_room
+33,Tricep Extension,Beg,Triceps,Low,3,12,--,45s,Overhead Ext,⭐,None,Arm Size,Tricep Shape,Bilateral overhead tricep work.,Hold one DB; lower behind neck; extend up.,🎥,w_room
+34,Squeeze Press,Inter,Chest,Med,3,10,--,60s,Inner Pec,⭐⭐,Bench Press,Chest Tension,Pec Squeeze,Constant tension chest press.,Press weights together; perform bench press.,🎥,w_room
+35,Floor Press,Inter,Chest,Low,3,12,--,60s,Lockout,⭐,Bench Press,Tri Power,Bench Assist,Targets the top half of the press.,Lie on floor; lower until elbows touch; press.,🎥,w_room
+36,Incline Row,Inter,Back,Med,3,12,--,60s,Strict Pulling,⭐⭐,DB Row,No Cheat,Lat Isolation,Chest-supported back isolation.,Lie chest-down on incline; pull weights.,🎥,w_room
+37,Step Up,Beg,Quads,Med,3,10ea,--,60s,Unilat. Power,⭐⭐,Lunge,Balance,Leg Drive,Functional lower body movement.,Step on box; drive through heel to lift.,🎥,w_room
+38,Incline Hammer,Inter,Biceps,Low,3,12,--,45s,Stretch/Width,⭐⭐,Hammer Curl,Brachialis,Detail,Combination of stretch and neutral grip.,Seated on incline; use neutral grip to curl.,🎥,w_room
+39,Standing Press,Inter,Shoulders,High,4,8,--,60s,Core Stability,⭐⭐⭐,Sh. Press,Bracing,Strict Power,Pure vertical pressing strength.,Perform shoulder press while standing.,🎥,w_room
+40,Side Bend,Beg,Abs,Low,3,15ea,--,30s,Obliques,⭐,None,Core Balance,Lateral Str,Direct oblique isolation.,Lean to side with DB; pull back with obliques.,🎥,w_room
+41,Stiff Legged DL,Inter,Hamstrings,High,3,12,--,60s,Ham. Tension,⭐⭐⭐,RDL,Flexibility,Ham. Size,Maximum tension on the hamstrings.,Legs straight; hinge until stretch; stand.,🎥,w_room
+42,Dumbbell Clean,Adv,Hamstrings,Max,5,5,--,120s,Explosiveness,⭐⭐⭐,RDL,Power,Triple Ext.,Full-body explosive pull.,Explode from squat; catch at shoulders.,🎥,w_room
+43,Hip Thrust,Inter,Glutes,Med,4,12,1s Hold,90s,Glute Power,⭐⭐⭐,Bridge,Hip Snap,Force Prod.,Peak glute isolation.,Back against bench; weight on hips; drive up.,🎥,w_room
+44,Bulgarian Split,Adv,Quads,High,4,8ea,--,90s,Elite Unilat.,⭐⭐⭐,Lunge,Hip Strength,Quad Detail,Advanced unilateral leg development.,Back foot on bench; squat with front leg.,🎥,w_room
+45,Goblet Squat,Beg,Quads,Low,3,15,--,45s,Squat Pattern,⭐,None,Depth,Mobility,Teaches proper squat mechanics.,Hold DB at chest; squat; elbows inside knees.,🎥,w_room
+46,Glute Bridge,Beg,Glutes,Low,3,15,2s Hold,45s,Glute Active,⭐,None,Activation,Posterior Str,Floor-based glute isolation.,Lie on back; weight on hips; lift toward ceiling.,🎥,w_room
+47,Wide Curls,Beg,Biceps,Low,3,12,--,45s,Short Head,⭐,Bicep Curl,Bicep Width,Detail,Targets the inner head of the bicep.,Curl with arms flared out to the sides.,🎥,w_room
+48,Lat to Front,Inter,Shoulders,Med,3,12,--,60s,Coordination,⭐⭐,Lat. Raise,Sh. Endurance,Control,Multi-planar shoulder movement.,Lateral raise; move to front; lower.,🎥,w_room
+49,Alt. Bench,Inter,Chest,Med,3,10ea,--,60s,Stab./Tension,⭐⭐,Bench Press,Coordination,Time under T.,One arm stays up while other presses.,Hold both up; lower/press one at a time.,🎥,w_room
+50,Zottman Curl,Inter,Biceps,Low,3,12,--,45s,Forearm/Bi,⭐⭐,Bicep Curl,Grip Strength,Brachiorad.,Total arm development.,Curl palms up; rotate palms down to lower.,🎥,w_room
+51,Seated Rear Delt,Beg,Shoulders,Low,3,15,--,30s,Post. Health,⭐,None,Posture,Scap. Control,Isolated rear deltoid work.,Sit at edge of bench; lean forward; fly.,🎥,w_room
+52,Incl Squeeze Pr,Inter,Chest,Med,3,10,--,60s,Upper Inner,⭐⭐,Squeeze Press,Upper Pec,Definition,Upper chest tension focus.,Incline bench; press weights together.,🎥,w_room
+53,Waiter Curls,Beg,Biceps,Low,3,12,--,45s,Peak Tension,⭐,Bicep Curl,Bracing,Bicep Shape,Focuses on the bicep peak.,Hold DB palms up under top plate; curl.,🎥,w_room
+54,Wrist Curl (Up),Beg,Forearms,Low,3,20,--,30s,Flexor Str,⭐,None,Grip,Forearm Size,Direct inner forearm isolation.,Forearms on thighs; palms up; curl wrists up.,🎥,w_room
+55,Decline Bench,Inter,Chest,Med,3,10,--,60s,Lower Pec,⭐⭐,Bench Press,Lower Pec Def,Press Power,Targets lower pectoral fibers.,Bench at downward angle; press weights.,🎥,w_room
+56,Single DB Sumo,Beg,Quads,Low,3,15,--,60s,Glute/Leg,⭐,Sumo Squat,Mobility,Leg Volume,Heavy single-weight leg work.,Hold DB by end between legs; wide squat.,🎥,w_room
+57,Iron Cross,Adv,Shoulders,High,3,8,--,90s,Static Strength,⭐⭐⭐,Lateral Raise,Isometric Str,Elite Control,Extreme shoulder/leg stability.,Hold weights at side/shoulder height; squat.,🎥,w_room
+58,Wrist Curl (Dn),Beg,Forearms,Low,3,20,--,30s,Extensor Str,⭐,None,Grip Health,Forearm Shape,Direct outer forearm isolation.,Forearms on thighs; palms down; curl up.,🎥,w_room
+59,Reverse Curl,Beg,Biceps,Low,3,12,--,45s,Brachialis,⭐,Bicep Curl,Forearm Size,Grip,Overhand bicep curl.,Stand; palms-down grip; curl to shoulders.,🎥,w_room
+60,Around Worlds,Inter,Chest,Low,3,12,--,45s,Mobility/Pec,⭐,None,Sh. Health,Pec Stretch,Chest mobility and pectoral work.,Move weights in arc from hips to overhead.,🎥,w_room

@@ -1,0 +1,70 @@
+Rank,Exercise Name,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo,env
+1,Shoulder Squeeze,Beg,Back,Low,3,15,2s Hold,30s,Posture,⭐,None,Scap. Control,Upper Bk Density,High-tension isolation for upper back.,Pull band apart to chest; squeeze scapula.,🎥,all
+2,Stnd. Tricep Ext,Beg,Triceps,Low,3,12,--,30s,Arm Def.,⭐,None,Full Lockout,Tricep Shape,Vertical extension for arm definition.,Extend arm downward against band tension.,🎥,all
+3,Bicep Curl,Beg,Biceps,Low,3,12,--,30s,Bicep Peak,⭐,None,Strict Reps,Peak Tension,Progressive resistance for bicep peaks.,Step on band; curl to shoulders; elbows pinned.,🎥,all
+4,Bent Over Row,Beg,Back,Med,3,10,--,45s,Back Thick,⭐⭐,None,Flat Back,Pull Strength,Compound pull for thickness and posture.,Hinge forward; pull band ends to hips.,🎥,all
+5,Good Morning,Beg,Hamstrings,Med,3,12,--,45s,Hinge Load,⭐⭐,Hinge,Hip Mobility,Hame String Size,Hinge move with peak tension at the top.,Band over neck/under feet; hinge at hips.,🎥,all
+6,SA Tricep Ext,Beg,Triceps,Low,3,12ea,--,30s,Symmetry,⭐,Tricep Ext,Arm Balance,Unilat. Detail,Unilateral isolation to fix imbalances.,Anchor at shoulder; extend one arm to lockout.,🎥,all
+7,Hammer Curl,Beg,Biceps,Low,3,12,--,30s,Brachialis,⭐,Bicep Curl,Grip Strength,Forearm Mass,Targets brachialis and forearm width.,Palms-in grip; curl toward shoulders.,🎥,all
+8,Seated Row,Beg,Back,Low,3,15,--,45s,Mid-Back,⭐,None,Posture,Scap. Health,Horizontal pull with end-range squeeze.,Sit with legs out; loop on feet; pull to torso.,🎥,all
+9,Assisted Pull Up,Beg,Back,High,4,8,--,60s,Pull Power,⭐⭐⭐,None,First Rep,High Volume,Uses band to reduce bodyweight load.,Loop on bar and foot; perform pull-up.,🎥,all
+10,Side Step,Beg,Glutes,Med,3,15ea,--,30s,Hip Stab.,⭐⭐,None,Knee Track,Lateral Speed,Lateral move for hip/abductor stability.,Band at ankles; half-squat; step sideways.,🎥,all
+11,Lat Pulldown,Beg,Back,Low,3,15,--,45s,Lat Width,⭐,None,Scap. Pull,Lat Activation,Mimics machine pull for lat width.,Hold overhead; pull elbows down to ribs.,🎥,all
+12,Resisted Push Up,Beg,Chest,Med,3,10,--,60s,Chest Power,⭐⭐,Push Up,Force Prod.,Explosive Push,Adds variable resistance to chest press.,Band across back; perform standard push-up.,🎥,all
+13,Glute Kickback,Beg,Glutes,Low,3,15ea,--,30s,Glute Shape,⭐,None,Hip Extension,Glute Activation,Isolation move for glute shaping.,On all fours; kick foot back against band.,🎥,all
+14,Face Pull,Beg,Shoulders,Low,3,15,--,30s,Rear Delt,⭐,None,Shoulder Health,Postural Setup,Rear delt and upper back health.,Pull to forehead; flare elbows out.,🎥,all
+15,Stnd. Chest Press,Beg,Chest,Med,3,12,--,45s,Stab./Chest,⭐⭐,None,Core Bracing,Press Control,Standing press for chest and stability.,Anchor behind; press forward at chest height.,🎥,all
+16,Sh. Ext. Rotation,Beg,Shoulders,Low,3,15,--,30s,Cuff Health,⭐,None,Sh. Stability,Injury Prev.,Rotator cuff stability and health.,Elbows at 90°; rotate hands outward.,🎥,all
+17,Hip Adduction,Beg,Adductors,Low,3,15ea,--,30s,Inner Thigh,⭐,None,Hip Balance,Groin Strength,Inner thigh strengthening.,Pull banded leg across the body midline.,🎥,all
+18,Standing Ab Twist,Beg,Abs,Med,3,12ea,--,45s,Rotation,⭐⭐,None,Oblique Str.,Core Speed,Rotational core strength and obliques.,Hold at chest; rotate torso side-to-side.,🎥,all
+19,Hip Abduction,Beg,Abductors,Low,3,15ea,--,30s,Outer Hip,⭐,None,Pelvic Stab.,Hip Strength,Outer hip and glute medius isolation.,Lift banded leg out to side; keep hips level.,🎥,all
+20,Overhead Stretch,Beg,Shoulders,Low,2,--,60s,--,Mobility,⭐,None,Range of Mot.,Recovery,Mobility move for shoulder range.,Hold wide overhead; move arms back and forth.,🎥,all
+21,Incline Press,Beg,Chest,Med,3,12,--,45s,Upper Pec,⭐⭐,Chest Press,Front Delt Str.,Upper Chest Dev,Targets upper pectorals and front delts.,Anchor low; press forward/upward at 45°.,🎥,all
+22,Assisted Chin Up,Beg,Back,High,4,8,--,60s,Bicep/Back,⭐⭐⭐,None,Pullup Prep,Volume Pull,Underhand grip assisted pull-up.,Palms facing you; use band to assist.,🎥,all
+23,Decline Press,Beg,Chest,Med,3,12,--,45s,Lower Pec,⭐⭐,Chest Press,Pec Def.,Press Power,Targets lower pectoral fibers.,Anchor high; press handles down toward hips.,🎥,all
+24,SA Incline Press,Beg,Chest,Med,3,10ea,--,45s,Unilat. Pow,⭐⭐,Incline Press,Core Bracing,Symmetry,Unilateral upper chest isolation.,Press upward with one arm; stay square.,🎥,all
+25,Ext. Rot (90°),Beg,Shoulders,Low,3,12ea,--,30s,Cuff/Post.,⭐,Sh. Ext Rot,Overhead Stab.,Sh. Health,High-position rotator cuff work.,Arm at shoulder height; rotate forearm up.,🎥,all
+26,Romanian DL,Beg,Hamstrings,Med,3,15,--,45s,Post. Chain,⭐⭐,Hinge,Ham. Stretch,Hip Snap,Hip-hinge for posterior chain strength.,Hinge at hips; flat back; snap hips forward.,🎥,all
+27,High Pull,Beg,Shoulders,Med,3,12,--,45s,Trap/Delt,⭐⭐,None,Explosiveness,Sh. Width,Compound pull for delts and traps.,Pull to chin; elbows stay above wrists.,🎥,all
+28,Deadlift,Beg,Hamstrings,High,4,10,--,60s,Pull Found.,⭐⭐⭐,Hinge,Base Strength,Floor Power,Foundational pull for legs and back.,Squat/hinge; stand up to full lockout.,🎥,all
+29,Seated Sh. Press,Beg,Shoulders,Low,3,12,--,45s,Delt Iso,⭐,None,Press Vol.,Strict Power,Isolated vertical press for deltoids.,Sit on band; press ends directly overhead.,🎥,all
+30,Back Squat,Beg,Quads,Med,4,12,--,60s,Leg Mass,⭐⭐,Body Squat,Squat Depth,Leg Power,Compound leg move; variable tension.,Band over traps/under feet; deep squat.,🎥,all
+31,Negative Pull Up,Beg,Back,High,3,5,5s Down,90s,Ecc. Strength,⭐⭐⭐,None,Pullup First,Strength Build,Focuses on the eccentric lowering phase.,Jump to top; lower slowly with band help.,🎥,all
+32,Int. Rotation 90°,Beg,Shoulders,Low,3,15ea,--,30s,Cuff Strength,⭐,None,Sh. Integrity,Injury Prev.,Functional rotator cuff strength.,Arm at shoulder height; rotate forearm down.,🎥,all
+33,Single Arm Fly,Beg,Chest,Low,3,12ea,--,30s,Chest Stretch,⭐,None,Pec Isolation,Squeeze,Unilateral isolation for chest stretch.,Pull arm across chest in arc; arm straight.,🎥,all
+34,Sh. Int. Rotation,Beg,Shoulders,Low,3,15ea,--,30s,Cuff Health,⭐,None,Stabilizers,Prehab,Internal rotator strength for prevention.,Elbow at side; pull hand inward to stomach.,🎥,all
+35,Front Squat,Beg,Quads,Med,3,12,--,60s,Core/Quads,⭐⭐,Back Squat,Upright Torso,Quad Drive,Quad-dominant squat variation.,Band across front of delts; elbows high.,🎥,all
+36,Wide Grip Pull Up,Beg,Back,High,3,8,--,60s,Lat Focus,⭐⭐⭐,Pull Up,Back Width,Vertical Pull,Targets outer lats for back width.,Wide overhand grip; pull chest to bar.,🎥,all
+37,Sumo Deadlift,Beg,Quads,High,3,12,--,60s,Inner Thigh,⭐⭐,Deadlift,Glute Power,Wide Base,Wide-stance pull for inner thighs/glutes.,Wide feet; toes out; pull from center.,🎥,all
+38,Push Up on Knees,Beg,Chest,Low,3,15,--,45s,Push Found.,⭐,None,Chest Endur.,Volume,Regressed push-up with resistance.,On knees; band across back; press control.,🎥,all
+39,OH Pull Apart,Beg,Back,Low,3,15,--,30s,Scap. Stab.,⭐,None,Posture,Upper Bk Health,Scapular stability and rear delt move.,Pull band apart starting from overhead.,🎥,all
+40,Superman Press,Beg,Lower Back,Med,3,12,--,45s,Post. Chain,⭐⭐,None,Back Arch,Stability,Advanced posterior chain stability.,Lift chest/legs; press band forward.,🎥,all
+41,Negative Chin Up,Beg,Back,High,3,5,5s Down,90s,Ecc. Strength,⭐⭐⭐,None,Chin Up Prep,Pull Strength,Eccentric underhand back work.,Jump to top; lower slowly with band.,🎥,all
+42,Squat to Press,Beg,Quads,High,3,10,--,60s,Coordination,⭐⭐⭐,Squat,Total Power,Athleticism,Full-body coordination and power.,Perform squat; press overhead as you stand.,🎥,all
+43,Underhand Front,Beg,Shoulders,Low,3,12,--,45s,Ant. Delt,⭐,None,Sh. Shape,Front Cap,Anterior delt isolation.,Palms up; lift arms to shoulder height.,🎥,all
+44,Single Arm Row,Beg,Back,Low,3,12ea,--,30s,Lat Symmetry,⭐,Row,Anti-Rotation,Lat Focus,Unilateral horizontal pull.,One hand rows; core stabilizes vs twist.,🎥,all
+45,Straight-Arm Down,Beg,Back,Low,3,15,--,45s,Lat Iso,⭐,None,Scap. Control,Lat Active,Lat isolation without bicep involvement.,Arms straight; pull from overhead to thighs.,🎥,all
+46,Pulse Lunge,Beg,Quads,Med,3,20,--,45s,Quad Endur.,⭐⭐,Lunge,Time/Tension,Leg Pump,High-tension quad endurance.,Half-squat lunge; 2-3 inch up/down bounce.,🎥,all
+47,Banded Y Fly,Beg,Back,Low,3,15,--,30s,Lower Trap,⭐,OH Stretch,Posture,Scap. Health,Targets lower traps and rear delts.,"Raise arms into ""Y"" shape against band.",🎥,all
+48,Seated SA Row,Beg,Back,Low,3,12ea,--,30s,Lat Isolation,⭐,Row,Symmetry,Detail,Focused unilateral back thickness.,Seated; row one arm to address imbalances.,🎥,all
+49,SA Archer Pull,Beg,Shoulders,Low,3,12ea,--,30s,Unilat. Pull,⭐,None,Coordination,Sh. Power,Unilateral pull mimicking bow draw.,One arm straight; other pulls back to ear.,🎥,all
+50,Pallof Press/Twst,Beg,Abs,Med,3,10ea,--,45s,Anti-Rot.,⭐⭐,None,Core Stability,Oblique Power,Anti-rotation core stability with twist.,Press band forward; rotate away.,🎥,all
+51,Kneeling Pallof,Beg,Abs,Low,3,12ea,--,45s,Oblique Stab.,⭐,None,Core Bracing,Stability,Focused oblique stabilization.,Both knees down; press; resist pull.,🎥,all
+52,Banded Leg Drive,Beg,Quads,High,3,10ea,--,60s,Speed Power,⭐⭐⭐,None,Sprint Mech.,Explosiveness,Explosive lower body power.,Drive knee forward/up against band.,🎥,all
+53,Leg Press,Beg,Quads,Low,3,20,--,45s,Leg Volume,⭐,None,Quad Endur.,Hypertrophy,Machine-free leg strengthening.,Lie on back; push band away with feet.,🎥,all
+54,Stnd Ham. Curl,Beg,Hamstrings,Low,3,15ea,--,30s,Ham. Iso,⭐,None,Knee Health,Ham. Shape,Standing isolation for back of legs.,Curl heel to glute; knees aligned.,🎥,all
+55,Kneeling DL,Beg,Hamstrings,Low,3,15,--,45s,Glute/Hinge,⭐,Hinge,Hip Drive,Recovery Pull,Glute/hinge for limited mobility.,Kneeling; hinge back and drive hips.,🎥,all
+56,Pallof Walk Out,Beg,Abs,High,3,--,30s,60s,Dynamic Core,⭐⭐⭐,Pallof Press,Core Force,Anti-Rot. Str,Dynamic anti-rotation stability.,Hold pressed band; walk sideways away.,🎥,all
+57,Supine Pallof,Beg,Abs,Med,3,12,--,45s,Low Bk Prot.,⭐⭐,None,Bracing,Core Depth,Core stability with low back support.,Lying on back; press band upward.,🎥,all
+58,Leg Extension,Beg,Quads,Low,3,20ea,--,30s,Quad Iso,⭐,None,Knee Stab.,Detail,Isolation for the quadriceps.,Seated; extend leg straight against band.,🎥,all
+59,Prone Ham. Curl,Beg,Hamstrings,Low,3,15,--,45s,Ham. Volume,⭐,None,Ham. Health,Size,Lying isolation for leg curls.,Face down; curl heels toward glutes.,🎥,all
+60,Hip Thrust,Beg,Glutes,Med,4,12,--,60s,Glute Power,⭐⭐,Bridge,Hip Snap,Force Prod.,Peak glute contraction move.,Hips drive up; band adds top tension.,🎥,all
+61,Lunge Pallof,Inter,Abs,High,3,10ea,--,60s,Stab./Legs,⭐⭐⭐,Lunge,Coordination,Dynamic Stab.,Compound stability and leg move.,Lunge down while pressing band.,🎥,all
+62,Bulgarian Sq,Inter,Quads,High,3,8ea,--,60s,Unilat. Pow,⭐⭐⭐,Lunge,Hip Strength,Quad Detail,Advanced unilateral leg power.,Back foot elevated; band adds tension.,🎥,all
+63,Plank Row,Beg,Abs,Med,3,10ea,--,45s,Core/Back,⭐⭐,Plank,Anti-Rot.,Stability,Core stability plus horizontal pull.,In plank; row one side; keep hips level.,🎥,all
+64,Side Plank Row,Beg,Abs,Med,3,12ea,--,45s,Oblique/Back,⭐⭐,Side Plank,Core Tie-in,Lateral Stab.,Oblique and back integration.,Side plank; row band with top arm.,🎥,all
+65,Partner Rev Leg,Beg,Glutes,Low,3,15,--,45s,Team/Glute,⭐,None,Funct. Range,Recovery,Assisted glute and hamstring work.,Partner provides resistance for lifts.,🎥,all
+66,Partner Sprint,Beg,Quads,High,4,--,15s Sprints,90s,Speed Power,⭐⭐⭐,None,Sprint Force,Acceleration,Explosive speed and power drill.,Sprint forward; partner pulls back.,🎥,all
+67,Partner Chest Pr,Beg,Chest,Low,3,12,--,45s,Dynamic Res.,⭐,None,Stability,Coordination,Dynamic social strength training.,Partners press vs each other's resistance.,🎥,all
+68,Partner Twist,Beg,Abs,Med,3,10ea,--,45s,Core Comp.,⭐⭐,None,Oblique Str.,Anti-Rot.,Competitive core rotation.,Partners try to pull each other off twist.,🎥,all
+69,Partner Jump,Beg,Quads,High,4,5,--,90s,Plyo Power,⭐⭐⭐,None,Vert. Jump,Explosiveness,Plyometric power development.,Jump vertically; partner resists via band.,🎥,all

@@ -1,0 +1,125 @@
+Rank,Exercise Name,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo,env
+1,Barbell Bench Press,Inter,Chest,High,4,5-8,--,120s,Upper Mass,⭐⭐⭐,Push-up,1x Bodyweight,1.5x BW,Standard horizontal press for mass.,Lie flat; lower bar to mid-chest; press up.,🎥,w_room
+2,Barbell Curl,Beg,Biceps,Low,3,10-12,--,60s,Arm Strength,⭐,None,Form Control,Strict Reps,Core isolation for bicep strength.,Grip shoulder-width; curl bar; keep elbows pinned.,🎥,w_room
+3,Back Squat,Inter,Quads,High,5,5,--,180s,Foundational,⭐⭐⭐,Body Squat,1.5x BW,2x BW,The foundational lower-body lift.,Bar on traps; sit back to parallel; drive up.,🎥,w_room
+4,Deadlift,Inter,Hamstrings,Max,3,5,--,240s,Post. Chain,⭐⭐⭐,Hinge,1.5x BW,2.5x BW,Full-body pull for posterior chain.,Hinge to grip; pull close to shins to lockout.,🎥,w_room
+5,Close-Grip Bench,Inter,Triceps,Med,3,8-10,--,90s,Tricep Mass,⭐⭐,Bench Press,Tricep Strength,Lockout Power,Tricep-focused bench variation.,Grip 6–8 in. apart; keep elbows tucked.,🎥,w_room
+6,Incline Bench,Inter,Chest,Med,3,8-10,--,90s,Upper Chest,⭐⭐,Bench Press,Chest Balance,Upper Pec Fill,Targets upper chest and shoulders.,Bench at 45°; lower bar to upper chest.,🎥,w_room
+7,Barbell Sh. Press,Inter,Shoulders,High,4,6-8,--,120s,Overhead Power,⭐⭐⭐,Landmine Prs,0.75x BW,1x BW,Vertical press for overhead strength.,Press from chest to overhead; keep core tight.,🎥,w_room
+8,Bent Over Row,Beg,Back,Med,3,8-12,--,90s,Back Thickness,⭐⭐,None,Posture,Pull Strength,Builds back thickness and posture.,Hinge at 45°; pull bar to lower ribs.,🎥,w_room
+9,Romanian Deadlift,Inter,Hamstrings,Med,3,10-12,--,90s,Hinge Pattern,⭐⭐,Deadlift,Hip Mobility,Hame String Size,Emphasizes hip hinge and stretch.,Hinge hips back; lower bar to mid-shin.,🎥,w_room
+10,Reverse BB Curl,Beg,Biceps,Low,3,12-15,--,60s,Forearm/Grip,⭐,None,Grip Strength,Arm Detail,Targets brachialis and forearms.,Overhand grip; curl while keeping wrists neutral.,🎥,w_room
+11,Barbell Hip Thrust,Inter,Glutes,Med,4,10-12,--,90s,Glute Power,⭐⭐,Bridge,Glute Active,Sprint Power,Maximum glute isolation and power.,Back on bench; bar on hips; drive up.,🎥,w_room
+12,Upright Row,Beg,Trapezius,Low,3,12-15,--,60s,Trap Growth,⭐,None,Shoulder Width,Trap Detail,Targets upper traps and lateral delts.,Pull bar to chin; elbows higher than wrists.,🎥,w_room
+13,SL Good Morning,Beg,Lower Back,Med,3,12-15,--,60s,Lower Back,⭐,Hinge,Back Health,Hamstring Flex,Hamstring and lower back flexibility.,Hinge with legs straight; keep back flat.,🎥,w_room
+14,Front Squat,Inter,Quads,High,4,6-8,--,120s,Core/Quads,⭐⭐⭐,Back Squat,Upright Torso,Quad Isolation,Emphasizes quads and core stability.,Rack bar on delts; keep elbows high.,🎥,w_room
+15,Good Morning,Inter,Hamstrings,Med,3,8-12,--,90s,Post. Strength,⭐⭐,Hinge,Back Support,Hinge Strength,Posterior chain strengthener.,Bar on traps; hinge until torso is parallel.,🎥,w_room
+16,Barbell Shrug,Beg,Trapezius,Low,3,15-20,--,60s,Trap Isolation,⭐,None,Trap Size,Posture,Isolates the upper trapezius muscles.,Hold bar; lift shoulders toward ears.,🎥,w_room
+17,Decline Bench,Inter,Chest,Med,3,8-12,--,90s,Lower Chest,⭐⭐,Bench Press,Lower Pec Fill,Press Power,Focuses on lower pectoral fibers.,Bench at down angle; press from lower chest.,🎥,w_room
+18,Push Press,Inter,Shoulders,High,4,5,--,120s,Explosive,⭐⭐⭐,Sh. Press,Athleticism,Overhead Power,Explosive overhead press using legs.,Dip knees; drive bar overhead with momentum.,🎥,w_room
+19,Bicep Drag Curl,Beg,Biceps,Low,3,12,--,60s,Peak Tension,⭐,BB Curl,Bicep Peak,Form Control,Constant tension isolation.,Drag bar up torso; pull elbows back.,🎥,w_room
+20,Reverse Grip Row,Beg,Back,Med,3,10-12,--,60s,Lower Lats,⭐,BB Row,Lat Width,Underhand Power,Hits lower lats and biceps.,Underhand grip; pull bar to belly button.,🎥,w_room
+21,Barbell Lunge,Inter,Quads,Med,3,10ea,--,90s,Unilat. Power,⭐⭐,Body Lunge,Balance,Hip Stability,Unilateral leg strength and balance.,Step forward until back knee touches floor.,🎥,w_room
+22,Seated Sh. Press,Inter,Shoulders,Med,3,8-10,--,90s,Pure Delts,⭐⭐,Sh. Press,Strict Power,Shoulder Mass,Removes leg drive for shoulder isolation.,Sit upright; press from chin to lockout.,🎥,w_room
+23,Bulgarian Split Sq,Inter,Quads,High,3,8ea,--,90s,Leg Imbalance,⭐⭐⭐,Lunge,Hip Strength,Quad Detail,Deep unilateral quad and glute work.,One foot back on bench; squat on front leg.,🎥,w_room
+24,Standing Calf Rise,Beg,Calves,Low,4,15-20,--,45s,Lower Leg,⭐,None,Calf Size,Ankle Health,Builds mass in the gastrocnemius.,Rise onto balls of feet; lower slowly.,🎥,w_room
+25,BB Glute Bridge,Inter,Glutes,Med,3,12,--,60s,Glute Snap,⭐⭐,Bridge,Hip Drive,Floor Power,Power movement for glute activation.,Lie on floor; drive hips up; squeeze glutes.,🎥,w_room
+26,Kneeling Squat,Inter,Glutes,Low,3,15,--,60s,Glute Finish,⭐,None,Hip Extension,Glute Shape,Removes knee strain to isolate hips.,Kneel; sit on heels; drive hips forward.,🎥,w_room
+27,Rack Pulls,Inter,Lower Back,High,3,5-8,--,120s,Back Density,⭐⭐,Deadlift,Lockout Power,Trap Density,Partial deadlift for back thickness.,Pull from knee height; squeeze back.,🎥,w_room
+28,Landmine Row,Beg,Back,Low,3,12,--,60s,Mid-Back,⭐,None,Back Health,Scap. Control,Pivoting row for mid-back thickness.,Straddle bar; pull end toward chest.,🎥,w_room
+29,Barbell Step Up,Inter,Quads,Med,3,10ea,--,60s,Vertical Power,⭐⭐,Lunge,Jump Height,Leg Symmetry,Functional unilateral leg power.,Step onto box; drive through top heel.,🎥,w_room
+30,Power Clean,Inter,Hamstrings,Max,5,3,--,180s,Explosive,⭐⭐⭐,Deadlift,Triple Ext.,Field Speed,Explosive full-body power movement.,"Pull from floor; ""catch"" bar on shoulders.",🎥,w_room
+31,Australian Chin Up,Beg,Back,Low,3,12,--,60s,Pull Prep,⭐,None,Posture,Pullup Prep,Horizontal bodyweight pull.,Bar at waist; pull chest to bar at angle.,🎥,w_room
+32,Sumo Deadlift,Inter,Hamstrings,Max,3,5,--,240s,Wide Pull,⭐⭐⭐,Deadlift,Glute Strength,Max Strength,Wide-stance pull for glutes and hams.,Wide stance; grip bar inside legs; drive floor.,🎥,w_room
+33,Floor Press,Inter,Chest,Med,3,8,--,90s,Lockout Power,⭐⭐,Bench Press,Shoulder Safe,Tricep Finish,Targets lockout and protects shoulders.,Lie on floor; lower until elbows touch floor.,🎥,w_room
+34,Pause Back Squat,Inter,Quads,High,4,5,--,150s,Power Out Hole,⭐⭐⭐,Back Squat,Control,Expl. Drive,Builds power out of the bottom position.,Squat to bottom; hold 2s; stand explosively.,🎥,w_room
+35,Incline Skull Crush,Inter,Triceps,Low,3,12,--,60s,Tricep Stretch,⭐,None,Arm Size,Long Head Dev,Stretches the long head of the tricep.,Incline bench; lower bar to head; extend.,🎥,w_room
+36,Pause Incline Bench,Inter,Chest,Med,3,8,--,90s,Chest Power,⭐⭐,Incl. Bench,Stability,Max Tension,Removes momentum for upper chest power.,Pause bar on upper chest for 1s then press.,🎥,w_room
+37,Pendlay Row,Inter,Back,High,4,6-8,--,120s,Expl. Pull,⭐⭐⭐,BB Row,Power,Back Density,Explosive row from a dead stop.,Back parallel to floor; row from ground.,🎥,w_room
+38,Inverted Row,Beg,Back,Low,3,12,--,60s,Bodyweight Pull,⭐,None,Posture,Pullup Prep,Bodyweight back builder.,Pull chest to bar while hanging; keep straight.,🎥,w_room
+39,Clean,Inter,Hamstrings,Max,5,2,--,180s,Olympic Lift,⭐⭐⭐,Power Clean,Triple Ext.,Elite Power,Full Olympic transition to front rack.,Pull from floor; catch in deep front squat.,🎥,w_room
+40,Pulse Back Squat,Inter,Quads,Med,3,12,--,90s,Tension,⭐⭐,Back Squat,Endurance,Muscle Pump,Increases time under tension.,Bounce small at bottom before rising.,🎥,w_room
+41,Barbell Ab Rollout,Inter,Abs,High,3,10,--,90s,Core Stability,⭐⭐⭐,Plank,Anti-Extens.,Core Shield,Extreme core stability movement.,Roll out until flat; pull back using abs.,🎥,w_room
+42,Wide Grip BB Curl,Beg,Biceps,Low,3,10,--,60s,Short Head,⭐,BB Curl,Bicep Width,Peak Dev.,Focuses on the inner head of the bicep.,Grip wider than shoulders; curl to chin.,🎥,w_room
+43,Palms-Up Wrist Curl,Beg,Forearms,Low,3,20,--,45s,Flexor Str.,⭐,None,Grip,Forearm Mass,Targets inner forearm flexors.,Forearms on bench; curl wrists upward.,🎥,w_room
+44,Lower Back Stretch,Beg,Lower Back,Low,2,--,60s,--,Recovery,⭐,None,Flexibilty,Injury Prev.,Flexibility and recovery move.,Hinge forward slowly to stretch lumbar.,🎥,w_room
+45,Pause Bench Press,Inter,Chest,Med,4,5,--,120s,Press Power,⭐⭐,Bench Press,Control,Chest Snap,Increases explosive pressing power.,Pause on chest for 2s; press with no bounce.,🎥,w_room
+46,BB Front Raise,Inter,Shoulders,Low,3,12,--,60s,Anterior Delt,⭐,None,Front Cap,Delta Size,Isolates the front deltoid.,Straight arms; lift to shoulder height.,🎥,w_room
+47,Pause Front Squat,Inter,Quads,High,3,5,--,120s,Rack Stability,⭐⭐⭐,Front Squat,Posture,Core Brace,Enhances front rack stability and power.,Pause at bottom; maintain high elbows.,🎥,w_room
+48,Palms-Down Wrist,Beg,Forearms,Low,3,20,--,45s,Extensor Str.,⭐,None,Grip,Wrist Health,Targets outer forearm extensors.,Forearms on bench; curl palms downward.,🎥,w_room
+49,Single Arm LM Row,Beg,Back,Low,3,12ea,--,60s,Unilat. Back,⭐,LM Row,Symmetry,Lat Focus,Unilateral back isolation using landmine.,Stand beside bar; row end to hip.,🎥,w_room
+50,Clean Deadlift,Adv,Hamstrings,High,4,3,--,150s,Pull Mechanics,⭐⭐⭐,Deadlift,First Pull,Olympic Prep,Mimics the first pull of a Clean.,Start hips low; chest up; vertical path.,🎥,w_room
+51,Box Squat,Adv,Quads,High,5,5,--,180s,Expl. Hips,⭐⭐⭐,Back Squat,Power,Speed Squat,Develops explosive hip drive.,Squat to box; pause; drive upward.,🎥,w_room
+52,Stiff-Legged DL,Inter,Hamstrings,Med,3,10,--,90s,Hamstring Iso,⭐⭐,Deadlift,Stretch,Hame Size,Focuses on hamstring elongation.,Legs locked; lower bar to feel stretch.,🎥,w_room
+53,Split Squat,Inter,Quads,Med,3,10ea,--,60s,Quad Iso,⭐⭐,Lunge,Stability,Knee Health,Static lunge for quad development.,Staggered stance; lower back knee to floor.,🎥,w_room
+54,Landmine Press,Beg,Shoulders,Low,3,12,--,60s,Joint Health,⭐,None,Push Power,Sh. Mobility,Angled press for shoulder health.,Press end of bar up/forward at angle.,🎥,w_room
+55,Pause Decline,Inter,Chest,Med,3,8,--,90s,Lower Pec Pow,⭐⭐,Decline Bench,Control,Pec Pop,Lower pec power builder.,Pause at bottom of decline; press control.,🎥,w_room
+56,Landmine RDL,Beg,Hamstrings,Low,3,12,--,60s,Hinge Form,⭐,None,Hinge Pattern,Hip Stability,Stable hip hinge variation.,Stand at bar end; hinge hips back; pull.,🎥,w_room
+57,LM Squat to Press,Inter,Quads,Med,3,10,--,90s,Full Body,⭐⭐,LM Press,Coordination,Athleticism,Full-body coordination and power.,Squat then explosively press at top.,🎥,w_room
+58,DL to Calf Raise,Inter,Hamstrings,High,3,10,--,90s,Posterior/Calf,⭐⭐,Deadlift,Balance,Ankle Power,Combines posterior chain and calf work.,Deadlift then rise onto toes at top.,🎥,w_room
+59,Hang Clean,Inter,Quads,High,5,3,--,150s,Expl. Power,⭐⭐⭐,Power Clean,Speed,Vert. Power,"Explosive power from the ""hang.""",From mid-thigh; jump/shrug to catch.,🎥,w_room
+60,Deep Partial Squat,Inter,Quads,Med,3,15,--,90s,Range Focus,⭐⭐,Back Squat,Endurance,Strength Arc,Targets the most difficult bottom range.,Squat deep; rise halfway; return to bottom.,🎥,w_room
+61,Single Arm LM Prs,Beg,Shoulders,Low,3,12ea,--,60s,Unilat. Stab,⭐,LM Press,Sh. Health,Core Brace,Unilateral overhead stability.,Press end of bar with one arm; engage core.,🎥,w_room
+62,Behind Back Shrug,Beg,Trapezius,Low,3,15,--,45s,Upper Traps,⭐,BB Shrug,Trap Dev.,Posture,Hits the upper and middle traps.,Hold bar behind glutes; shrug to ears.,🎥,w_room
+63,Hang Power Clean,Inter,Quads,High,4,5,--,120s,High Catch,⭐⭐⭐,Power Clean,Catch Speed,Foot Speed,High-catch explosive movement.,From thighs; catch on shoulders in partial sq.,🎥,w_room
+64,LM Core Rotation,Beg,Abs,Low,3,10ea,--,45s,Rotational,⭐,None,Obliques,Anti-Rot.,Rotational core strength.,Hold bar; rotate side-to-side using abs.,🎥,w_room
+65,Hang Snatch,Inter,Hamstrings,Max,5,3,--,180s,Speed-Strength,⭐⭐⭐,Overhead Sq,Athleticism,Explosive,Explosive overhead pull from the hang.,One motion from thighs to overhead.,🎥,w_room
+66,Power Snatch,Inter,Hamstrings,Max,5,3,--,180s,Expl. Pull,⭐⭐⭐,Snatch,Power,Field Speed,Floor-to-overhead explosive lift.,Pull from floor; catch overhead in partial sq.,🎥,w_room
+67,Reverse Grip Bench,Inter,Chest,Med,3,10,--,90s,Upper Pec/Tri,⭐⭐,Bench Press,Arm Size,Bench Variation,Emphasizes upper chest and triceps.,Palms-up grip; lower to mid-chest.,🎥,w_room
+68,BB Pause Curl,Beg,Biceps,Low,3,12,--,60s,Time/Tension,⭐,BB Curl,Bicep Peak,Size,Increases time under tension for biceps.,Pause 2s at top of curl; squeeze hard.,🎥,w_room
+69,Seated Calf Raise,Beg,Calves,Low,4,15,--,45s,Soleus,⭐,None,Calf Size,Ankle Mobil.,Targets the soleus muscle.,Sit with bar on knees; rise onto toes.,🎥,w_room
+70,Australian Pull Up,Beg,Back,Low,3,12,--,60s,BW Pull,⭐,None,Posture,Strength,Bodyweight horizontal row.,Hang from low bar; pull chest to bar.,🎥,w_room
+71,RDL to Shrug,Inter,Hamstrings,Med,3,10,--,90s,Combo Move,⭐⭐,RDL,Posterior,Trap Dev,Compound pull for hams and traps.,Perform RDL; perform shrug at top.,🎥,w_room
+72,Zercher Squat,Adv,Quads,High,4,8,--,120s,Core/Quad,⭐⭐⭐,Back Squat,Core Brace,Lower Pow,Intense core and quad challenge.,Hold bar in elbows; squat deep.,🎥,w_room
+73,Snatch Grip DL,Inter,Hamstrings,High,3,5,--,180s,Rom / Upper Bk,⭐⭐⭐,Deadlift,Grip,Back Size,Increases range of motion for the pull.,Grip bar very wide; hips lower; pull.,🎥,w_room
+74,Z-Press,Adv,Shoulders,High,3,8,--,120s,Core Stability,⭐⭐⭐,Sh. Press,Strict Power,Pure Press,Seated press requiring extreme core.,Sit on floor; press overhead; no support.,🎥,w_room
+75,Floor Skull Crush,Inter,Triceps,Low,3,12,--,60s,Tricep Iso,⭐,None,Arm Mass,Tricep Dev,Tricep isolation with limited range.,Lie on floor; lower bar behind head.,🎥,w_room
+76,Meadows Row,Beg,Back,Low,3,12ea,--,60s,Lat Isolation,⭐,None,Lat Width,Back Detail,T-bar variation for lat isolation.,Stand perpendicular to LM; row end to hip.,🎥,w_room
+77,Jefferson Squat,Inter,Quads,Med,3,10,--,90s,Inner Thigh,⭐⭐,None,Mobility,Strength,Straddle squat for inner thigh/quads.,"Straddle bar; one hand front, one back.",🎥,w_room
+78,Hack Squat (BB),Inter,Quads,Med,3,12,--,90s,Quad Dominant,⭐⭐,None,Leg Mass,Strength,Behind-the-legs squat for quads.,Hold bar behind heels; squat down.,🎥,w_room
+79,Close Upright Row,Beg,Trapezius,Low,3,12,--,60s,Trap Focus,⭐,None,Trap Height,Posture,High-trap isolation.,Hands 4in apart; pull to chin; elbows high.,🎥,w_room
+80,Wide Upright Row,Beg,Shoulders,Low,3,12,--,60s,Side Delt,⭐,None,Sh. Width,Delt Cap,Lateral delt focus.,Hands sh-width; pull to chest; flare elbows.,🎥,w_room
+81,Cuban Press,Inter,Shoulders,Low,3,15,--,60s,Sh. Health,⭐,None,Mobility,Injury Prev,Rotator cuff and shoulder health.,Row; rotate; press; reverse.,🎥,w_room
+82,Bradford Press,Inter,Shoulders,Med,3,12,--,60s,Time/Tension,⭐⭐,Sh. Press,Endurance,Delt Pump,Increases time under tension for delts.,Press to back of neck then to front.,🎥,w_room
+83,Savickas Press,Adv,Shoulders,High,3,8,--,120s,Pure Press,⭐⭐⭐,Z-Press,Max Effort,Core Brace,Pure seated pressing from floor.,Sit on floor; press overhead; leg straight.,🎥,w_room
+84,J-Hook Curl,Beg,Biceps,Low,3,12,--,60s,Peak Bicep,⭐,BB Curl,Bicep Peak,Detail,Focuses on the top peak contraction.,Curl; at top pull elbows forward.,🎥,w_room
+85,Cheat Curl,Inter,Biceps,Med,3,6-8,--,90s,Eccentric Load,⭐⭐,BB Curl,Power,Size,Overloads the eccentric phase.,Use hips to curl; lower very slowly.,🎥,w_room
+86,Concentration (BB),Beg,Biceps,Low,3,15,--,45s,Iso Peak,⭐,BB Curl,Form,Definition,Seated bicep isolation.,Sit; lean forward; curl bar toward face.,🎥,w_room
+87,Spider Curl,Beg,Biceps,Low,3,12,--,60s,Momentum-Free,⭐,BB Curl,Strict Reps,Bicep Shape,Eliminates all momentum.,Lean chest-down on incline; curl from hang.,🎥,w_room
+88,Preacher Curl,Beg,Biceps,Low,3,12,--,60s,Short Head,⭐,BB Curl,Size,Detail,Isolates the short head of the bicep.,Arms on preacher pad; curl bar.,🎥,w_room
+89,Tate Press,Inter,Triceps,Low,3,12,--,60s,Tri-Extension,⭐,None,Lockout,Arm Width,Unique tricep extension on bench.,Weights at chest; flare elbows; press up.,🎥,w_room
+90,JM Press,Inter,Triceps,Med,3,10,--,90s,Mass Builder,⭐⭐,Bench Press,Lockout,Tri Thickness,Hybrid bench/skull crusher.,Lower to chin; tuck elbows; press.,🎥,w_room
+91,California Press,Inter,Triceps,Med,3,10,--,90s,Hybrid Mass,⭐⭐,JM Press,Strength,Bench Acc.,Another hybrid for tricep mass.,Lower to upper chest; press like bench.,🎥,w_room
+92,Overhead Tri Ext,Inter,Triceps,Low,3,12,--,60s,Long Head,⭐,None,Stretch,Tri Size,Stretches the triceps.,Hold bar overhead; lower behind neck.,🎥,w_room
+93,Drag Row,Beg,Back,Low,3,15,--,60s,Lat Iso,⭐,None,Posture,Back Health,Lat isolation.,Pull bar up legs; pull elbows back.,🎥,w_room
+94,Seal Row,Inter,Back,Med,3,10,--,90s,Strict Pull,⭐⭐,BB Row,Back Width,No Cheat Row,Eliminates lower back/leg drive.,Lie chest-down on elevated bench; row.,🎥,w_room
+95,Kroc Row (BB),Inter,Back,High,3,20,--,120s,Volume,⭐⭐,BB Row,Size,Work Cap.,High-volume back builder.,Heavy rows with body English; high reps.,🎥,w_room
+96,T-Bar Row,Beg,Back,Low,3,12,--,60s,Mid-Back,⭐,None,Thickness,Strength,Mid-back thickness builder.,Bar in corner; pull to chest; neutral grip.,🎥,w_room
+97,Scapular Shrug,Beg,Back,Low,3,15,--,30s,Scap. Health,⭐,None,Posture,Sh. Stability,Shoulder blade health/stability.,Arms straight; move blades together/apart.,🎥,w_room
+98,Face Pull (BB),Beg,Shoulders,Low,3,15,--,45s,Post. Chain,⭐,None,Sh. Health,Posture,Rear delt and trap health.,Pull toward forehead; flare elbows.,🎥,w_room
+99,W-Raise (BB),Beg,Shoulders,Low,3,15,--,30s,Rotator Cuff,⭐,None,Stability,Prehab,Rotator cuff and upper back.,"Raise bar so arms form a ""W.""",🎥,w_room
+100,Y-Raise (BB),Beg,Shoulders,Low,3,15,--,30s,Lower Trap,⭐,None,Stability,Scap. Move,Lower trap and shoulder health.,Raise bar forward and up at 45 deg.,🎥,w_room
+101,Viking Press,Inter,Shoulders,Med,3,10,--,90s,Strict Power,⭐⭐,LM Press,Power,Sh. Mass,Neutral grip overhead press.,Hold handles on LM; press overhead.,🎥,w_room
+102,Seesaw Press,Inter,Shoulders,Med,3,12,--,60s,Coordination,⭐⭐,Sh. Press,Stability,Tension,Alternating overhead press.,One presses up as other lowers.,🎥,w_room
+103,Waiter Curl,Beg,Biceps,Low,3,12,--,45s,Bicep Peak,⭐,BB Curl,Focus,Peak Detail,Targets bicep peak.,Hold bar on palms; curl with wrists out.,🎥,w_room
+104,Floor Fly (BB),Inter,Chest,Low,3,15,--,60s,Chest Iso,⭐,None,Saftey,Pec Growth,Chest isolation with floor safety.,Fly on floor; floor stops arms at depth.,🎥,w_room
+105,Svend Press,Beg,Chest,Low,3,15,--,30s,Pec Tension,⭐,None,Squeeze,Definition,Chest squeeze and definition.,Pinch plates; press forward and back.,🎥,w_room
+106,Chest Pull-Over,Inter,Lats/Chest,Low,3,12,--,60s,Stretch,⭐,None,Rib Cage,Lat Stretch,Stretches chest and engages lats.,Lie on bench; lower bar behind head.,🎥,w_room
+107,Zercher Deadlift,Adv,Hamstrings,High,3,5,--,150s,Core/Pull,⭐⭐⭐,Zercher Sq,Pure Power,Low Pull,Deep pull from the floor.,Bar in crooks of elbows; pull from floor.,🎥,w_room
+108,Deficit Deadlift,Adv,Hamstrings,Max,3,5,--,180s,Leg Drive,⭐⭐⭐,Deadlift,First Pull,Strength,Increases leg drive from floor.,Stand on plate; pull from lower position.,🎥,w_room
+109,Block Pull,Inter,Lower Back,High,3,5,--,150s,Lockout,⭐⭐,Deadlift,Strength,Heavy Load,Targets the lockout phase.,Deadlift starting on blocks.,🎥,w_room
+110,Snatch Grip RDL,Inter,Hamstrings,Med,3,10,--,90s,Upper Bk/Ham,⭐⭐,RDL,Mobility,Ham. Size,Extra stretch for hamstrings.,Wide grip; perform RDL.,🎥,w_room
+111,GM to Squat,Inter,Full Body,High,3,8,--,120s,Coordination,⭐⭐⭐,Good Morning,Functional,Athleticism,Posterior/Anterior chain combo.,Perform GM; transition into squat.,🎥,w_room
+112,Suitcase DL,Inter,Abs/Core,High,3,8ea,--,90s,Anti-Lateral,⭐⭐⭐,Deadlift,Core Stab.,Spine Health,Anti-lateral core stability.,Hold bar in one hand; deadlift level.,🎥,w_room
+113,LM Windmill,Adv,Abs/Core,High,3,5ea,--,120s,Core Power,⭐⭐⭐,LM Press,Mobility,Oblique Pow,Oblique and shoulder power.,Hold bar overhead; hinge; touch floor.,🎥,w_room
+114,BB Russian Twist,Beg,Abs,Low,3,15ea,--,45s,Rotational,⭐,None,Obliques,Core Speed,Rotational core power.,Sit with bar; rotate end side-to-side.,🎥,w_room
+115,Woodchopper (BB),Beg,Abs,Low,3,12ea,--,45s,Diagonal,⭐,None,Core Force,Athleticism,Diagonal core movement using LM.,Rotate bar high to low across body.,🎥,w_room
+116,Weighted Crunch,Beg,Abs,Low,3,20,--,45s,Upper Ab,⭐,Crunch,Ab Size,Ab Strength,Upper ab isolation.,Lie on back; hold bar; crunch upward.,🎥,w_room
+117,Leg Raise (Wght),Inter,Abs,Med,3,12,--,60s,Lower Ab,⭐⭐,Leg Raise,Core Brace,Strength,Lower ab isolation.,Bar between feet; lift to 90 deg.,🎥,w_room
+118,Hollow Body Hold,Inter,Abs,Med,3,--,45s,45s,Static Stab.,⭐⭐,Plank,Gymnastic,Deep Core,Total core tension.,Hold light bar overhead in hollow body.,🎥,w_room
+119,Plank Row (BB),Adv,Abs/Back,High,3,8ea,--,90s,Elite Stab.,⭐⭐⭐,Plank,Balance,Core Brace,Core and back stability.,Plank on bar; row one side while balance.,🎥,w_room
+120,Dead Bug (Wght),Beg,Abs,Low,3,12,--,45s,Spinal Stab.,⭐,None,Bracing,Coordination,Spinal stability.,Hold bar over chest; extend opposite leg.,🎥,w_room
+121,Sissy Squat (BB),Adv,Quads,Med,3,10,--,90s,Quad Iso,⭐⭐⭐,Squat,Flexibility,Quad Growth,Pure quad isolation.,Hold bar; lean back; squat on toes.,🎥,w_room
+122,Zercher Lunge,Adv,Quads,High,3,8ea,--,120s,Core/Leg,⭐⭐⭐,Zercher Sq,Stability,Power,Unilateral core/leg challenge.,Bar in elbows; perform lunges.,🎥,w_room
+123,Cossack Squat,Inter,Quads,Med,3,10ea,--,90s,Lat. Mobility,⭐⭐,Lunge,Hip Flex,Lateral Pow,Lateral leg mobility and power.,Wide stance; sit deep into one side.,🎥,w_room
+124,Wall Sit (Wght),Beg,Quads,Low,3,--,60s,60s,Isometric,⭐,None,Endurance,Mental Tough,Isometric quad endurance.,Lean against wall; bar on lap for time.,🎥,w_room

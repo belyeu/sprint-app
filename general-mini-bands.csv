@@ -1,0 +1,34 @@
+Rank,Exercise Name,Level,Env.,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo,env
+1,Kneeling Row,Beg,All,Back,Low,3,12ea,--,45s,Unilat. Pull,⭐,None,Flat Back,Scap. Control,Targets back independently to fix imbalances.,Kneel; anchor band with foot; row with opposite hand.,🎥,all
+2,Glute Bridge,Beg,All,Hamstrings,Low,3,15,30s Hold,30s,Post. Chain,⭐,None,Hip Extension,Glute Active,Performed as a hold/rep to recruit hip stabilizers.,Lie on back; band above knees; lift hips high.,🎥,all
+3,Fire Hydrant,Beg,All,Glutes,Low,3,15ea,--,30s,Glute Medius,⭐,None,Core Stability,Hip Mobility,Isolation movement targeting glutes via lateral lift.,On all fours; band above knees; lift leg out to side.,🎥,all
+4,SL RDL w/ Row,Beg,All,Back,High,3,10ea,--,60s,Balance/Pull,⭐⭐⭐,RDL Form,Ankle Stability,CNS Integration,Combines hinge balance with a row for posture.,Balance on one leg; hinge; row at the bottom.,🎥,all
+5,Glute Thrust,Beg,All,Hamstrings,Med,3,12,--,45s,Power Ext.,⭐⭐,Bridge,Snap Hips,Power Output,Amplifies bridge benefits by adding explosive resistance.,Explosive hip extension against band tension.,🎥,all
+6,Standing Hip Ext,Beg,All,Glutes,Low,3,15ea,--,30s,Glute Max,⭐,None,No Back Arch,Postural Hold,Standing isolation extending leg out behind you.,Band at ankles; kick leg back; keep torso upright.,🎥,all
+7,Tricep Press,Beg,All,Triceps,Low,3,12ea,--,30s,Arm Isolation,⭐,None,Full Lockout,Muscle Tone,Portable way to target triceps through full range.,One hand at shoulder; other presses down to lockout.,🎥,all
+8,Hip Thrust,Beg,All,Glutes,Med,4,12,--,60s,Peak Glute,⭐⭐,Bridge,Knee Alignment,Max Contract,Compound move using band for hip abduction.,Shoulders on bench; drive hips; push knees out.,🎥,all
+9,Overhead Fly,Beg,All,Shoulders,Low,3,15,--,30s,Rear Delt,⭐,None,Shoulder Health,Scap. Stability,Targets deltoids and upper back for aesthetics.,"Hold band overhead; pull arms out into a ""Y.""",🎥,all
+10,Lateral Walk,Beg,All,Abductors,Med,3,15ea,--,45s,Lat. Stability,⭐⭐,Squat Form,Knee Tracking,Lateral Speed,Challenges hip abduction and lateral stability.,Band at ankles; half-squat; step sideways.,🎥,all
+11,Kneeling Curl,Beg,All,Biceps,Low,3,12ea,--,30s,Bicep Iso,⭐,None,Still Elbows,Peak Tension,Isolates biceps while engaging kneeling core.,Kneel; anchor band under knee; curl to shoulder.,🎥,all
+12,Mini Band Squat,Beg,All,Quads,Med,3,15,--,45s,Knee Tracking,⭐⭐,Body Squat,Knees Out,Squat Depth,Forces recruitment to prevent knee collapse.,Band above knees; squat deep; push knees out.,🎥,all
+13,Side-Lying Clam,Beg,All,Abductors,Low,3,20ea,--,30s,Hip Stability,⭐,None,Hips Square,Pelvic Control,Classic PT move for hip and pelvic health.,Side-lying; lift top knee; feet stay together.,🎥,all
+14,Lat. Sh. Raise,Beg,All,Shoulders,Low,3,12ea,--,30s,Medial Delt,⭐,None,No Shrugging,Shoulder Width,Variable tension increases difficulty vs DBs.,Anchor band at hip; raise other arm out to side.,🎥,all
+15,Alt. Leg Raises,Beg,All,Quads,Med,3,10ea,--,45s,Lower Ab,⭐⭐,Plank,Flat Low Back,Core Endurance,Challenges core/flexors via resisted lifts.,Lie on back; band at ankles; lift one at a time.,🎥,all
+16,Alt. Lat. Raise,Beg,All,Shoulders,Low,3,12ea,--,30s,Stability,⭐,None,Stability,Coordination,Alternating sides increases core time under tension.,"Same as rank 14, but switch arms each rep.",🎥,all
+17,Mini Band Lunge,Beg,All,Quads,Med,3,10ea,--,45s,Quad Stability,⭐⭐,Lunge,Balanced Torso,Knee Tracking,Intensifies lunge by adding stabilizer tension.,Band above knees; step into lunge; resist pull.,🎥,all
+18,Side Hip Abduct,Beg,All,Abductors,Low,3,15ea,--,30s,Hip Strength,⭐,None,Leg Straight,Hip Stability,Isolates outer glute and hip muscles.,Side-lying; legs straight; lift top leg high.,🎥,all
+19,Reverse Fly,Beg,All,Shoulders,Low,3,15,--,30s,Post. Delt,⭐,None,Posture,Scap. Retract,Improves posture by strengthening rear delts.,Hold band at chest height; pull arms back.,🎥,all
+20,Toe Touch,Beg,All,Abs,Med,3,20,--,30s,Ab Tone,⭐⭐,Crunch,Reach High,Ab Definition,Increases resistance during resisted crunch.,Legs up; band at ankles; reach for toes.,🎥,all
+21,Leg Raise,Beg,All,Abs,High,3,12,--,60s,Core Strength,⭐⭐⭐,Alt. Leg Raise,No Back Arch,Core Bracing,Intensifies challenge on lower abs/flexors.,Lie on back; band at ankles; lift both together.,🎥,all
+22,Jump Squat,Beg,All,Quads,High,4,8,--,90s,Explosive,⭐⭐⭐,Squat,Soft Landing,Vertical Leap,Combines plyometrics with resistance.,Squat deep; explosively jump; land softly.,🎥,all
+23,Lunge Kickback,Beg,All,Quads,Med,3,10ea,--,45s,Post. Chain,⭐⭐,Lunge,Balance,Triple Ext.,Enhances hip extension with a lunge kickback.,Perform lunge; kick back leg out at the top.,🎥,all
+24,Plank Kickback,Beg,All,Abs,High,3,10ea,--,60s,Core/Glute,⭐⭐⭐,Plank,Level Hips,Anti-Rotation,Challenges core while firing the glute.,High plank; lift one leg; keep hips level.,🎥,all
+25,Mt. Climber,Beg,All,Abs,High,3,20ea,30s Sprint,60s,Metabolic,⭐⭐⭐,Plank,Fast Feet,Engine Build,High-intensity move with resisted knee drive.,High plank; band on feet; drive knees to chest.,🎥,all
+26,Scap Retraction,Beg,All,Shoulders,Low,3,15,--,30s,Upper Back,⭐,None,Scap. Move,Shoulder Health,Focuses on shoulder blade movement.,Hold band in front; pull shoulder blades together.,🎥,all
+27,Around World,Beg,All,Abs,High,3,5ea,--,60s,Elite Stab.,⭐⭐⭐,Plank,Total Control,Shoulder/Core,Complex plank lifting limbs against a tug.,In plank; move one limb outward in a circle.,🎥,all
+28,Hip Flexor,Beg,All,Quads,Med,3,15ea,--,30s,Stride Power,⭐⭐,None,Drive Knee,Sprint Power,Essential for improving sprint knee drive.,Band on feet; pull one knee to chest.,🎥,all
+29,Scissor Kick,Beg,All,Abs,Med,3,--,45s Work,45s,Ab Endurance,⭐⭐,Leg Raise,Speed/Tension,Lower Ab Power,Intensifies flutter kick for activation.,Lie on back; legs straight; fast up/down kicks.,🎥,all
+30,Standing Flexion,Beg,All,Quads,Low,3,15ea,--,30s,Hip Mobility,⭐,None,Tall Spine,Balance,Standing isolation for flexors and quads.,Band on feet; lift knee to hip height.,🎥,all
+31,Bridge w/ Raise,Inter,All,Glutes,High,3,8ea,--,60s,Unilat. Stab.,⭐⭐⭐,Bridge,Hips High,Core Sync,Addresses strength imbalances between sides.,Hold bridge; lift one leg; alternate sides.,🎥,all
+32,Hydrant Circle,Beg,All,Abductors,Med,3,10ea,--,30s,Hip Range,⭐⭐,Hydrant,Fluid Motion,Joint Health,Enhances mobility via circular motions.,Same as hydrant but move knee in large circles.,🎥,all
+33,Banded Curtsy,Inter,All,Quads,Med,3,12ea,--,45s,Side Glute,⭐⭐,Lunge,Torso Facing,Hip Mobility,Engages hips/glutes more than standard lunge.,Step foot back and across; keep knee stable.,🎥,all

@@ -1,0 +1,43 @@
+Rank,Exercise Name,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo,env
+1,KB Swing,Inter,Hamstrings,High,4,15-20,--,60s,Hip Power,⭐⭐⭐,Hinge,Hip Snap,Power Output,Explosive hinge for power and conditioning.,Hinge; snap hips to swing bell to chest height.,🎥,w_room
+2,KB Sumo Squat,Inter,Hamstrings,Med,3,12,--,45s,Inner Thigh,⭐⭐,Squat,Hip Mobility,Glute Volume,Wide-stance squat for inner thighs/glutes.,Feet wide; toes out; keep chest up; lower deep.,🎥,w_room
+3,Kettlebell Row,Beg,Back,Low,3,10ea,--,45s,Lat Stability,⭐,None,Posture,Pull Strength,Unilateral back builder for stability.,Hinge; back flat; pull bell to hip; brace core.,🎥,w_room
+4,KB Upright Row,Beg,Shoulders,Low,3,12,--,30s,Trap Growth,⭐,None,Sh. Width,Trap Detail,Targets upper traps and lateral deltoids.,Pull handle to chin; elbows high; pull apart.,🎥,w_room
+5,KB Alternating Row,Beg,Back,Low,3,12ea,--,45s,Back Volume,⭐,KB Row,Coordination,Back Thickness,High-volume row focusing on individual sides.,Switch hands at floor; keep back neutral.,🎥,w_room
+6,Gorilla Rows,Inter,Back,Med,3,10ea,--,60s,Core/Lat,⭐⭐,KB Row,Core Bracing,Lat Density,Alternating row from a static deep hinge.,Wide stance; row one while pushing other down.,🎥,w_room
+7,American Swing,Inter,Glutes,High,4,15,--,60s,OH Power,⭐⭐⭐,KB Swing,Sh. Mobility,CrossFit Prep,Full-range swing used in power drills.,Swing all the way overhead; keep core tight.,🎥,w_room
+8,SL KB Deadlift,Inter,Hamstrings,High,3,10ea,--,60s,Balance,⭐⭐⭐,Deadlift,Ankle Stab.,Hinge Control,Elite balance and posterior chain isolation.,Balance on one leg; hinge while lowering bell.,🎥,w_room
+9,KB Goblet Squat,Inter,Quads,Med,4,12,--,60s,Posture,⭐⭐,Squat,Depth,Front Load,Best variation for teaching squat posture.,Hold at chest; elbows inside knees at bottom.,🎥,w_room
+10,KB Front Squat,Inter,Quads,Med,3,10ea,--,60s,Quad Focus,⭐⭐,Goblet Sq,Torso Angle,Symmetry,Unilateral focus with offset rack position.,"Hold in ""rack"" on forearm; maintain upright.",🎥,w_room
+11,SA KB Swing,Inter,Hamstrings,Med,3,12ea,--,45s,Anti-Rotation,⭐⭐,KB Swing,Core Tension,Grip Strength,Adds anti-rotational demand to the swing.,Standard swing with one hand; resist twisting.,🎥,w_room
+12,Alt. SA Swing,Adv,Hamstrings,High,4,20,--,60s,Coordination,⭐⭐⭐,SA Swing,Reflexes,Athleticism,Explosive coordination and core stability.,Switch hands in mid-air at the apex of swing.,🎥,w_room
+13,Dual Front Squat,Inter,Quads,High,4,8,--,90s,Heavy Load,⭐⭐⭐,KB Front Sq,Bracing,Total Mass,Heavy bilateral quad and core strengthener.,Rack two bells; tuck elbows; sit deep.,🎥,w_room
+14,Sit Up and Press,Beg,Abs,Med,3,10,--,45s,Core Power,⭐⭐,Sit Up,Ab Strength,Sh. Stability,Combines core flexion with shoulder power.,Perform sit-up; press bell overhead at top.,🎥,w_room
+15,Sumo High Pull,Inter,Trapezius,High,3,12,--,60s,Expl. Pull,⭐⭐⭐,Sumo Squat,Speed,Trap Power,Explosive pull from floor to shoulder.,Pull from floor to chin in one fluid motion.,🎥,w_room
+16,KB OH Press,Inter,Shoulders,Med,3,8ea,--,60s,Strict Power,⭐⭐,Press,Lockout,Sh. Stability,Vertical press with offset center of mass.,Press from rack; rotate palm; lock out.,🎥,w_room
+17,Kettlebell Halo,Beg,Shoulders,Low,3,10ea,--,30s,Mobility,⭐,None,Sh. Health,Range of Mot.,Dynamic mobility and core stability move.,Circle bell around head; keep core stiff.,🎥,w_room
+18,KB Good Morning,Inter,Hamstrings,Med,3,12,--,45s,Hinge Stretch,⭐⭐,Hinge,Ham. Flex,Back Strength,Posterior chain stretch and strength.,Hold bell at chest; hinge hips back; soft knees.,🎥,w_room
+19,KB Power Clean,Inter,Hamstrings,High,4,8ea,--,60s,Catch Speed,⭐⭐⭐,KB Swing,Explosive,Field Power,Explosive move from floor to rack.,"Pull; rotate hand to ""catch"" bell at shoulder.",🎥,w_room
+20,KB Windmill,Inter,Abs,High,3,8ea,--,60s,Oblique Pow,⭐⭐⭐,OH Press,Flexibility,T-Spine Mob.,Oblique strength and shoulder stability.,Bell OH; hinge hip out; reach toward floor.,🎥,w_room
+21,Lunge w/ Rot.,Inter,Quads,Med,3,10ea,--,45s,Stability,⭐⭐,Lunge,Balance,Core Sync,Coordination-heavy leg and core move.,Step into lunge; rotate bell over front leg.,🎥,w_room
+22,SA OH Lunge,Inter,Quads,High,3,8ea,--,60s,Elite Stab.,⭐⭐⭐,OH Press,Scap. Control,Vertical Path,Extreme stability for shoulders and core.,Bell locked OH; lunge with vertical arm.,🎥,w_room
+23,SA Farmer Walk,Beg,Forearms,Med,3,--,40s Work,45s,Grip/Core,⭐,None,Grip Dur.,Anti-Lateral,Functional grip and anti-lateral core work.,Hold heavy bell; walk with perfect posture.,🎥,w_room
+24,SA KB Deadlift,Beg,Hamstrings,Med,3,10ea,--,45s,Bracing,⭐,Deadlift,Alignment,Core Tension,Teaches core bracing during heavy pulls.,Bell between feet; hinge and pull one-handed.,🎥,w_room
+25,Turkish Get Up,Inter,Shoulders,Max,3,5ea,--,90s,Total Body,⭐⭐⭐,OH Press,Mobility,Elite Health,Total-body mobility and strength sequence.,Move floor to standing with bell locked OH.,🎥,w_room
+26,Suitcase DL,Beg,Quads,Med,3,12ea,--,45s,Side Load,⭐,None,Level Hips,Core Bracing,Core-intensive pull with weight at side.,Bell at side; deadlift up; resist leaning.,🎥,w_room
+27,KB Hang Clean,Inter,Hamstrings,High,4,8ea,--,60s,Hip Snap,⭐⭐⭐,KB Swing,Power,Triple Ext.,Explosive power starting from the hips.,Start at thighs; snap hips; catch in rack.,🎥,w_room
+28,Clean and Jerk,Inter,Quads,Max,4,6ea,--,90s,Met-Con,⭐⭐⭐,KB Clean,Stamina,Expl. Force,Full-body explosive conditioning.,Clean to rack; dip and drive to lockout.,🎥,w_room
+29,Kettlebell Jerk,Inter,Shoulders,High,3,8ea,--,60s,Drive Power,⭐⭐⭐,OH Press,Speed,Lockout,Uses leg drive for max overhead power.,Dip and drive; drop under bell to catch.,🎥,w_room
+30,KB Thruster,Inter,Shoulders,Max,4,10,--,90s,Metabolic,⭐⭐⭐,Goblet Sq,Conditioning,Engine Build,Full goblet squat into overhead press.,Squat deep; explosively press as you stand.,🎥,w_room
+31,Bottoms-Up Press,Inter,Shoulders,High,3,8ea,--,60s,Stability,⭐⭐⭐,OH Press,Grip,Cuff Health,Extreme grip and shoulder stability challenge.,Hold bell upside down; press overhead.,🎥,w_room
+32,KB Calf Raise,Beg,Calves,Low,4,15,--,45s,Hypertrophy,⭐,None,Calf Size,Ankle Health,Weighted isolation for the lower legs.,Hold bells at sides; rise onto toes.,🎥,w_room
+33,KB Snatch,Adv,Shoulders,Max,4,10ea,--,90s,High Speed,⭐⭐⭐,KB Swing,Power,Vertical Pull,High-intensity floor-to-overhead pull.,Swing; pull vertically; punch hand through.,🎥,w_room
+34,Balance Goblet,Adv,Quads,High,3,10,--,60s,Propriocept.,⭐⭐⭐,Goblet Sq,Stability,Core Depth,Stability focus for the legs and core.,Goblet squat while on balance trainer.,🎥,w_room
+35,Racked Rev Lunge,Inter,Quads,Med,3,10ea,--,60s,Offset Bal.,⭐⭐,Lunge,Symmetry,Hip Stab.,Offset balance for leg development.,Rack bell one side; lunge with opposite leg.,🎥,w_room
+36,SA KB Press,Inter,Shoulders,Med,3,10ea,--,60s,Strict Power,⭐⭐,OH Press,Symmetry,Press Force,Standard unilateral shoulder strength.,Strict press from rack; engage lats.,🎥,w_room
+37,Bottoms-Up Clean,Inter,Forearms,High,3,8ea,--,60s,Grip Control,⭐⭐⭐,KB Clean,Forearm Size,Wrist Stab.,Grip and forearm control movement.,Clean bell into vertical bottoms-up hold.,🎥,w_room
+38,SA Suitcase DL,Inter,Quads,Med,3,10ea,--,45s,Spinal Align.,⭐⭐,Suitcase DL,Anti-Lateral,Core Brace,Core bracing during a unilateral pull.,Keep spine vertical while pulling side bell.,🎥,w_room
+39,SA OH Squat,Adv,Quads,Max,3,8ea,--,90s,Elite Mob.,⭐⭐⭐,SA OH Lunge,Flexibility,Total Control,Elite mobility and core stability move.,Deep squat while keeping arm vertical OH.,🎥,w_room
+40,KB TGU (Alt),Inter,Shoulders,Max,3,5ea,--,90s,Sequence,⭐⭐⭐,OH Press,Mobility,Coordination,(Alt for 25) Total-body mobility sequence.,Same as TGU; focus on unique load path.,🎥,w_room
+41,KB Pistol Squat,Adv,Quads,Max,3,5ea,--,90s,Raw Strength,⭐⭐⭐,Squat,Balance,Elite Legs,Advanced unilateral leg strength.,Hold bell; squat deep on one leg.,🎥,w_room
+42,KB Toe Walks,Beg,Calves,Med,3,--,45s Work,45s,Endurance,⭐,None,Foot Strength,Functional,Functional calf endurance and strength.,Hold heavy bells; walk on balls of feet.,🎥,all
