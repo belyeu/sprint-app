@@ -67,8 +67,18 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 4. DATA LOGIC ---
+def extract_seconds(text):
+    text = str(text).lower()
+    m_ss = re.search(r'(\d+):(\d+)', text)
+    if m_ss: return int(m_ss.group(1)) * 60 + int(m_ss.group(2))
+    ss = re.search(r'(\d+)\s*(s|sec)', text)
+    if ss: return int(ss.group(1))
+    fallback = re.search(r'\d+', text)
+    return int(fallback.group()) if fallback else 60
+
 def scale_text(val_str, multiplier):
     val_str = str(val_str)
+    if val_str == "N/A": return "N/A"
     nums = re.findall(r'\d+', val_str)
     new_str = val_str
     for n in nums:
@@ -107,21 +117,34 @@ def load_comprehensive_workout(sport, multiplier, env_selections, limit):
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
         if any(name == s.get('ex') for s in selected): continue
 
+        # REPS LOGIC: Default to 10 if N/A
+        raw_reps = item.get('Reps/Dist', 'N/A')
+        processed_reps = "10" if raw_reps == "N/A" else scale_text(raw_reps, multiplier)
+
+        # TIMER LOGIC: HS Standard priority
+        hs_goal_val = item.get('HS Goals', 'N/A')
+        timer_seconds = extract_seconds(hs_goal_val) if any(char.isdigit() for char in hs_goal_val) else extract_seconds(item.get('Time Goal', '60'))
+
+        # REST LOGIC: CNS-based recommended rest
+        cns_load = str(item.get('CNS', 'Low')).capitalize()
+        rest_recommendation = {"Low": "45s", "Moderate": "90s", "High": "3m", "Elite": "5m"}.get(cns_load, "60s")
+        final_rest = item.get('Rest Time', rest_recommendation)
+
         drill = {
             "rank": item.get('Rank', 'N/A'),
             "ex": name,
             "level": item.get('Level', 'N/A'),
             "env": item.get('Env.', 'General'),
             "muscle": item.get('Primary Muscle', 'N/A'),
-            "cns": item.get('CNS', 'Low'),
+            "cns": cns_load,
             "sets": int(round(int(item.get('Sets', 3) if str(item.get('Sets')).isdigit() else 3) * multiplier)),
-            "reps": scale_text(item.get('Reps/Dist', 'N/A'), multiplier),
-            "time_goal": item.get('Time Goal', item.get('Time', 'N/A')),
-            "rest": item.get('Rest Time', '60s'),
+            "reps": processed_reps,
+            "time_goal": timer_seconds,
+            "rest": final_rest,
             "focus": item.get('Primary Focus', 'Performance'),
             "stars": item.get('Stars', '⭐⭐⭐'),
             "pre_req": item.get('Pre-Req', 'N/A'),
-            "hs": scale_text(item.get('HS Goals', 'N/A'), multiplier),
+            "hs": scale_text(hs_goal_val, multiplier),
             "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
             "desc": item.get('Description', 'See demo.'),
             "form": item.get('Proper Form', 'Maintain core stability.'),
@@ -144,7 +167,6 @@ st.title("🏆 PRO-ATHLETE PERFORMANCE")
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"#{drill['rank']} {drill['ex']} | {drill['stars']}", expanded=(i==0)):
-            # Column Mapping for all requested fields
             c1, c2, c3, c4 = st.columns(4)
             with c1:
                 st.markdown(f"<p class='field-label'>Level</p><p class='field-value'>{drill['level']}</p>", unsafe_allow_html=True)
@@ -156,19 +178,18 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 st.markdown(f"<p class='field-label'>Sets</p><p class='field-value'>{drill['sets']}</p>", unsafe_allow_html=True)
                 st.markdown(f"<p class='field-label'>Reps/Dist</p><p class='field-value'>{drill['reps']}</p>", unsafe_allow_html=True)
             with c4:
-                st.markdown(f"<p class='field-label'>Time Goal</p><p class='field-value'>{drill['time_goal']}</p>", unsafe_allow_html=True)
-                st.markdown(f"<p class='field-label'>Rest Time</p><p class='field-value'>{drill['rest']}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p class='field-label'>Timer Goal</p><p class='field-value'>{drill['time_goal']}s</p>", unsafe_allow_html=True)
+                st.markdown(f"<p class='field-label'>Rec. Rest</p><p class='field-value'>{drill['rest']}</p>", unsafe_allow_html=True)
 
             st.divider()
             
             f1, f2, f3 = st.columns(3)
             with f1: st.markdown(f"<p class='field-label'>Primary Focus</p><p class='field-value'>{drill['focus']}</p>", unsafe_allow_html=True)
-            with f2: st.info(f"**HS Goal:** {drill['hs']}")
+            with f2: st.info(f"**HS Standard:** {drill['hs']}")
             with f3: st.success(f"**College Goal:** {drill['coll']}")
 
             st.write(f"**Description:** {drill['desc']}")
             st.write(f"**Proper Form:** {drill['form']}")
-            st.caption(f"Pre-Reqs: {drill['pre_req']}")
             
             st.divider()
             
@@ -181,14 +202,13 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.rerun()
                 if drill['demo'] and "http" in drill['demo']: st.video(drill['demo'])
             with col_b:
-                st.markdown("#### ⏱️ Timer")
-                t_val = st.number_input("Seconds", 5, 600, 60, key=f"t_in_{i}")
+                st.markdown(f"#### ⏱️ {drill['time_goal']}s Standard Timer")
                 if st.button("Start Timer", key=f"t_btn_{i}"):
                     ph = st.empty()
-                    for t in range(int(t_val), -1, -1):
-                        ph.metric("Active", f"{t}s")
+                    for t in range(int(drill['time_goal']), -1, -1):
+                        ph.metric("Seconds Remaining", f"{t}s")
                         time.sleep(1)
-                    st.toast("Time up!")
+                    st.balloons()
                 st.file_uploader("Upload Form Clip", type=['mp4', 'mov'], key=f"f_{i}")
 
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
@@ -197,7 +217,7 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
 elif st.session_state.workout_finished:
     st.success("Session Complete!")
-    st.table(pd.DataFrame(st.session_state.current_session)[['rank', 'ex', 'sets', 'reps']])
+    st.table(pd.DataFrame(st.session_state.current_session)[['rank', 'ex', 'sets', 'reps', 'time_goal']])
     if st.button("New Session"):
         st.session_state.current_session = None
         st.rerun()
