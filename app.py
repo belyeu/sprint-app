@@ -35,13 +35,13 @@ with st.sidebar:
 
     st.divider()
     st.header("📍 SESSION FILTERS")
-    # ADDED PILATES TO SELECTBOX
+    # Added Pilates to the list
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
-    # ADDED FLOOR TO LOCATION FILTER
+    # Added Floor to the locations
     location_filter = st.multiselect(
         "Facility Location (Env.)", 
         ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"],
-        default=["Gym", "Weight Room"]
+        default=["Gym", "Floor"]
     )
     num_drills = st.slider("Target Drills", 5, 20, 13)
     
@@ -94,7 +94,7 @@ def get_csv_urls(sport, selected_envs):
         "Basketball": f"{base}basketball.csv",
         "Softball": f"{base}softball.csv",
         "Track": f"{base}track.csv",
-        "Pilates": f"{base}pilates.csv", # ADDED PILATES FILE MAPPING
+        "Pilates": f"{base}pilates.csv", # Added pilates mapping
         "General": f"{base}general.csv"
     }
     load_list = [urls.get(sport, urls["General"])]
@@ -145,6 +145,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "hs": scale_text(item.get('HS Goals', 'N/A'), multiplier),
             "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
             "desc": item.get('Description', 'See demo for form.'),
+            "proper_form": item.get('Proper Form', 'Maintain core stability and breathing.'), # Added column logic
             "demo": str(item.get('Demo', '')).strip()
         }
         selected.append(drill)
@@ -175,6 +176,8 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
+
+
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"**EXERCISE {i+1}: {drill['ex']}** | {drill['stars']}", expanded=(i==0)):
@@ -195,9 +198,10 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             c10.success(f"**College Goal:** {drill['coll']}")
 
             st.write(f"**📝 Description:** {drill['desc']}")
+            # Proper Form Column Display
+            st.warning(f"**✨ Proper Form:** {drill['proper_form']}")
             st.divider()
             
-            # Interactive Area
             col_a, col_b = st.columns([1, 1])
             with col_a:
                 curr = st.session_state.set_counts.get(i, 0)
