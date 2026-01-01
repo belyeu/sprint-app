@@ -44,7 +44,7 @@ with st.sidebar:
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
-# --- 3. DYNAMIC THEMING & ALERTS ---
+# --- 3. DYNAMIC THEMING ---
 st.markdown("""
     <style>
     div[data-testid="stExpander"] details summary {
@@ -62,38 +62,13 @@ st.markdown("""
     }
     .field-label { font-size: 0.7rem; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: -5px;}
     .field-value { font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; color: #1E293B; }
-    
-    /* Timer Alert Animation */
-    @keyframes flash {
-        0% { background-color: transparent; }
-        50% { background-color: #EF4444; }
-        100% { background-color: transparent; }
-    }
-    .timer-finished {
-        animation: flash 0.5s infinite;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        color: white;
-        font-weight: bold;
-    }
+    [data-theme="dark"] .field-value { color: #F8FAFC; }
     </style>
     """, unsafe_allow_html=True)
 
 # --- 4. DATA LOGIC ---
-def extract_seconds(text):
-    text = str(text).lower()
-    m_ss = re.search(r'(\d+):(\d+)', text)
-    if m_ss: return int(m_ss.group(1)) * 60 + int(m_ss.group(2))
-    ss = re.search(r'(\d+)\s*(s|sec)', text)
-    if ss: return int(ss.group(1))
-    fallback = re.search(r'\d+', text)
-    return int(fallback.group()) if fallback else 60
-
 def scale_text(val_str, multiplier):
     val_str = str(val_str)
-    # REQUIREMENT: If Reps/Dist is N/A or empty, return 10
-    if val_str.upper() == "N/A" or val_str.strip() == "": return "10"
     nums = re.findall(r'\d+', val_str)
     new_str = val_str
     for n in nums:
@@ -132,15 +107,6 @@ def load_comprehensive_workout(sport, multiplier, env_selections, limit):
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
         if any(name == s.get('ex') for s in selected): continue
 
-        hs_goal_text = item.get('HS Goals', 'N/A')
-        time_val = item.get('Time Goal', item.get('Time', 'N/A'))
-        
-        # REQUIREMENT: If Time is N/A, fallback to HS standard extraction
-        if time_val == "N/A":
-            timer_seconds = extract_seconds(hs_goal_text)
-        else:
-            timer_seconds = extract_seconds(time_val)
-
         drill = {
             "rank": item.get('Rank', 'N/A'),
             "ex": name,
@@ -150,13 +116,13 @@ def load_comprehensive_workout(sport, multiplier, env_selections, limit):
             "cns": item.get('CNS', 'Low'),
             "sets": int(round(int(item.get('Sets', 3) if str(item.get('Sets')).isdigit() else 3) * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', 'N/A'), multiplier),
-            "time_goal": timer_seconds,
+            "time_goal": item.get('Time Goal', item.get('Time', 'N/A')),
             "rest": item.get('Rest Time', '60s'),
             "focus": item.get('Primary Focus', 'Performance'),
             "stars": item.get('Stars', '⭐⭐⭐'),
             "pre_req": item.get('Pre-Req', 'N/A'),
-            "hs": hs_goal_text,
-            "coll": item.get('College Goals', 'N/A'),
+            "hs": scale_text(item.get('HS Goals', 'N/A'), multiplier),
+            "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
             "desc": item.get('Description', 'See demo.'),
             "form": item.get('Proper Form', 'Maintain core stability.'),
             "demo": str(item.get('Demo', '')).strip()
@@ -178,6 +144,7 @@ st.title("🏆 PRO-ATHLETE PERFORMANCE")
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"#{drill['rank']} {drill['ex']} | {drill['stars']}", expanded=(i==0)):
+            # Column Mapping for all requested fields
             c1, c2, c3, c4 = st.columns(4)
             with c1:
                 st.markdown(f"<p class='field-label'>Level</p><p class='field-value'>{drill['level']}</p>", unsafe_allow_html=True)
@@ -189,10 +156,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 st.markdown(f"<p class='field-label'>Sets</p><p class='field-value'>{drill['sets']}</p>", unsafe_allow_html=True)
                 st.markdown(f"<p class='field-label'>Reps/Dist</p><p class='field-value'>{drill['reps']}</p>", unsafe_allow_html=True)
             with c4:
-                st.markdown(f"<p class='field-label'>Goal Time</p><p class='field-value'>{drill['time_goal']}s</p>", unsafe_allow_html=True)
+                st.markdown(f"<p class='field-label'>Time Goal</p><p class='field-value'>{drill['time_goal']}</p>", unsafe_allow_html=True)
                 st.markdown(f"<p class='field-label'>Rest Time</p><p class='field-value'>{drill['rest']}</p>", unsafe_allow_html=True)
 
             st.divider()
+            
             f1, f2, f3 = st.columns(3)
             with f1: st.markdown(f"<p class='field-label'>Primary Focus</p><p class='field-value'>{drill['focus']}</p>", unsafe_allow_html=True)
             with f2: st.info(f"**HS Goal:** {drill['hs']}")
@@ -200,8 +168,10 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
             st.write(f"**Description:** {drill['desc']}")
             st.write(f"**Proper Form:** {drill['form']}")
+            st.caption(f"Pre-Reqs: {drill['pre_req']}")
             
             st.divider()
+            
             col_a, col_b = st.columns([1, 1])
             with col_a:
                 curr = st.session_state.set_counts.get(i, 0)
@@ -209,30 +179,16 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     if curr < drill['sets']:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
-                
-                # RESTORED DEMO VIDEO
-                if drill['demo'] and "http" in drill['demo']:
-                    st.video(drill['demo'])
-                else:
-                    st.caption("No video demo available.")
-
+                if drill['demo'] and "http" in drill['demo']: st.video(drill['demo'])
             with col_b:
-                st.markdown("#### ⏱️ Rest / Performance Timer")
-                # Default to CSV Rest Time
-                default_rest = extract_seconds(drill['rest'])
-                t_val = st.number_input("Seconds", 1, 600, default_rest, key=f"t_in_{i}")
-                
-                timer_place = st.empty()
+                st.markdown("#### ⏱️ Timer")
+                t_val = st.number_input("Seconds", 5, 600, 60, key=f"t_in_{i}")
                 if st.button("Start Timer", key=f"t_btn_{i}"):
+                    ph = st.empty()
                     for t in range(int(t_val), -1, -1):
-                        timer_place.metric("Time Remaining", f"{t}s")
+                        ph.metric("Active", f"{t}s")
                         time.sleep(1)
-                    
-                    # ALERT SYSTEM
-                    timer_place.markdown('<div class="timer-finished">🔥 TIME IS UP! GET READY! 🔥</div>', unsafe_allow_html=True)
-                    st.toast(f"Timer Finished for {drill['ex']}!", icon="🔔")
-                    st.balloons()
-                
+                    st.toast("Time up!")
                 st.file_uploader("Upload Form Clip", type=['mp4', 'mov'], key=f"f_{i}")
 
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
@@ -240,7 +196,7 @@ if st.session_state.current_session and not st.session_state.workout_finished:
         st.rerun()
 
 elif st.session_state.workout_finished:
-    st.success("Session Complete! Elite status achieved.")
+    st.success("Session Complete!")
     st.table(pd.DataFrame(st.session_state.current_session)[['rank', 'ex', 'sets', 'reps']])
     if st.button("New Session"):
         st.session_state.current_session = None
