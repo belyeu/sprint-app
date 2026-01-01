@@ -35,10 +35,12 @@ with st.sidebar:
 
     st.divider()
     st.header("📍 SESSION FILTERS")
-    sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "General"])
+    # ADDED PILATES TO SPORT CHOICE
+    sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
+    # ADDED FLOOR TO LOCATION FILTER
     location_filter = st.multiselect(
         "Facility Location (Env.)", 
-        ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "General"],
+        ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"],
         default=["Gym", "Weight Room"]
     )
     num_drills = st.slider("Target Drills", 5, 20, 13)
@@ -92,14 +94,18 @@ def get_csv_urls(sport, selected_envs):
         "Basketball": f"{base}basketball.csv",
         "Softball": f"{base}softball.csv",
         "Track": f"{base}track.csv",
+        "Pilates": f"{base}pilates.csv", # ADDED PILATES CSV MAPPING
         "General": f"{base}general.csv"
     }
-    load_list = [urls[sport]]
-    # Always include Bands
+    load_list = [urls.get(sport, f"{base}general.csv")]
+    
+    # Include specialty bands
     load_list += [f"{base}general-loop-band.csv", f"{base}general-mini-bands.csv"]
+    
     # Weight Room specialized tables
     if "Weight Room" in selected_envs:
         load_list += [f"{base}barbell.csv", f"{base}general-cable-crossover.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv", f"{base}general-medball.csv"]
+    
     return load_list
 
 def load_and_build_workout(sport, multiplier, env_selections, limit):
@@ -149,7 +155,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         }
         selected.append(drill)
 
-        # L/R Auto-Pairing
+        # L/R Auto-Pairing logic
         side_match = re.search(r'\(L\)|\(R\)', name)
         if side_match:
             tag = "(R)" if side_match.group() == "(L)" else "(L)"
@@ -171,29 +177,28 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.set_counts = {i: 0 for i in range(len(res))}
         st.session_state.workout_finished = False
     else:
-        st.sidebar.error("No matching drills. Check locations.")
+        st.sidebar.error("No matching drills found. Try adding 'Floor' or 'General' to locations.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
+
+
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"**EXERCISE {i+1}: {drill['ex']}** | {drill['stars']}", expanded=(i==0)):
-            # Row 1: Technical Meta-data
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>📂 Category</p><p class='metric-value'>{drill['category']}</p>", unsafe_allow_html=True)
             m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
             m4.markdown(f"<p class='metric-label'>🎯 Focus</p><p class='metric-value'>{drill['focus']}</p>", unsafe_allow_html=True)
             
-            # Row 2: Volume
             m5, m6, m7, m8 = st.columns(4)
             m5.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
             m6.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
             m7.markdown(f"<p class='metric-label'>🕒 Time</p><p class='metric-value'>{drill['time']}</p>", unsafe_allow_html=True)
             m8.markdown(f"<p class='metric-label'>⚠️ Pre-Req</p><p class='metric-value'>{drill['pre_req']}</p>", unsafe_allow_html=True)
 
-            # Row 3: Ambition
             c9, c10 = st.columns(2)
             c9.info(f"**HS Goal:** {drill['hs']}")
             c10.success(f"**College Goal:** {drill['coll']}")
@@ -201,7 +206,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             st.write(f"**📝 Description:** {drill['desc']}")
             st.divider()
             
-            # Interactive Area
             col_a, col_b = st.columns([1, 1])
             with col_a:
                 curr = st.session_state.set_counts.get(i, 0)
@@ -237,4 +241,4 @@ elif st.session_state.workout_finished:
         st.session_state.current_session = None
         st.rerun()
 else:
-    st.info("👈 Use the sidebar to set your profile and generate a session.")
+    st.info("👈 Use the sidebar to set your profile and generate a Pilates session.")
