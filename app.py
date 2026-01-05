@@ -73,45 +73,56 @@ st.markdown(f"""
 # --- 3. CSV DATA ENGINE ---
 @st.cache_data
 def load_drill_database():
-    """
-    Loads drills from CSV. 
-    Format expected: Sport, Exercise, Description, Base_Sets, Base_Goal, Unit, Rest, Location, Demo_URL, Focus_Points (semicolon separated)
-    """
-    # Replace this URL with your actual GitHub raw CSV link or local path
+    # Primary URL for basketball.csv
     CSV_URL = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/basketball.csv"
     
     try:
+        # Load data and strip whitespace from columns
         df = pd.read_csv(CSV_URL)
-        # Clean Focus Points into lists
-        df['Focus_Points'] = df['Focus_Points'].apply(lambda x: x.split(';') if isinstance(x, str) else [])
+        df.columns = [c.strip() for c in df.columns]
+        
+        # Data Cleaning: Handle Focus Points (Split by semicolon if exists)
+        if 'Focus_Points' in df.columns:
+            df['Focus_Points'] = df['Focus_Points'].apply(lambda x: x.split(';') if isinstance(x, str) else [])
+        else:
+            df['Focus_Points'] = [[] for _ in range(len(df))]
+            
         return df
     except Exception as e:
-        # Fallback Hardcoded Data if CSV fails to load
         st.sidebar.error(f"CSV Load Error: {e}")
-        return pd.DataFrame()
+        # Return a structured empty DataFrame to prevent app crash
+        return pd.DataFrame(columns=['Sport', 'Exercise', 'Description', 'Base_Sets', 'Base_Goal', 'Unit', 'Rest', 'Location', 'Demo_URL', 'Focus_Points'])
 
 def get_workout_from_csv(df, sport, locs, multiplier):
     if df.empty:
         return []
     
     # Filter by Sport and Location
-    filtered_df = df[(df['Sport'] == sport) & (df['Location'].isin(locs))]
+    mask = (df['Sport'].str.lower() == sport.lower()) & (df['Location'].isin(locs))
+    filtered_df = df[mask]
     
     drills = []
     for _, row in filtered_df.iterrows():
-        drills.append({
-            "ex": row['Exercise'],
-            "desc": row['Description'],
-            "sets": int(row['Base_Sets']),
-            "base": row['Base_Goal'],
-            "unit": row['Unit'],
-            "rest": int(row['Rest']),
-            "loc": row['Location'],
-            "demo": row['Demo_URL'],
-            "focus": row['Focus_Points'],
-            "scaled_sets": int(round(row['Base_Sets'] * multiplier)),
-            "scaled_goal": f"{int(row['Base_Goal'] * multiplier)} {row['Unit']}"
-        })
+        try:
+            # Safely handle numeric conversions
+            b_sets = float(row.get('Base_Sets', 3))
+            b_goal = float(row.get('Base_Goal', 10))
+            
+            drills.append({
+                "ex": row.get('Exercise', 'Unknown Drill'),
+                "desc": row.get('Description', 'No description provided.'),
+                "sets": b_sets,
+                "base": b_goal,
+                "unit": row.get('Unit', 'reps'),
+                "rest": int(row.get('Rest', 60)),
+                "loc": row.get('Location', 'Gym'),
+                "demo": row.get('Demo_URL', ''),
+                "focus": row.get('Focus_Points', []),
+                "scaled_sets": int(round(b_sets * multiplier)),
+                "scaled_goal": f"{int(round(b_goal * multiplier))} {row.get('Unit', 'reps')}"
+            })
+        except Exception:
+            continue
     return drills
 
 # --- 4. DATA INITIALIZATION ---
@@ -138,23 +149,25 @@ with st.sidebar:
     sport_choice = st.selectbox("Sport Discipline", available_sports)
     
     st.markdown("### 📍 FACILITY FILTERS")
-    l1 = st.checkbox("Indoor Gym", value=True)
-    l2 = st.checkbox("Outdoor Track", value=True)
-    l3 = st.checkbox("Weight Room", value=True)
     
-    loc_map = {"Indoor Gym": "Gym", "Outdoor Track": "Track", "Weight Room": "Weight Room"}
-    active_locs = [loc_map[k] for k in loc_map if locals()[f"l{list(loc_map.keys()).index(k)+1}"]]
+    # FIXED ERROR HERE: Using a list/dict to avoid locals() lookup issues
+    loc_checks = {
+        "Gym": st.checkbox("Indoor Gym", value=True),
+        "Track": st.checkbox("Outdoor Track", value=True),
+        "Weight Room": st.checkbox("Weight Room", value=True)
+    }
+    active_locs = [k for k, v in loc_checks.items() if v]
+    
+    st.divider()
     
     intensity = st.select_slider("Workout Intensity", options=["Standard", "Elite", "Pro"], value="Elite")
     scaling_factor = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[intensity]
 
-# --- 6. CSV MANAGER (HIDDEN TOOL) ---
+# --- 6. CSV MANAGER ---
 if app_mode == "CSV Manager":
     st.title("📂 DRILL DATABASE MANAGER")
-    st.write("Current database contains:")
+    st.write(f"Total Drills Indexed: {len(df_drills)}")
     st.dataframe(df_drills, use_container_width=True)
-    
-    st.info("To update drills, edit your GitHub CSV file. The app will refresh on reload.")
     
     if st.button("Force Database Refresh"):
         st.cache_data.clear()
@@ -168,9 +181,8 @@ elif app_mode == "Training Core":
     session_drills = get_workout_from_csv(df_drills, sport_choice, active_locs, scaling_factor)
 
     if not session_drills:
-        st.warning("⚠️ No drills found in CSV matching your filters.")
+        st.warning("⚠️ No drills found in CSV matching your filters. Check Sport and Location columns in your file.")
     else:
-        # Live Session Progress
         completed_count = 0
         
         for i, item in enumerate(session_drills):
@@ -182,7 +194,6 @@ elif app_mode == "Training Core":
             with meta_2:
                 st.markdown(f"<p style='text-align:right; font-size:12px; color:{accent};'>LOC: {item['loc']}</p>", unsafe_allow_html=True)
             
-            # Interactive Tracker
             c1, c2, c3 = st.columns(3)
             with c1: 
                 st.text_input("Planned Sets", value=str(item["scaled_sets"]), key=f"s_{i}")
@@ -192,14 +203,15 @@ elif app_mode == "Training Core":
                 if st.checkbox("Complete", key=f"c_{i}"):
                     completed_count += 1
 
-            # Focus Points (Visual Cards)
             st.markdown(f"<p style='color:{electric_blue}; font-weight:900; margin-top:10px;'>ELITE FOCUS POINTS</p>", unsafe_allow_html=True)
-            f_cols = st.columns(len(item["focus"]) if item["focus"] else 1)
-            for idx, pt in enumerate(item["focus"]):
-                with f_cols[idx]:
-                    st.markdown(f'<div class="focus-card">🎯 {pt}</div>', unsafe_allow_html=True)
+            if item["focus"]:
+                f_cols = st.columns(len(item["focus"]))
+                for idx, pt in enumerate(item["focus"]):
+                    with f_cols[idx]:
+                        st.markdown(f'<div class="focus-card">🎯 {pt}</div>', unsafe_allow_html=True)
+            else:
+                st.write("Generic focus: Eye on target, maintain core tension.")
 
-            # Rest Timer Component
             timer_col, video_col = st.columns([2, 1])
             with timer_col:
                 if st.button(f"⏱️ START {item['rest']}s RECOVERY", key=f"r_{i}"):
@@ -215,9 +227,8 @@ elif app_mode == "Training Core":
                     if isinstance(item["demo"], str) and "http" in item["demo"]: 
                         st.video(item["demo"])
                     else: 
-                        st.info("No video reference.")
+                        st.info("No video reference available.")
 
-        # Session Finalization
         st.divider()
         st.subheader("Session Summary")
         progress = completed_count / len(session_drills) if session_drills else 0
@@ -269,4 +280,4 @@ else:
 
 # --- 9. FOOTER ---
 st.sidebar.divider()
-st.sidebar.caption("Pro-Athlete Tracker v4.0.1 | Data-Driven via CSV")
+st.sidebar.caption("Pro-Athlete Tracker v4.1.2 | Fixed dynamic lookup error")
