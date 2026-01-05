@@ -58,18 +58,19 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
-    /* Global Button Visibility Fix */
+    /* FIX BUTTON VISIBILITY: High contrast Blue/White */
     .stButton > button {{
         background-color: #2563EB !important;
         color: white !important;
         border-radius: 8px !important;
-        border: none !important;
-        font-weight: bold !important;
-        width: 100%;
+        border: 1px solid #1D4ED8 !important;
+        font-weight: 700 !important;
+        width: 100% !important;
+        display: block !important;
     }}
     .stButton > button:hover {{
         background-color: #1D4ED8 !important;
-        color: white !important;
+        border: 1px solid #1E40AF !important;
     }}
 
     div[data-testid="stExpander"] details summary {{
@@ -86,19 +87,8 @@ st.markdown(f"""
         border-radius: 12px !important; 
         border-top: none !important;
     }}
-    .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; }}
-    .metric-value {{ font-size: 1.1rem; color: #3B82F6; font-weight: 700; }}
-    
-    /* Timer Alert Animation */
-    .timer-alert {{
-        padding: 10px;
-        background-color: #EF4444;
-        color: white;
-        border-radius: 8px;
-        text-align: center;
-        font-weight: bold;
-        margin-top: 10px;
-    }}
+    .field-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin-bottom: -5px;}}
+    .field-value {{ font-size: 1rem; color: #3B82F6; font-weight: 700; margin-bottom: 10px; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -153,72 +143,84 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if len(selected) >= limit: break
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
         
-        # Proper Fallback extraction for timers
         hs_goal_text = item.get('HS Goals', 'N/A')
         time_val = item.get('Time Goal', item.get('Time', 'N/A'))
-        drill_time = extract_seconds(hs_goal_text if time_val == "N/A" else time_val)
-        rest_time = extract_seconds(item.get('Rest Time', '60s'))
+        drill_s = extract_seconds(hs_goal_text if time_val == "N/A" else time_val)
+        rest_s = extract_seconds(item.get('Rest Time', '60s'))
 
         drill = {
+            "rank": item.get('Rank', 'N/A'),
             "ex": name,
+            "level": item.get('Level', 'N/A'),
             "env": item.get('Env.', 'General'),
-            "category": item.get('Category', 'Skill'),
+            "muscle": item.get('Primary Muscle', 'N/A'),
             "cns": item.get('CNS', 'Low'),
             "sets": int(round(int(item.get('Sets', 3) if str(item.get('Sets')).isdigit() else 3) * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', 'N/A'), multiplier, is_reps=True),
-            "drill_timer": drill_time,
-            "rest_timer": rest_time,
+            "drill_timer": drill_s,
+            "rest_timer": rest_s,
+            "focus": item.get('Primary Focus', 'Performance'),
+            "stars": item.get('Stars', '⭐⭐⭐'),
+            "pre_req": item.get('Pre-Req', 'N/A'),
             "hs": scale_text(hs_goal_text, multiplier),
             "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
             "desc": item.get('Description', 'N/A'),
             "proper_form": item.get('Proper Form', 'N/A'),
-            "stars": item.get('Stars', '⭐⭐⭐'),
-            "demo": str(item.get('Demo', '')).strip()
+            "demo": str(item.get('Demo', '')).strip(),
+            "category": item.get('Category', 'Skill')
         }
         selected.append(drill)
     return selected
 
 # --- 5. EXECUTION ---
-if st.sidebar.button("🚀 GENERATE WORKOUT"):
+if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
     res = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
     if res:
         st.session_state.current_session = res
         st.session_state.set_counts = {i: 0 for i in range(len(res))}
         st.session_state.workout_finished = False
-    else:
-        st.sidebar.error("No matching drills found.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
+
+
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"**EXERCISE {i+1}: {drill['ex']}** | {drill['stars']}", expanded=(i==0)):
-            m1, m2, m3, m4 = st.columns(4)
-            m1.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
-            m2.markdown(f"<p class='metric-label'>📂 Category</p><p class='metric-value'>{drill['category']}</p>", unsafe_allow_html=True)
-            m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
-            m4.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
-            
-            m5, m6, m7, m8 = st.columns(4)
-            m5.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
-            m6.markdown(f"<p class='metric-label'>🕒 Drill Goal</p><p class='metric-value'>{drill['drill_timer']}s</p>", unsafe_allow_html=True)
-            m7.markdown(f"<p class='metric-label'>🛌 Rest</p><p class='metric-value'>{drill['rest_timer']}s</p>", unsafe_allow_html=True)
-            m8.markdown(f"<p class='metric-label'>⭐ Quality</p><p class='metric-value'>{drill['stars']}</p>", unsafe_allow_html=True)
+        with st.expander(f"**#{drill['rank']} {drill['ex']}** | {drill['stars']}", expanded=(i==0)):
+            # TECHNICAL FIELDS 1-17
+            c1, c2, c3, c4 = st.columns(4)
+            c1.markdown(f"<p class='field-label'>Rank</p><p class='field-value'>{drill['rank']}</p>", unsafe_allow_html=True)
+            c2.markdown(f"<p class='field-label'>Level</p><p class='field-value'>{drill['level']}</p>", unsafe_allow_html=True)
+            c3.markdown(f"<p class='field-label'>Env</p><p class='field-value'>{drill['env']}</p>", unsafe_allow_html=True)
+            c4.markdown(f"<p class='field-label'>Muscle</p><p class='field-value'>{drill['muscle']}</p>", unsafe_allow_html=True)
 
-            c9, c10 = st.columns(2)
-            c9.info(f"**HS Goal:** {drill['hs']}")
-            c10.success(f"**College Goal:** {drill['coll']}")
+            c5, c6, c7, c8 = st.columns(4)
+            c5.markdown(f"<p class='field-label'>CNS</p><p class='field-value'>{drill['cns']}</p>", unsafe_allow_html=True)
+            c6.markdown(f"<p class='field-label'>Sets</p><p class='field-value'>{drill['sets']}</p>", unsafe_allow_html=True)
+            c7.markdown(f"<p class='field-label'>Reps/Dist</p><p class='field-value'>{drill['reps']}</p>", unsafe_allow_html=True)
+            c8.markdown(f"<p class='field-label'>Category</p><p class='field-value'>{drill['category']}</p>", unsafe_allow_html=True)
+
+            c9, c10, c11, c12 = st.columns(4)
+            c9.markdown(f"<p class='field-label'>Focus</p><p class='field-value'>{drill['focus']}</p>", unsafe_allow_html=True)
+            c10.markdown(f"<p class='field-label'>Pre-Req</p><p class='field-value'>{drill['pre_req']}</p>", unsafe_allow_html=True)
+            c11.markdown(f"<p class='field-label'>Drill (s)</p><p class='field-value'>{drill['drill_timer']}</p>", unsafe_allow_html=True)
+            c12.markdown(f"<p class='field-label'>Rest (s)</p><p class='field-value'>{drill['rest_timer']}</p>", unsafe_allow_html=True)
+
+            g1, g2 = st.columns(2)
+            g1.info(f"**HS Goal:** {drill['hs']}")
+            g2.success(f"**College Goal:** {drill['coll']}")
 
             st.write(f"**📝 Description:** {drill['desc']}")
             st.warning(f"**✨ Proper Form:** {drill['proper_form']}")
             
             st.divider()
             
+            # Interactive Area with 3-Column Layout
             col_a, col_b, col_c = st.columns([1, 1, 1])
             with col_a:
                 curr = st.session_state.set_counts.get(i, 0)
-                if st.button(f"✅ Log Set ({curr}/{drill['sets']})", key=f"btn_{i}"):
+                if st.button(f"✅ Log Set ({curr}/{drill['sets']})", key=f"log_{i}"):
                     if curr < drill['sets']:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
@@ -226,36 +228,36 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
             with col_b:
                 st.markdown("#### ⚡ Drill Timer")
-                d_time = st.number_input("Seconds", 1, 600, drill['drill_timer'], key=f"dt_in_{i}")
-                dt_ph = st.empty()
-                if st.button("Start Drill", key=f"dt_btn_{i}"):
-                    for t in range(int(d_time), -1, -1):
-                        dt_ph.metric("Action!", f"{t}s")
+                d_in = st.number_input("Seconds", 1, 600, drill['drill_timer'], key=f"di_{i}")
+                d_ph = st.empty()
+                if st.button("Start Drill", key=f"db_{i}"):
+                    for t in range(int(d_in), -1, -1):
+                        d_ph.metric("Action", f"{t}s")
                         time.sleep(1)
-                    dt_ph.markdown('<div class="timer-alert">DRILL COMPLETE!</div>', unsafe_allow_html=True)
-                    st.toast("Drill Done!")
+                    st.toast("Drill Complete!")
 
             with col_c:
                 st.markdown("#### 🛌 Rest Timer")
-                r_time = st.number_input("Seconds", 1, 600, drill['rest_timer'], key=f"rt_in_{i}")
-                rt_ph = st.empty()
-                if st.button("Start Rest", key=f"rt_btn_{i}"):
-                    for t in range(int(r_time), -1, -1):
-                        rt_ph.metric("Resting...", f"{t}s")
+                r_in = st.number_input("Seconds", 1, 600, drill['rest_timer'], key=f"ri_{i}")
+                r_ph = st.empty()
+                if st.button("Start Rest", key=f"rb_{i}"):
+                    for t in range(int(r_in), -1, -1):
+                        r_ph.metric("Rest", f"{t}s")
                         time.sleep(1)
-                    rt_ph.markdown('<div class="timer-alert">REST OVER!</div>', unsafe_allow_html=True)
-                    st.toast("Get back to work!", icon="🔔")
+                    st.toast("Rest Over!", icon="🔔")
 
-    if st.button("🏁 FINISH WORKOUT"):
+    if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         st.session_state.workout_finished = True
         st.rerun()
 
 elif st.session_state.workout_finished:
     st.balloons()
     st.success("Workout Summary")
-    # FIX: Using the exact dictionary keys used during load_and_build_workout
     summary_df = pd.DataFrame(st.session_state.current_session)
+    # Corrected column keys to match data mapping
     st.table(summary_df[['ex', 'env', 'category', 'sets', 'reps']])
     if st.button("New Session"):
         st.session_state.current_session = None
         st.rerun()
+else:
+    st.info("👈 Use the sidebar to generate your session.")
