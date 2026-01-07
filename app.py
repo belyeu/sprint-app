@@ -40,12 +40,10 @@ with st.sidebar:
     dark_mode = st.toggle("Enable Dark Mode", value=True)
     
     st.divider()
-    
     st.header("📂 WORKOUT HISTORY")
     if st.session_state.archives:
         archive_names = [f"{a['date']} - {a['sport']}" for a in st.session_state.archives]
         selected_arch = st.selectbox("Pull up past session:", ["Current / New"] + archive_names)
-        
         if selected_arch != "Current / New":
             idx = archive_names.index(selected_arch)
             st.session_state.view_archive_index = idx
@@ -69,7 +67,13 @@ with st.sidebar:
     st.header("📍 SESSION FILTERS")
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     location_filter = st.multiselect("Facility Location (Env.)", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Floor"])
-    num_drills = st.slider("Target Drills", 5, 20, 13)
+    
+    # NEW: Toggle to select all drills
+    all_drills_toggle = st.checkbox("Select All Available Drills", value=True)
+    if not all_drills_toggle:
+        num_drills = st.slider("Target Drills", 5, 30, 13)
+    else:
+        num_drills = 999  # Effectively unlimited
     
     st.divider()
     st.header("📊 INTENSITY METER")
@@ -136,6 +140,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             all_rows.extend(df.to_dict('records'))
         except: continue
     if not all_rows: return []
+    
     clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
     for r in all_rows:
@@ -143,7 +148,10 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if row_loc in clean_envs or "all" in row_loc:
             filtered_pool.append(r)
     if not filtered_pool: return []
-    random.shuffle(filtered_pool)
+
+    # FIX: Sort by Category to keep types together (Defense, P&R, Shoot, etc.)
+    filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
+
     selected = []
     seen_names = set()
     for item in filtered_pool:
@@ -153,24 +161,20 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         seen_names.add(name)
         try: sets_val = int(float(item.get('Sets', 3)))
         except: sets_val = 3
-        raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
-        clean_demo = extract_clean_url(raw_demo)
+        
         drill = {
             "ex": name, "env": item.get('Env.', item.get('Location', 'General')), "category": item.get('Category', 'Skill'),
             "cns": item.get('CNS', 'Low'), "focus": item.get('Primary Focus', 'Performance'), "stars": item.get('Stars', '⭐⭐⭐'),
             "pre_req": item.get('Pre-Req', 'N/A'), "sets": int(round(sets_val * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps', '10')), multiplier), "time": item.get('Time', 'N/A'),
             "hs": scale_text(item.get('HS Goals', 'N/A'), multiplier), "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
-            "desc": item.get('Description', 'See demo for form.'), "proper_form": item.get('Proper Form', 'Maintain core stability and breathing.'), "demo": clean_demo
+            "desc": item.get('Description', 'See demo for form.'), "proper_form": item.get('Proper Form', 'Maintain core stability and breathing.'), "demo": extract_clean_url(str(item.get('Demo', item.get('Demo_URL', ''))))
         }
         selected.append(drill)
-    
-    # IMPROVED SELECTION: Sort by Category so Shooting is with Shooting, etc.
-    selected.sort(key=lambda x: x['category'])
     return selected
 
 # --- 5. EXECUTION ---
-if st.sidebar.button("🚀 GENERATE CATEGORIZED WORKOUT", use_container_width=True):
+if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
     res = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
     if res:
         st.session_state.current_session = res
@@ -183,10 +187,11 @@ if st.sidebar.button("🚀 GENERATE CATEGORIZED WORKOUT", use_container_width=Tr
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
+# Athlete Header Info
 p = st.session_state.user_profile
 st.markdown(f"<div style='text-align: center; margin-bottom: 20px;'><h3>Athlete: {p['name']} | Age: {p['age']} | Weight: {p['weight']}lbs (Goal: {p['goal_weight']}lbs)</h3></div>", unsafe_allow_html=True)
 
-# --- ARCHIVE VIEW ---
+# Archive Logic
 if st.session_state.view_archive_index is not None:
     arch = st.session_state.archives[st.session_state.view_archive_index]
     st.info(f"📁 Viewing Archived Session: {arch['date']} ({arch['sport']})")
@@ -195,17 +200,16 @@ if st.session_state.view_archive_index is not None:
         st.session_state.view_archive_index = None
         st.rerun()
 
-# --- ACTIVE WORKOUT ---
+# Current Session Logic
 elif st.session_state.current_session and not st.session_state.workout_finished:
-    last_category = None
+    current_cat = ""
     for i, drill in enumerate(st.session_state.current_session):
-        
-        # New: Category Grouping Header
-        if drill['category'] != last_category:
-            st.markdown(f"### 🏷️ {drill['category'].upper()}")
-            last_category = drill['category']
+        # UI: Show Category Header to highlight the grouping
+        if drill['category'] != current_cat:
+            st.markdown(f"### 🎯 {drill['category']}")
+            current_cat = drill['category']
 
-        with st.expander(f"**{drill['ex']}** |  {drill['stars']}", expanded=(i==0)):
+        with st.expander(f"**{i+1}. {drill['ex']}** |  {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>📂 Category</p><p class='metric-value'>{drill['category']}</p>", unsafe_allow_html=True)
@@ -221,7 +225,6 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
             m8.markdown(f"<p class='metric-label'>⚠️ Pre-Req</p><p class='metric-value'>{drill['pre_req']}</p>", unsafe_allow_html=True)
 
             st.write(f"**📝 Description:** {drill['desc']}")
-            
             st.divider()
             
             col_a, col_b = st.columns([1, 1])
@@ -231,7 +234,6 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
                     if curr < drill['sets']:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
-                
                 if drill['demo']:
                     try: st.video(drill['demo'])
                     except: st.markdown(f"[🎥 Watch Video]({drill['demo']})")
@@ -246,7 +248,6 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
                             ph.markdown(f"<h3 style='text-align:center; color:{accent_color};'>{t}s</h3>", unsafe_allow_html=True)
                             time.sleep(1)
                         ph.markdown("<h3 style='text-align:center;'>✅ Time's Up!</h3>", unsafe_allow_html=True)
-                
                 with tab_stopwatch:
                     if st.button("Start Stopwatch", key=f"sw_btn_{i}", use_container_width=True):
                         ph_sw = st.empty()
@@ -258,23 +259,19 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
-        summary_data = [{"Exercise": d['ex'], "Category": d['category'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
-        st.session_state.archives.append({
-            "date": get_now_est().strftime('%Y-%m-%d %H:%M'),
-            "sport": sport_choice,
-            "data": summary_data
-        })
+        summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
+        st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "sport": sport_choice, "data": summary_data})
         st.session_state.workout_finished = True
         st.rerun()
 
 elif st.session_state.workout_finished:
     st.balloons()
-    st.success(f"Workout Saved to History.")
-    summary_data = [{"Category": d['category'], "Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
+    st.success("Workout Complete! Saved to History.")
+    summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
     st.table(pd.DataFrame(summary_data))
     if st.button("Start New Session"):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👈 Use the sidebar to set your profile, pull up an archive, or generate a categorized session.")
+    st.info("👈 Use the sidebar to set your profile, pull up history, or generate a session.")
