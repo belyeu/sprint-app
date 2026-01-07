@@ -74,7 +74,6 @@ sidebar_text = "#F8FAFC" if dark_mode else "#1E293B"
 border_color = "#3B82F6" if dark_mode else "#CBD5E1"
 accent_color = "#3B82F6"
 
-# CSS to force button text to black
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
@@ -86,7 +85,7 @@ st.markdown(f"""
     /* Force Button Text to Black in Dark Mode */
     .stButton > button {{
         color: black !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
     }}
 
     div[data-testid="stExpander"] details summary {{
@@ -145,40 +144,36 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         return [], []
 
     clean_envs = [s.strip().lower() for s in env_selections]
-    
-    # Filter by Environment
     pool = [r for r in all_rows if str(r.get('Env.', r.get('Location', 'General'))).strip().lower() in clean_envs or "all" in str(r.get('Env.', '')).lower()]
 
-    # 1. Generate Warmups (6-10 drills, not included in main count)
+    # 1. Warmups (6-10 Drills) - Not in main count
     warmup_pool = [r for r in pool if "warmup" in str(r.get('type', '')).lower()]
     warmups = random.sample(warmup_pool, min(len(warmup_pool), random.randint(6, 10))) if warmup_pool else []
 
-    # 2. Main Workout Logic
+    # 2. Main Workout
     main_pool = [r for r in pool if str(r.get('type', '')).lower() not in ['warmup', 'w_room']]
     selected_rows = []
 
     if sport == "Basketball" and main_pool:
-        # Get list of unique types (excluding warmup/w_room)
-        available_types = list(set([str(r.get('type', '')) for r in main_pool]))
-        random_type = random.choice(available_types)
-        
-        # Select from the same type
-        type_matches = [r for r in main_pool if str(r.get('type', '')) == random_type]
-        
-        if len(type_matches) >= limit:
-            selected_rows = random.sample(type_matches, limit)
+        available_types = list(set([str(r.get('type', '')) for r in main_pool if str(r.get('type', '')) != 'N/A']))
+        if available_types:
+            random_type = random.choice(available_types)
+            type_matches = [r for r in main_pool if str(r.get('type', '')) == random_type]
+            
+            if len(type_matches) >= limit:
+                selected_rows = random.sample(type_matches, limit)
+            else:
+                # 90/10 Logic
+                core_cats = ['shooting', 'movement', 'footwork', 'ball-handle', 'finish', 'defense']
+                core_pool = [r for r in main_pool if str(r.get('type', '')).lower() in core_cats]
+                other_pool = [r for r in main_pool if str(r.get('type', '')).lower() not in core_cats]
+                
+                n_core = min(len(core_pool), int(limit * 0.9))
+                n_other = limit - n_core
+                selected_rows = random.sample(core_pool, n_core) + random.sample(other_pool, min(len(other_pool), n_other))
         else:
-            # 90/10 Split Logic
-            core_cats = ['shooting', 'movement', 'footwork', 'ball-handle', 'finish', 'defense']
-            core_pool = [r for r in main_pool if str(r.get('type', '')).lower() in core_cats]
-            other_pool = [r for r in main_pool if str(r.get('type', '')).lower() not in core_cats]
-            
-            n_core = int(limit * 0.9)
-            n_other = limit - n_core
-            
-            selected_rows = random.sample(core_pool, min(len(core_pool), n_core))
-            selected_rows += random.sample(other_pool, min(len(other_pool), n_other))
-    else:
+            selected_rows = random.sample(main_pool, min(len(main_pool), limit))
+    elif main_pool:
         selected_rows = random.sample(main_pool, min(len(main_pool), limit))
 
     def process_item(item):
@@ -186,7 +181,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         try: sets_val = int(float(item.get('Sets', 3)))
         except: pass
         return {
-            **item,
+            **item, # Keep all existing columns
             "ex": item.get('Exercise Name', item.get('Exercise', 'Unknown')),
             "sets": int(round(sets_val * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps', '10')), multiplier),
@@ -210,10 +205,9 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 p = st.session_state.user_profile
-st.markdown(f"<div style='text-align: center; margin-bottom: 20px;'><h3>Athlete: {p['name']} | Age: {p['age']} | Weight: {p['weight']}lbs</h3></div>", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align: center; margin-bottom: 20px;'><h3>Athlete: {p['name']} | Weight: {p['weight']}lbs</h3></div>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
-    # Optional Warmup Section
     if st.session_state.warmup_drills:
         with st.expander("🔥 SUGGESTED WARMUP (6-10 Drills)", expanded=False):
             for wd in st.session_state.warmup_drills:
@@ -252,7 +246,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     st.video(drill['demo'])
 
             with col_b:
-                # Timer
                 st.markdown("#### ⏱️ Timer & Stopwatch")
                 t_val = st.number_input("Seconds", 5, 600, 60, key=f"ti_{i}")
                 if st.button("Start Timer", key=f"tb_{i}", use_container_width=True):
@@ -262,7 +255,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         time.sleep(1)
                     ph.markdown("<h3 style='text-align:center;'>✅ Time's Up!</h3>", unsafe_allow_html=True)
                 
-                # Stopwatch with Stop
                 sw_col1, sw_col2 = st.columns(2)
                 if sw_col1.button("Start Stopwatch", key=f"sw_start_{i}", use_container_width=True):
                     st.session_state.stopwatch_runs[i] = time.time()
@@ -271,7 +263,9 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     if i in st.session_state.stopwatch_runs:
                         elapsed = time.time() - st.session_state.stopwatch_runs[i]
                         st.session_state[f"sw_res_{i}"] = round(elapsed, 2)
-                        del st.session_state.stopwatch_start[i] if i in st.session_state.stopwatch_runs else None
+                        # FIXED: Proper if statement instead of ternary del
+                        if i in st.session_state.stopwatch_runs:
+                            del st.session_state.stopwatch_runs[i]
                 
                 if f"sw_res_{i}" in st.session_state:
                     st.success(f"Last Time: {st.session_state[f'sw_res_{i}']}s")
@@ -283,7 +277,7 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
 elif st.session_state.workout_finished:
     st.balloons()
-    st.success(f"Workout Complete, {st.session_state.user_profile['name']}!")
+    st.success(f"Workout Complete!")
     summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
     st.table(pd.DataFrame(summary_data))
     if st.button("Start New Session"):
