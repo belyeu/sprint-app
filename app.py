@@ -103,6 +103,12 @@ def scale_text(val_str, multiplier):
         new_str = new_str.replace(n, scaled, 1)
     return new_str
 
+def extract_clean_url(text):
+    """Extracts the first valid http/https URL from a string."""
+    if not isinstance(text, str): return ""
+    match = re.search(r'(https?://[^\s]+)', text)
+    return match.group(1) if match else ""
+
 def get_csv_urls(sport, selected_envs):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     urls = {
@@ -140,7 +146,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             df.columns = [c.strip() for c in df.columns]
             all_rows.extend(df.to_dict('records'))
         except Exception as e:
-            # Silently skip missing files, or you can print(e) for debug
+            # Silently skip missing files
             continue
     
     if not all_rows: return []
@@ -181,6 +187,10 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         except:
             sets_val = 3
 
+        # Extract Raw Demo text and clean it
+        raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
+        clean_demo = extract_clean_url(raw_demo)
+
         drill = {
             "ex": name,
             "env": item.get('Env.', item.get('Location', 'General')), # Normalized return
@@ -196,7 +206,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
             "desc": item.get('Description', 'See demo for form.'),
             "proper_form": item.get('Proper Form', 'Maintain core stability and breathing.'),
-            "demo": str(item.get('Demo', item.get('Demo_URL', ''))).strip()
+            "demo": clean_demo
         }
         selected.append(drill)
 
@@ -274,8 +284,13 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
                 
-                if drill['demo'] and "http" in str(drill['demo']):
-                    st.video(drill['demo'])
+                # SAFE VIDEO RENDERING
+                if drill['demo']:
+                    try:
+                        st.video(drill['demo'])
+                    except Exception as e:
+                        st.warning("Video preview unavailable.")
+                        st.markdown(f"[🎥 Click to Watch on YouTube]({drill['demo']})")
                 else:
                     st.caption("No video demo available.")
 
