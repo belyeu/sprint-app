@@ -12,9 +12,9 @@ st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="�
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
 if 'warmup_drills' not in st.session_state:
-    st.session_state.warmup_drills = []
-if 'stopwatch_running' not in st.session_state:
-    st.session_state.stopwatch_running = {}
+    st.session_state.warmup_drills = None
+if 'stopwatch_runs' not in st.session_state:
+    st.session_state.stopwatch_runs = {}
 
 if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {
@@ -53,42 +53,58 @@ with st.sidebar:
     st.divider()
     st.header("📍 SESSION FILTERS")
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
-    location_filter = st.multiselect("Env.", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Floor"])
+    location_filter = st.multiselect(
+        "Facility Location (Env.)", 
+        ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"],
+        default=["Gym", "Floor"]
+    )
     num_drills = st.slider("Target Drills", 5, 20, 13)
     
     st.divider()
     st.header("📊 INTENSITY METER")
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
+    st.markdown(f"**Date:** {get_now_est().strftime('%Y-%m-%d')}")
 
-# --- 3. DYNAMIC THEMING (FIXED BUTTON TEXT) ---
+# --- 3. DYNAMIC THEMING ---
 primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
 card_bg = "#1E293B" if dark_mode else "#F8FAFC"
 text_color = "#F8FAFC" if dark_mode else "#1E293B"
+sidebar_text = "#F8FAFC" if dark_mode else "#1E293B"
+border_color = "#3B82F6" if dark_mode else "#CBD5E1"
 accent_color = "#3B82F6"
 
+# CSS to force button text to black
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    
-    /* Global Button Override: Forces Black Text on generated buttons */
-    div.stButton > button {{
-        color: black !important;
-        font-weight: 700 !important;
-        background-color: #CBD5E1 !important;
+    section[data-testid="stSidebar"] {{ background-color: {primary_bg}; }}
+    section[data-testid="stSidebar"] .stMarkdown p, section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {{
+        color: {sidebar_text} !important;
     }}
-    div.stButton > button:hover {{
-        background-color: #FFFFFF !important;
+    
+    /* Force Button Text to Black in Dark Mode */
+    .stButton > button {{
+        color: black !important;
+        font-weight: 600 !important;
     }}
 
     div[data-testid="stExpander"] details summary {{
         background-color: {accent_color} !important;
         color: white !important;
-        border-radius: 8px; padding: 0.6rem 1rem; font-weight: 600;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
     }}
-    div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; border-radius: 12px !important; }}
-    .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; }}
-    .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; }}
+    div[data-testid="stExpander"] {{ 
+        background-color: {card_bg} !important; 
+        border: 1px solid {border_color} !important; 
+        border-radius: 12px !important; 
+        border-top: none !important;
+    }}
+    .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin-bottom: 0px; }}
+    .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; margin-top: 0px; }}
     h1, h2, h3, p, span {{ color: {text_color} !important; }}
     </style>
     """, unsafe_allow_html=True)
@@ -108,139 +124,171 @@ def extract_clean_url(text):
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else ""
 
-def load_and_build_workout(sport, multiplier, env_selections, limit):
+def get_csv_urls(sport):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
-    # Mapping sports to specific CSVs
-    sport_map = {"Basketball": "basketball.csv", "Softball": "softball.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
-    target_csv = f"{base}{sport_map.get(sport, 'general.csv')}"
-    
-    try:
-        df = pd.read_csv(target_csv).fillna("N/A")
-        df.columns = [c.strip() for c in df.columns]
-    except: return [], []
+    urls = {
+        "Basketball": f"{base}basketball.csv",
+        "Softball": f"{base}softball.csv",
+        "Track": f"{base}track.csv",
+        "Pilates": f"{base}pilates.csv", 
+        "General": f"{base}general.csv"
+    }
+    return urls.get(sport, urls["General"])
 
-    # 1. Suggested Warmups (Not included in workout count)
-    warmup_pool = df[df['type'].str.contains('warmup', case=False, na=False)]
-    warmups = warmup_pool.sample(min(len(warmup_pool), random.randint(6, 10))).to_dict('records')
+def load_and_build_workout(sport, multiplier, env_selections, limit):
+    url = get_csv_urls(sport)
+    try:
+        df = pd.read_csv(url).fillna("N/A")
+        df.columns = [c.strip() for c in df.columns]
+        all_rows = df.to_dict('records')
+    except:
+        return [], []
+
+    clean_envs = [s.strip().lower() for s in env_selections]
+    
+    # Filter by Environment
+    pool = [r for r in all_rows if str(r.get('Env.', r.get('Location', 'General'))).strip().lower() in clean_envs or "all" in str(r.get('Env.', '')).lower()]
+
+    # 1. Generate Warmups (6-10 drills, not included in main count)
+    warmup_pool = [r for r in pool if "warmup" in str(r.get('type', '')).lower()]
+    warmups = random.sample(warmup_pool, min(len(warmup_pool), random.randint(6, 10))) if warmup_pool else []
 
     # 2. Main Workout Logic
-    main_pool = df[~df['type'].str.contains('warmup|w_room', case=False, na=False)]
-    
-    if sport == "Basketball":
-        # Randomly select a type from the column
-        all_types = main_pool['type'].unique().tolist()
-        chosen_type = random.choice(all_types)
-        type_filtered = main_pool[main_pool['type'] == chosen_type]
+    main_pool = [r for r in pool if str(r.get('type', '')).lower() not in ['warmup', 'w_room']]
+    selected_rows = []
+
+    if sport == "Basketball" and main_pool:
+        # Get list of unique types (excluding warmup/w_room)
+        available_types = list(set([str(r.get('type', '')) for r in main_pool]))
+        random_type = random.choice(available_types)
         
-        if len(type_filtered) >= limit:
-            selected_rows = type_filtered.sample(limit)
+        # Select from the same type
+        type_matches = [r for r in main_pool if str(r.get('type', '')) == random_type]
+        
+        if len(type_matches) >= limit:
+            selected_rows = random.sample(type_matches, limit)
         else:
-            # 90/10 Split
+            # 90/10 Split Logic
             core_cats = ['shooting', 'movement', 'footwork', 'ball-handle', 'finish', 'defense']
-            core_pool = main_pool[main_pool['type'].str.lower().isin(core_cats)]
-            other_pool = main_pool[~main_pool['type'].str.lower().isin(core_cats)]
+            core_pool = [r for r in main_pool if str(r.get('type', '')).lower() in core_cats]
+            other_pool = [r for r in main_pool if str(r.get('type', '')).lower() not in core_cats]
             
             n_core = int(limit * 0.9)
             n_other = limit - n_core
             
-            s1 = core_pool.sample(min(len(core_pool), n_core))
-            s2 = other_pool.sample(min(len(other_pool), n_other))
-            selected_rows = pd.concat([s1, s2])
+            selected_rows = random.sample(core_pool, min(len(core_pool), n_core))
+            selected_rows += random.sample(other_pool, min(len(other_pool), n_other))
     else:
-        selected_rows = main_pool.sample(min(len(main_pool), limit))
+        selected_rows = random.sample(main_pool, min(len(main_pool), limit))
 
-    workout = []
-    for _, item in selected_rows.iterrows():
-        workout.append({
+    def process_item(item):
+        sets_val = 3
+        try: sets_val = int(float(item.get('Sets', 3)))
+        except: pass
+        return {
+            **item,
             "ex": item.get('Exercise Name', item.get('Exercise', 'Unknown')),
-            "env": item.get('Env.', item.get('Location', 'General')),
-            "category": item.get('type', 'Skill'),
-            "cns": item.get('CNS', 'Low'),
-            "focus": item.get('Primary Focus', 'Performance'),
-            "stars": item.get('Stars', '⭐⭐⭐'),
-            "pre_req": item.get('Pre-Req', 'N/A'),
-            "sets": int(round(float(item.get('Sets', 3)) * multiplier)),
-            "reps": scale_text(item.get('Reps/Dist', '10'), multiplier),
-            "time": item.get('Time', 'N/A'),
-            "hs": item.get('HS Goals', 'N/A'),
-            "coll": item.get('College Goals', 'N/A'),
-            "desc": item.get('Description', 'Follow form cues.'),
-            "proper_form": item.get('Proper Form', 'Maintain core stability.'),
-            "demo": extract_clean_url(str(item.get('Demo', '')))
-        })
-    return warmups, workout
+            "sets": int(round(sets_val * multiplier)),
+            "reps": scale_text(item.get('Reps/Dist', item.get('Reps', '10')), multiplier),
+            "demo": extract_clean_url(str(item.get('Demo', item.get('Demo_URL', ''))))
+        }
+
+    return [process_item(i) for i in warmups], [process_item(i) for i in selected_rows]
 
 # --- 5. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
-    wup, mmain = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
-    if mmain:
-        st.session_state.warmup_drills = wup
-        st.session_state.current_session = mmain
-        st.session_state.set_counts = {i: 0 for i in range(len(mmain))}
+    w_up, main_w = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
+    if main_w:
+        st.session_state.warmup_drills = w_up
+        st.session_state.current_session = main_w
+        st.session_state.set_counts = {i: 0 for i in range(len(main_w))}
         st.session_state.workout_finished = False
-        st.session_state.stopwatch_running = {}
+        st.session_state.stopwatch_runs = {}
+    else:
+        st.error("No drills found. Try adjusting your filters.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
+p = st.session_state.user_profile
+st.markdown(f"<div style='text-align: center; margin-bottom: 20px;'><h3>Athlete: {p['name']} | Age: {p['age']} | Weight: {p['weight']}lbs</h3></div>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
-    # WARMUP SECTION
-    with st.expander("🔥 SUGGESTED WARMUP (6-10 Drills)", expanded=False):
-        for w in st.session_state.warmup_drills:
-            st.markdown(f"**{w.get('Exercise Name', 'Warmup')}** - {w.get('Reps/Dist', '10 reps')}")
+    # Optional Warmup Section
+    if st.session_state.warmup_drills:
+        with st.expander("🔥 SUGGESTED WARMUP (6-10 Drills)", expanded=False):
+            for wd in st.session_state.warmup_drills:
+                st.write(f"• **{wd['ex']}**: {wd['reps']}")
 
-    # WORKOUT DRILLS
     for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"**{i+1}. {drill['ex']}** | {drill['stars']}", expanded=(i==0)):
+        with st.expander(f"**{i+1}. {drill['ex']}** | {drill.get('Stars', '⭐⭐⭐')}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
-            m1.markdown(f"<p class='metric-label'>📂 Type</p><p class='metric-value'>{drill['category']}</p>", unsafe_allow_html=True)
-            m2.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
-            m3.markdown(f"<p class='metric-label'>🔄 Reps</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
-            m4.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
+            m1.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill.get('Env.', 'General')}</p>", unsafe_allow_html=True)
+            m2.markdown(f"<p class='metric-label'>📂 Type</p><p class='metric-value'>{drill.get('type', 'Skill')}</p>", unsafe_allow_html=True)
+            m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill.get('CNS', 'Low')}</p>", unsafe_allow_html=True)
+            m4.markdown(f"<p class='metric-label'>🎯 Focus</p><p class='metric-value'>{drill.get('Primary Focus', 'Performance')}</p>", unsafe_allow_html=True)
             
-            st.warning(f"**✨ Proper Form:** {drill['proper_form']}")
-            st.write(f"**📝 Description:** {drill['desc']}")
+            st.divider()
+            m5, m6, m7, m8 = st.columns(4)
+            m5.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
+            m6.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
+            m7.markdown(f"<p class='metric-label'>🕒 Time</p><p class='metric-value'>{drill.get('Time', 'N/A')}</p>", unsafe_allow_html=True)
+            m8.markdown(f"<p class='metric-label'>⚠️ Pre-Req</p><p class='metric-value'>{drill.get('Pre-Req', 'N/A')}</p>", unsafe_allow_html=True)
+
+            st.write(f"**📝 Description:** {drill.get('Description', 'N/A')}")
+            # RESTORE PROPER FORM
+            pf = drill.get('Proper Form', drill.get('proper_form', 'N/A'))
+            if pf != "N/A":
+                st.warning(f"**✨ Proper Form:** {pf}")
             
-            col_a, col_b = st.columns(2)
+            st.divider()
+            col_a, col_b = st.columns([1, 1])
             with col_a:
                 curr = st.session_state.set_counts.get(i, 0)
                 if st.button(f"✅ Log Set ({curr}/{drill['sets']})", key=f"btn_{i}", use_container_width=True):
-                    st.session_state.set_counts[i] += 1
-                    st.rerun()
-                if drill['demo']: st.video(drill['demo'])
+                    if curr < drill['sets']:
+                        st.session_state.set_counts[i] += 1
+                        st.rerun()
+                if drill['demo']:
+                    st.video(drill['demo'])
 
             with col_b:
+                # Timer
                 st.markdown("#### ⏱️ Timer & Stopwatch")
                 t_val = st.number_input("Seconds", 5, 600, 60, key=f"ti_{i}")
                 if st.button("Start Timer", key=f"tb_{i}", use_container_width=True):
                     ph = st.empty()
                     for t in range(int(t_val), -1, -1):
-                        ph.markdown(f"<h3 style='text-align:center;'>{t}s</h3>", unsafe_allow_html=True)
+                        ph.markdown(f"<h3 style='text-align:center; color:{accent_color};'>{t}s</h3>", unsafe_allow_html=True)
                         time.sleep(1)
-                    ph.success("✅ Complete")
+                    ph.markdown("<h3 style='text-align:center;'>✅ Time's Up!</h3>", unsafe_allow_html=True)
+                
+                # Stopwatch with Stop
+                sw_col1, sw_col2 = st.columns(2)
+                if sw_col1.button("Start Stopwatch", key=f"sw_start_{i}", use_container_width=True):
+                    st.session_state.stopwatch_runs[i] = time.time()
+                
+                if sw_col2.button("Stop Stopwatch", key=f"sw_stop_{i}", use_container_width=True):
+                    if i in st.session_state.stopwatch_runs:
+                        elapsed = time.time() - st.session_state.stopwatch_runs[i]
+                        st.session_state[f"sw_res_{i}"] = round(elapsed, 2)
+                        del st.session_state.stopwatch_start[i] if i in st.session_state.stopwatch_runs else None
+                
+                if f"sw_res_{i}" in st.session_state:
+                    st.success(f"Last Time: {st.session_state[f'sw_res_{i}']}s")
 
-                # STOPWATCH LOGIC
-                sw_key = f"sw_{i}"
-                if sw_key not in st.session_state.stopwatch_running:
-                    if st.button("Start Stopwatch", key=f"sw_start_{i}", use_container_width=True):
-                        st.session_state.stopwatch_running[sw_key] = time.time()
-                        st.rerun()
-                else:
-                    elapsed = time.time() - st.session_state.stopwatch_running[sw_key]
-                    st.metric("Running Time", f"{elapsed:.1f}s")
-                    if st.button("🛑 Stop Stopwatch", key=f"sw_stop_{i}", use_container_width=True):
-                        del st.session_state.stopwatch_running[sw_key]
-                        st.rerun()
-
+    st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         st.session_state.workout_finished = True
         st.rerun()
 
 elif st.session_state.workout_finished:
     st.balloons()
-    st.success("Session Complete!")
+    st.success(f"Workout Complete, {st.session_state.user_profile['name']}!")
+    summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
+    st.table(pd.DataFrame(summary_data))
     if st.button("Start New Session"):
         st.session_state.current_session = None
+        st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👈 Use the sidebar to generate your session.")
+    st.info("👈 Use the sidebar to set your profile and generate a session.")
