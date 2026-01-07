@@ -12,11 +12,10 @@ st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="�
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
 if 'archives' not in st.session_state:
-    st.session_state.archives = [] # Store historical workouts
+    st.session_state.archives = [] 
 if 'view_archive_index' not in st.session_state:
     st.session_state.view_archive_index = None
 
-# Profile Dictionary
 if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {
         "name": "Elite Athlete", 
@@ -42,7 +41,6 @@ with st.sidebar:
     
     st.divider()
     
-    # --- ARCHIVED WORKOUTS SECTION ---
     st.header("📂 WORKOUT HISTORY")
     if st.session_state.archives:
         archive_names = [f"{a['date']} - {a['sport']}" for a in st.session_state.archives]
@@ -166,10 +164,13 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "desc": item.get('Description', 'See demo for form.'), "proper_form": item.get('Proper Form', 'Maintain core stability and breathing.'), "demo": clean_demo
         }
         selected.append(drill)
+    
+    # IMPROVED SELECTION: Sort by Category so Shooting is with Shooting, etc.
+    selected.sort(key=lambda x: x['category'])
     return selected
 
 # --- 5. EXECUTION ---
-if st.sidebar.button("🚀 GENERATE NEW WORKOUT", use_container_width=True):
+if st.sidebar.button("🚀 GENERATE CATEGORIZED WORKOUT", use_container_width=True):
     res = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
     if res:
         st.session_state.current_session = res
@@ -182,11 +183,10 @@ if st.sidebar.button("🚀 GENERATE NEW WORKOUT", use_container_width=True):
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
-# Display Athlete Header Info
 p = st.session_state.user_profile
 st.markdown(f"<div style='text-align: center; margin-bottom: 20px;'><h3>Athlete: {p['name']} | Age: {p['age']} | Weight: {p['weight']}lbs (Goal: {p['goal_weight']}lbs)</h3></div>", unsafe_allow_html=True)
 
-# --- ARCHIVE VIEW LOGIC ---
+# --- ARCHIVE VIEW ---
 if st.session_state.view_archive_index is not None:
     arch = st.session_state.archives[st.session_state.view_archive_index]
     st.info(f"📁 Viewing Archived Session: {arch['date']} ({arch['sport']})")
@@ -195,10 +195,17 @@ if st.session_state.view_archive_index is not None:
         st.session_state.view_archive_index = None
         st.rerun()
 
-# --- ACTIVE WORKOUT LOGIC ---
+# --- ACTIVE WORKOUT ---
 elif st.session_state.current_session and not st.session_state.workout_finished:
+    last_category = None
     for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"**{i+1}. {drill['ex']}** |  {drill['stars']}", expanded=(i==0)):
+        
+        # New: Category Grouping Header
+        if drill['category'] != last_category:
+            st.markdown(f"### 🏷️ {drill['category'].upper()}")
+            last_category = drill['category']
+
+        with st.expander(f"**{drill['ex']}** |  {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>📂 Category</p><p class='metric-value'>{drill['category']}</p>", unsafe_allow_html=True)
@@ -230,9 +237,7 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
                     except: st.markdown(f"[🎥 Watch Video]({drill['demo']})")
 
             with col_b:
-                # --- NEW: STOPWATCH & TIMER ---
                 tab_timer, tab_stopwatch = st.tabs(["🕒 Countdown", "⏱️ Stopwatch"])
-                
                 with tab_timer:
                     t_val = st.number_input("Seconds", 5, 600, 60, key=f"timer_input_{i}")
                     if st.button("Start Timer", key=f"timer_btn_{i}", use_container_width=True):
@@ -243,11 +248,9 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
                         ph.markdown("<h3 style='text-align:center;'>✅ Time's Up!</h3>", unsafe_allow_html=True)
                 
                 with tab_stopwatch:
-                    st.caption("Counts up until you stop the script or move on.")
                     if st.button("Start Stopwatch", key=f"sw_btn_{i}", use_container_width=True):
                         ph_sw = st.empty()
                         start_time = time.time()
-                        # Simple infinite loop until rerun or manual stop
                         while True:
                             elapsed = time.time() - start_time
                             ph_sw.markdown(f"<h2 style='text-align:center; color:#FF4B4B;'>{elapsed:.1f}s</h2>", unsafe_allow_html=True)
@@ -255,8 +258,7 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
-        # Archive the data
-        summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
+        summary_data = [{"Exercise": d['ex'], "Category": d['category'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
         st.session_state.archives.append({
             "date": get_now_est().strftime('%Y-%m-%d %H:%M'),
             "sport": sport_choice,
@@ -267,12 +269,12 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
 
 elif st.session_state.workout_finished:
     st.balloons()
-    st.success(f"Workout Complete! This session has been saved to your History.")
-    summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
+    st.success(f"Workout Saved to History.")
+    summary_data = [{"Category": d['category'], "Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
     st.table(pd.DataFrame(summary_data))
     if st.button("Start New Session"):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👈 Use the sidebar to set your profile, pull up an archive, or generate a session.")
+    st.info("👈 Use the sidebar to set your profile, pull up an archive, or generate a categorized session.")
