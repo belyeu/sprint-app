@@ -9,83 +9,87 @@ import pytz
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
 
+# Initialize Session States
+if 'history' not in st.session_state:
+    st.session_state.history = []
+if 'streak' not in st.session_state:
+    st.session_state.streak = 1
 if 'current_session' not in st.session_state:
     st.session_state.current_session = None
-if 'user_profile' not in st.session_state:
-    st.session_state.user_profile = {
-        "name": "Elite Athlete",
-        "hs_goal": "Elite Performance",
-        "college_goal": "D1 Scholarship"
-    }
 if 'set_counts' not in st.session_state:
     st.session_state.set_counts = {}
 if 'workout_finished' not in st.session_state:
     st.session_state.workout_finished = False
 
-# --- 2. SIDEBAR & FILTERS ---
-with st.sidebar:
-    st.header("🎨 APPEARANCE")
-    dark_mode = st.toggle("Enable Dark Mode", value=True)
-    
-    st.divider()
-    st.header("👤 ATHLETE PROFILE")
-    with st.expander("Edit Goals"):
-        st.session_state.user_profile["name"] = st.text_input("Name", st.session_state.user_profile["name"])
-        st.session_state.user_profile["hs_goal"] = st.text_input("HS Goal", st.session_state.user_profile["hs_goal"])
-        st.session_state.user_profile["college_goal"] = st.text_input("College Goal", st.session_state.user_profile["college_goal"])
-    
-    st.divider()
-    st.header("📍 SESSION FILTERS")
-    
-    # Selection locked to Basketball as requested for drill sourcing
-    sport_choice = st.selectbox("Select Sport", ["Basketball"])
-    
-    location_filter = st.multiselect(
-        "Facility Location (Env.)",
-        ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"],
-        default=["Gym", "Floor"]
-    )
-    num_drills = st.slider("Target Drills", 5, 20, 13)
-    
-    st.divider()
-    st.header("📊 INTENSITY METER")
-    effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
-    mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
+def get_now_est():
+    return datetime.now(pytz.timezone('US/Eastern'))
 
-# --- 3. DYNAMIC THEMING ---
-primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
-card_bg = "#1E293B" if dark_mode else "#F8FAFC"
-text_color = "#F8FAFC" if dark_mode else "#1E293B"
-border_color = "#3B82F6" if dark_mode else "#CBD5E1"
+# --- 2. DYNAMIC THEMING (SAFARI & HIGH-CONTRAST FIX) ---
+st.sidebar.markdown("### 🌓 DISPLAY SETTINGS")
+dark_mode = st.sidebar.toggle("Dark Mode", value=True)
+
+if dark_mode:
+    bg, text, accent, header, card = "#0F172A", "#FFFFFF", "#3B82F6", "#1E293B", "#1E293B"
+    electric_blue, sidebar_text = "#00E5FF", "#FFFFFF"
+else:
+    bg, text, accent, header, card = "#FFFFFF", "#000000", "#1E40AF", "#F1F5F9", "#F8FAFC"
+    electric_blue, sidebar_text = "#006064", "#111111"
 
 st.markdown(f"""
 <style>
-.stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-div[data-testid="stExpander"] details summary {{
-    background-color: #2563EB !important;
-    color: white !important;
-    border-radius: 8px;
-    padding: 0.6rem 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
+.stApp {{ background-color: {bg} !important; }}
+h1, h2, h3, p, span, label, li, .stMarkdown p {{
+    color: {text} !important;
+    -webkit-text-fill-color: {text} !important;
+    opacity: 1 !important;
+    font-family: 'Inter', sans-serif;
 }}
-div[data-testid="stExpander"] {{
-    background-color: {card_bg} !important;
-    border: 1px solid {border_color} !important;
-    border-radius: 12px !important;
-    border-top: none !important;
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label {{
+    color: {sidebar_text} !important; font-weight: 800 !important;
 }}
-.metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; }}
-.metric-value {{ font-size: 1.1rem; color: #3B82F6; font-weight: 700; }}
-
-/* Workout Summary Visibility Fix */
-.stTable {{ background-color: {card_bg}; color: {text_color} !important; }}
-.stTable td, .stTable th {{ color: {text_color} !important; }}
+.drill-header {{
+    font-size: 24px !important; font-weight: 900 !important; color: {accent} !important;
+    background-color: {header}; border-left: 10px solid {accent};
+    padding: 15px; border-radius: 0 12px 12px 0; margin-top: 30px;
+}}
+.sidebar-card {{ 
+    padding: 15px; border-radius: 12px; border: 3px solid {accent}; 
+    background-color: {header}; text-align: center; margin-bottom: 15px;
+}}
+.focus-card {{
+    background-color: {header}; padding: 10px; border-radius: 8px;
+    border: 1px solid {accent}; margin-bottom: 5px;
+}}
+.stButton>button {{
+    background-color: {accent} !important; color: white !important;
+    font-weight: 800 !important; border-radius: 10px !important;
+    height: 3em; transition: 0.3s;
+}}
 </style>
 """, unsafe_allow_html=True)
 
-# --- 4. DATA LOGIC (Sourcing from basketball.csv) ---
-def scale_text(val_str, multiplier):
+# --- 3. MULTI-DATABASE ENGINE ---
+@st.cache_data
+def load_all_databases():
+    """Loads and merges all CSV files from the repository."""
+    base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
+    files = ["basketball.csv", "track.csv", "softball.csv", "general.csv"]
+    combined_df = pd.DataFrame()
+
+    for f in files:
+        try:
+            df = pd.read_csv(base_url + f)
+            df.columns = [c.strip() for c in df.columns]
+            combined_df = pd.concat([combined_df, df], ignore_index=True)
+        except Exception as e:
+            st.sidebar.warning(f"Note: {f} not found or empty.")
+    
+    if not combined_df.empty:
+        combined_df = combined_df.fillna("N/A")
+    return combined_df
+
+def safe_scale(val_str, multiplier):
+    """Scales numbers found inside strings (e.g., '10 reps' -> '15 reps')."""
     val_str = str(val_str)
     nums = re.findall(r'\d+', val_str)
     new_str = val_str
@@ -94,142 +98,138 @@ def scale_text(val_str, multiplier):
         new_str = new_str.replace(n, scaled, 1)
     return new_str
 
-def load_and_build_workout(multiplier, env_selections, limit):
-    # drills must come from basketball.csv
-    url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/basketball.csv"
-    try:
-        df = pd.read_csv(url).fillna("N/A")
-        df.columns = [c.strip() for c in df.columns]
-        all_rows = df.to_dict('records')
-    except:
-        return []
-
-    if not all_rows: return []
-
-    clean_envs = [s.strip().lower() for s in env_selections]
-    filtered_pool = [r for r in all_rows 
-                     if str(r.get('Env.', 'General')).strip().lower() in clean_envs 
-                     or "all" in str(r.get('Env.', '')).lower()]
-
-    if not filtered_pool: return []
+def get_workout(df, sport, locs, multiplier, limit):
+    if df.empty: return []
     
-    random.shuffle(filtered_pool)
-    selected = []
+    # Filter by Sport and Location
+    mask = (df['Sport'].astype(str).str.strip() == sport) & (df['Location'].isin(locs))
+    filtered = df[mask].to_dict('records')
     
-    for item in filtered_pool:
-        if len(selected) >= limit: break
-        
-        # Smart Selection Logic: Grouping similar names
-        name = str(item.get('Exercise Name', item.get('Exercise', 'Unknown')))
-        
-        # Skip duplicates
-        if any(name == s.get('ex') for s in selected): continue
-        
-        drill = {
-            "ex": name,
-            "env": item.get('Env.', 'General'),
-            "category": item.get('Category', 'Skill'),
-            "cns": item.get('CNS', 'Low'),
-            "focus": item.get('Primary Focus', 'Performance'),
-            "stars": item.get('Stars', '⭐⭐⭐'),
-            "pre_req": item.get('Pre-Req', 'N/A'),
-            "sets": int(round(int(item.get('Sets', 3) if str(item.get('Sets')).isdigit() else 3) * multiplier)),
-            "reps": scale_text(item.get('Reps/Dist', 'N/A'), multiplier),
-            "time": item.get('Time', 'N/A'),
-            "hs": scale_text(item.get('HS Goals', 'N/A'), multiplier),
-            "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
-            "desc": item.get('Description', 'See demo for form.'),
-            "proper_form": item.get('Proper Form', 'Maintain core stability and breathing.'),
-            "demo": str(item.get('Demo', '')).strip()
-        }
-        selected.append(drill)
-        
-        # Pair Left/Right variations automatically
-        side_match = re.search(r'\(L\)' , name) or re.search(r'\(R\)', name)
-        if side_match:
-            tag = "(R)" if "(L)" in name else "(L)"
-            partner_name = name.replace("(L)", tag) if "(L)" in name else name.replace("(R)", tag)
-            for p in filtered_pool:
-                if p.get('Exercise Name', '') == partner_name:
-                    p_drill = drill.copy()
-                    p_drill['ex'] = partner_name
-                    selected.append(p_drill)
-                    break
-                    
-    return selected
+    if not filtered: return []
+    
+    random.shuffle(filtered)
+    session = []
+    for item in filtered[:limit]:
+        # Parse Focus Points if they exist
+        fp = item.get('Focus_Points', 'Eyes Up; Core Tight')
+        fp_list = fp.split(';') if isinstance(fp, str) else ["Focus"]
 
-# --- 5. EXECUTION ---
-if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
-    res = load_and_build_workout(mult, location_filter, num_drills)
-    if res:
-        st.session_state.current_session = res
-        st.session_state.set_counts = {i: 0 for i in range(len(res))}
-        st.session_state.workout_finished = False
+        session.append({
+            "ex": item.get('Exercise Name', item.get('Exercise', 'Unknown')),
+            "desc": item.get('Description', 'N/A'),
+            "sets": int(round(pd.to_numeric(item.get('Sets', 3), errors='coerce') * multiplier)),
+            "goal": safe_scale(item.get('Reps/Dist', item.get('Reps', '10')), multiplier),
+            "rest": int(pd.to_numeric(item.get('Rest', 60), errors='coerce')),
+            "demo": str(item.get('Demo', item.get('Demo_URL', ''))).strip(),
+            "focus": fp_list
+        })
+    return session
+
+# --- 4. DATA INITIALIZATION ---
+df_master = load_all_databases()
+
+# --- 5. SIDEBAR ---
+with st.sidebar:
+    st.markdown(f"""<div class="sidebar-card">
+        <p style="margin:0; font-size:12px; color:{accent};">EST TIME</p>
+        <p style="margin:0; font-size:20px; font-weight:900;">{get_now_est().strftime('%I:%M %p')}</p>
+    </div>""", unsafe_allow_html=True)
+    
+    st.markdown(f"""<div class="sidebar-card">
+        <p style="margin:0; font-size:12px; color:{accent};">STREAK</p>
+        <p style="margin:0; font-size:26px; font-weight:900;">{st.session_state.streak} DAYS</p>
+    </div>""", unsafe_allow_html=True)
+
+    app_mode = st.selectbox("Navigate System", ["Training Core", "History Archive"])
+    
+    # Identify available sports across ALL CSVs
+    if not df_master.empty and 'Sport' in df_master.columns:
+        available_sports = sorted(df_master['Sport'].unique().tolist())
     else:
-        st.sidebar.error("No matching drills in basketball.csv. Check Facility filters.")
-
-# --- 6. MAIN INTERFACE ---
-st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
-
-if st.session_state.current_session and not st.session_state.workout_finished:
-    for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"**EXERCISE {i+1}: {drill['ex']}** | {drill['stars']}", expanded=(i==0)):
-            m1, m2, m3, m4 = st.columns(4)
-            m1.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
-            m2.markdown(f"<p class='metric-label'>📂 Category</p><p class='metric-value'>{drill['category']}</p>", unsafe_allow_html=True)
-            m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
-            m4.markdown(f"<p class='metric-label'>🎯 Focus</p><p class='metric-value'>{drill['focus']}</p>", unsafe_allow_html=True)
-            
-            m5, m6, m7, m8 = st.columns(4)
-            m5.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
-            m6.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
-            m7.markdown(f"<p class='metric-label'>⏱️ Time</p><p class='metric-value'>{drill['time']}</p>", unsafe_allow_html=True)
-            m8.markdown(f"<p class='metric-label'>⚠️ Pre-Req</p><p class='metric-value'>{drill['pre_req']}</p>", unsafe_allow_html=True)
-            
-            c9, c10 = st.columns(2)
-            c9.info(f"**HS Goal:** {drill['hs']}")
-            c10.success(f"**College Goal:** {drill['coll']}")
-            
-            st.write(f"**📝 Description:** {drill['desc']}")
-            st.warning(f"**✨ Proper Form:** {drill['proper_form']}")
-            
-            st.divider()
-            col_a, col_b = st.columns([1, 1])
-            with col_a:
-                curr = st.session_state.set_counts.get(i, 0)
-                if st.button(f"✅ Log Set ({curr}/{drill['sets']})", key=f"btn_{i}"):
-                    if curr < drill['sets']:
-                        st.session_state.set_counts[i] += 1
-                        st.rerun()
-                
-                if drill['demo'] and "http" in drill['demo']:
-                    st.video(drill['demo'])
-                else:
-                    st.caption("No demo video available.")
-                    
-            with col_b:
-                st.markdown("#### ⏱️ Drill / Rest Timer")
-                t_val = st.number_input("Seconds", 5, 600, 60, key=f"timer_input_{i}")
-                if st.button("Start Timer", key=f"timer_btn_{i}"):
-                    ph = st.empty()
-                    for t in range(int(t_val), -1, -1):
-                        ph.metric("Timer", f"{t}s")
-                        time.sleep(1)
-                    st.toast("Time up!")
-                st.file_uploader("Upload Form Clip", type=['mp4', 'mov'], key=f"file_{i}")
-
-    if st.button("🏁 FINISH WORKOUT", use_container_width=True):
-        st.session_state.workout_finished = True
-        st.rerun()
-
-elif st.session_state.workout_finished:
-    st.success("Workout Summary Generated!")
-    # workout summary table with visibility fixes applied in CSS
-    df_summary = pd.DataFrame(st.session_state.current_session)[['ex', 'env', 'category', 'sets', 'reps']]
-    st.table(df_summary)
+        available_sports = ["Basketball", "Track", "Softball"]
+        
+    sport_choice = st.selectbox("Sport Discipline", available_sports)
     
-    if st.button("New Session"):
-        st.session_state.current_session = None
+    st.markdown("### 📍 LOCATION FILTER")
+    l1 = st.checkbox("Gym", value=True)
+    l2 = st.checkbox("Track", value=True)
+    l3 = st.checkbox("Weight Room", value=True)
+    active_locs = [loc for val, loc in zip([l1,l2,l3], ["Gym","Track","Weight Room"]) if val]
+    
+    num_drills = st.slider("Drill Count", 3, 20, 10)
+    intensity = st.select_slider("Intensity Level", options=["Standard", "Elite", "Pro"], value="Elite")
+    scaling_factor = {"Standard": 1.0, "Elite": 1.5, "Pro": 2.0}[intensity]
+
+# --- 6. CORE TRAINING INTERFACE ---
+if app_mode == "Training Core":
+    st.title("PRO-ATHLETE TRACKER")
+    
+    if st.button("🚀 GENERATE NEW SESSION", use_container_width=True):
+        st.session_state.current_session = get_workout(df_master, sport_choice, active_locs, scaling_factor, num_drills)
+        st.session_state.set_counts = {i: 0 for i in range(len(st.session_state.current_session))}
         st.session_state.workout_finished = False
-        st.rerun()
-[cite_start]``` [cite: 1, 2, 3]
+
+    if st.session_state.current_session and not st.session_state.workout_finished:
+        for i, item in enumerate(st.session_state.current_session):
+            st.markdown(f'<div class="drill-header">{i+1}. {item["ex"]}</div>', unsafe_allow_html=True)
+            st.write(item["desc"])
+            
+            c1, c2, c3 = st.columns(3)
+            with c1: 
+                curr = st.session_state.set_counts.get(i, 0)
+                if st.button(f"✅ LOG SET ({curr}/{item['sets']})", key=f"log_{i}", use_container_width=True):
+                    st.session_state.set_counts[i] += 1
+                    st.rerun()
+            with c2: 
+                st.write(f"**Goal:** {item['goal']}")
+            with c3: 
+                if st.button(f"⏱️ REST {item['rest']}s", key=f"rest_{i}", use_container_width=True):
+                    ph = st.empty()
+                    for t in range(item['rest'], -1, -1):
+                        ph.markdown(f"<h2 style='text-align:center; color:{accent};'>{t}s</h2>", unsafe_allow_html=True)
+                        time.sleep(1)
+                    ph.empty()
+                    st.success("Go!")
+
+            # Focus Points
+            st.markdown(f"<p style='color:{electric_blue}; font-weight:900;'>ELITE FOCUS</p>", unsafe_allow_html=True)
+            f_cols = st.columns(len(item["focus"]))
+            for idx, pt in enumerate(item["focus"]):
+                with f_cols[idx]:
+                    st.markdown(f'<div class="focus-card">🎯 {pt.strip()}</div>', unsafe_allow_html=True)
+
+            if "http" in item['demo']:
+                with st.expander("🎥 VIDEO REFERENCE"):
+                    st.video(item['demo'])
+
+        st.divider()
+        if st.button("🏁 ARCHIVE & FINISH SESSION", use_container_width=True):
+            st.session_state.history.append({
+                "date": get_now_est().strftime("%Y-%m-%d %I:%M %p"),
+                "sport": sport_choice,
+                "count": len(st.session_state.current_session)
+            })
+            st.session_state.streak += 1
+            st.session_state.workout_finished = True
+            st.balloons()
+            st.rerun()
+
+# --- 7. HISTORY ARCHIVE ---
+else:
+    st.title("📊 TRAINING ARCHIVE")
+    if not st.session_state.history:
+        st.info("No sessions saved. Start training!")
+    else:
+        for log in reversed(st.session_state.history):
+            st.markdown(f"""
+            <div style="background-color:{header}; padding:15px; border-radius:10px; border-left:8px solid {accent}; margin-bottom:10px;">
+                <h3 style="margin:0;">{log['sport']} Session</h3>
+                <p style="margin:0; opacity:0.8;">{log['date']} | {log['count']} Drills Completed</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        if st.button("Clear Archive"):
+            st.session_state.history = []
+            st.rerun()
+
+st.sidebar.caption("v6.0.0 | Multi-CSV Integrated")
