@@ -1,486 +1,274 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basketball Workout Generator</title>
+import streamlit as st
+import pandas as pd
+import random
+import time
+import re
+from datetime import datetime
+import pytz
+
+# --- 1. APP CONFIG & SESSION STATE ---
+st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
+
+if 'current_session' not in st.session_state:
+    st.session_state.current_session = None
+if 'warmup_drills' not in st.session_state:
+    st.session_state.warmup_drills = []
+if 'stopwatch_running' not in st.session_state:
+    st.session_state.stopwatch_running = {}
+
+if 'user_profile' not in st.session_state:
+    st.session_state.user_profile = {
+        "name": "Elite Athlete", 
+        "age": 17,
+        "weight": 180,
+        "goal_weight": 190,
+        "hs_goal": "Elite Performance",
+        "college_goal": "D1 Scholarship"
+    }
+
+if 'set_counts' not in st.session_state:
+    st.session_state.set_counts = {}
+if 'workout_finished' not in st.session_state:
+    st.session_state.workout_finished = False
+
+def get_now_est():
+    return datetime.now(pytz.timezone('US/Eastern'))
+
+# --- 2. SIDEBAR & FILTERS ---
+with st.sidebar:
+    st.header("🎨 APPEARANCE")
+    dark_mode = st.toggle("Enable Dark Mode", value=True)
+    
+    st.divider()
+    st.header("👤 ATHLETE PROFILE")
+    with st.expander("Edit Profile & Goals"):
+        st.session_state.user_profile["name"] = st.text_input("Name", st.session_state.user_profile["name"])
+        col1, col2 = st.columns(2)
+        st.session_state.user_profile["age"] = col1.number_input("Age", min_value=10, max_value=50, value=st.session_state.user_profile["age"])
+        st.session_state.user_profile["weight"] = col2.number_input("Weight (lbs)", value=st.session_state.user_profile["weight"])
+        st.session_state.user_profile["goal_weight"] = st.number_input("Goal Weight (lbs)", value=st.session_state.user_profile["goal_weight"])
+        st.session_state.user_profile["hs_goal"] = st.text_input("HS Goal", st.session_state.user_profile["hs_goal"])
+        st.session_state.user_profile["college_goal"] = st.text_input("College Goal", st.session_state.user_profile["college_goal"])
+
+    st.divider()
+    st.header("📍 SESSION FILTERS")
+    sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
+    location_filter = st.multiselect(
+        "Facility Location (Env.)", 
+        ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"],
+        default=["Gym", "Floor"]
+    )
+    num_drills = st.slider("Target Drills", 5, 20, 13)
+    
+    st.divider()
+    st.header("📊 INTENSITY METER")
+    effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
+    mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
+
+# --- 3. DYNAMIC THEMING ---
+primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
+card_bg = "#1E293B" if dark_mode else "#F8FAFC"
+text_color = "#F8FAFC" if dark_mode else "#1E293B"
+sidebar_text = "#F8FAFC" if dark_mode else "#1E293B"
+border_color = "#3B82F6" if dark_mode else "#CBD5E1"
+accent_color = "#3B82F6"
+
+# CSS for Button Text Color and layout
+st.markdown(f"""
     <style>
-        :root {
-            --bg-color: #f4f4f9;
-            --text-color: #333;
-            --card-bg: #ffffff;
-            --primary-color: #ff6b00; /* Basketball Orange */
-            --accent-color: #000;
-            --border-color: #ddd;
-            --btn-text-on-primary: #fff;
-        }
+    .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
+    
+    /* Target Specific Buttons to have BLACK text in Dark Mode */
+    div.stButton > button {{
+        color: black !important;
+        font-weight: 700 !important;
+    }}
 
-        body.dark-mode {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --border-color: #333;
-        }
+    section[data-testid="stSidebar"] {{ background-color: {primary_bg}; }}
+    section[data-testid="stSidebar"] .stMarkdown p, 
+    section[data-testid="stSidebar"] label, 
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3 {{ color: {sidebar_text} !important; }}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        h1 { margin: 0; font-size: 1.5rem; }
-
-        /* --- Controls & Inputs --- */
-        .controls {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input[type="range"] {
-            width: 100%;
-        }
-
-        /* --- Buttons --- */
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: opacity 0.2s;
-        }
-
-        button:hover { opacity: 0.9; }
-
-        /* The specific buttons requested to be BLACK text in dark mode */
-        .btn-black-text {
-            background-color: var(--primary-color);
-            color: #000000 !important; /* Force black text always */
-        }
-
-        .btn-toggle {
-            background-color: transparent;
-            border: 1px solid var(--text-color);
-            color: var(--text-color);
-        }
-
-        .btn-stop {
-            background-color: #dc3545;
-            color: white;
-        }
-        
-        .btn-reset {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        /* --- Timer/Stopwatch Section --- */
-        .tools-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .tool-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .timer-display {
-            font-size: 2rem;
-            font-family: monospace;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-
-        /* --- Workout Output --- */
-        .section-title {
-            margin-top: 30px;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-        }
-
-        .drill-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .drill-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            margin-bottom: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .drill-info h4 {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
-        }
-
-        .drill-meta {
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-        
-        .tag {
-            display: inline-block;
-            background: #eee;
-            color: #333;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin-right: 5px;
-        }
-
-        /* --- Responsive --- */
-        @media (max-width: 600px) {
-            .tools-section { grid-template-columns: 1fr; }
-        }
+    div[data-testid="stExpander"] details summary {{
+        background-color: {accent_color} !important;
+        color: white !important;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }}
+    div[data-testid="stExpander"] {{ 
+        background-color: {card_bg} !important; 
+        border: 1px solid {border_color} !important; 
+        border-radius: 12px !important; 
+    }}
+    
+    .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; }}
+    .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; }}
     </style>
-</head>
-<body>
+    """, unsafe_allow_html=True)
 
-<div class="container">
-    <header>
-        <h1>🏀 Pro Trainer</h1>
-        <button class="btn-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
-    </header>
+# --- 4. DATA LOGIC & SCALING ---
+def scale_text(val_str, multiplier):
+    val_str = str(val_str)
+    nums = re.findall(r'\d+', val_str)
+    new_str = val_str
+    for n in nums:
+        scaled = str(int(round(int(n) * multiplier)))
+        new_str = new_str.replace(n, scaled, 1)
+    return new_str
 
-    <div class="controls">
-        <div class="input-group">
-            <label for="drillCount">Target Drills (Workout): <span id="drillCountVal">20</span></label>
-            <input type="range" id="drillCount" min="5" max="30" value="20" oninput="document.getElementById('drillCountVal').innerText = this.value">
-        </div>
+def extract_clean_url(text):
+    if not isinstance(text, str): return ""
+    match = re.search(r'(https?://[^\s]+)', text)
+    return match.group(1) if match else ""
+
+def load_and_build_workout(sport, multiplier, env_selections, limit):
+    base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/basketball.csv"
+    try:
+        df = pd.read_csv(base_url).fillna("N/A")
+    except:
+        st.error("Could not load basketball.csv")
+        return [], []
+
+    # Filter for Location/Env
+    clean_envs = [s.strip().lower() for s in env_selections]
+    df['env_match'] = df['Env.'].apply(lambda x: str(x).strip().lower() in clean_envs or "all" in str(x).lower())
+    df = df[df['env_match']]
+
+    # 1. Generate Warmups (6-10 drills, type='warmup')
+    warmup_pool = df[df['type'].str.lower() == 'warmup'].to_dict('records')
+    warmups = random.sample(warmup_pool, min(len(warmup_pool), random.randint(6, 10)))
+
+    # 2. Main Workout Logic
+    # Identify unique types except warmup and w_room
+    excluded = ['warmup', 'w_room']
+    available_types = [t for t in df['type'].unique() if t.lower() not in excluded]
+    
+    if not available_types: return [], warmups
+
+    # Pick a random type for the primary focus
+    primary_type = random.choice(available_types)
+    type_pool = df[df['type'] == primary_type].to_dict('records')
+    
+    selected_drills = []
+    
+    # Try to fill with primary type
+    if len(type_pool) >= limit:
+        selected_drills = random.sample(type_pool, limit)
+    else:
+        # 90% Primary (or all available), 10% Others
+        selected_drills = type_pool
+        remainder_count = limit - len(selected_drills)
         
-        <button class="btn-black-text" onclick="generateWorkout()">Generate Workout</button>
-    </div>
+        # Pool for the "Other" 10%
+        other_pool = df[~df['type'].isin([primary_type] + excluded)].to_dict('records')
+        if other_pool:
+            selected_drills += random.sample(other_pool, min(len(other_pool), remainder_count))
 
-    <div class="tools-section">
-        <div class="tool-card">
-            <h3>Timer</h3>
-            <div class="timer-display" id="timerDisplay">00:00</div>
-            <div class="btn-group" style="justify-content: center;">
-                <button class="btn-black-text" onclick="startTimer()">Start Timer</button>
-                <button class="btn-stop" onclick="stopTimer()">Stop</button>
-                <button class="btn-reset" onclick="resetTimer()">Reset</button>
-            </div>
-            <div style="margin-top:10px;">
-                <input type="number" id="timerInput" placeholder="Min" style="width: 50px; padding: 5px;">
-            </div>
-        </div>
+    # Format drills for the UI
+    final_workout = []
+    for item in selected_drills:
+        name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
+        sets_val = 3
+        try: sets_val = int(float(item.get('Sets', 3)))
+        except: pass
 
-        <div class="tool-card">
-            <h3>Stopwatch</h3>
-            <div class="timer-display" id="stopwatchDisplay">00:00.00</div>
-            <div class="btn-group" style="justify-content: center;">
-                <button class="btn-black-text" onclick="startStopwatch()">Start Stopwatch</button>
-                <button class="btn-stop" onclick="stopStopwatch()">Stop</button>
-                <button class="btn-reset" onclick="resetStopwatch()">Reset</button>
-            </div>
-        </div>
-    </div>
+        final_workout.append({
+            "ex": name,
+            "env": item.get('Env.', 'General'),
+            "category": item.get('type', 'Skill'),
+            "cns": item.get('CNS', 'Low'),
+            "focus": item.get('Primary Focus', 'Performance'),
+            "stars": item.get('Stars', '⭐⭐⭐'),
+            "pre_req": item.get('Pre-Req', 'N/A'),
+            "sets": int(round(sets_val * multiplier)),
+            "reps": scale_text(item.get('Reps/Dist', '10'), multiplier),
+            "time": item.get('Time', 'N/A'),
+            "hs": scale_text(item.get('HS Goals', 'N/A'), multiplier),
+            "coll": scale_text(item.get('College Goals', 'N/A'), multiplier),
+            "desc": item.get('Description', 'See demo.'),
+            "proper_form": item.get('Proper Form', 'Keep back straight, engage core.'),
+            "demo": extract_clean_url(str(item.get('Demo', '')))
+        })
+    
+    return final_workout, warmups
 
-    <div id="workoutArea">
-        <div id="warmupSection" style="display:none;">
-            <h2 class="section-title">🔥 Warmup</h2>
-            <p style="font-size: 0.9rem; opacity: 0.8;">Complete these before starting the main block.</p>
-            <ul class="drill-list" id="warmupList"></ul>
-        </div>
+# --- 5. EXECUTION ---
+if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
+    work, warm = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
+    st.session_state.current_session = work
+    st.session_state.warmup_drills = warm
+    st.session_state.set_counts = {i: 0 for i in range(len(work))}
+    st.session_state.workout_finished = False
+    st.rerun()
 
-        <div id="mainWorkoutSection" style="display:none;">
-            <h2 class="section-title">📋 Main Workout <span id="focusBadge" style="font-size:0.8rem; background:var(--primary-color); color:black; padding:2px 8px; border-radius:4px; vertical-align:middle; margin-left:10px;"></span></h2>
-            <ul class="drill-list" id="workoutList"></ul>
-        </div>
-    </div>
-</div>
+# --- 6. MAIN INTERFACE ---
+st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
-<script>
-    // --- 1. MOCK DATA (Simulating basketball.csv) ---
-    // Types: Shooting, Movement, Footwork, Ball-handle, Finish, Defense, Warmup, W_room, Mental, Conditioning
-    const basketballData = [
-        // Warmups (Need enough to pick 6-10)
-        { name: "Jump Rope", type: "Warmup" },
-        { name: "High Knees", type: "Warmup" },
-        { name: "Dynamic Stretching", type: "Warmup" },
-        { name: "Line Hops", type: "Warmup" },
-        { name: "Defensive Slides (Slow)", type: "Warmup" },
-        { name: "Arm Circles", type: "Warmup" },
-        { name: "Hip Openers", type: "Warmup" },
-        { name: "Ankle Flips", type: "Warmup" },
-        { name: "Light Jog", type: "Warmup" },
-        { name: "Glute Bridges", type: "Warmup" },
-        { name: "Form Shooting (Close)", type: "Warmup" },
-        
-        // Shooting
-        { name: "3pt Around the World", type: "Shooting" },
-        { name: "Free Throws (10 in a row)", type: "Shooting" },
-        { name: "Mid-Range Pull ups", type: "Shooting" },
-        { name: "Catch and Shoot (Wing)", type: "Shooting" },
-        { name: "Catch and Shoot (Corner)", type: "Shooting" },
-        { name: "Elbow Jumpers", type: "Shooting" },
-        { name: "Step Back 3s", type: "Shooting" },
-        { name: "Transition 3s", type: "Shooting" },
-        
-        // Ball-handle
-        { name: "2 Ball Dribbling", type: "Ball-handle" },
-        { name: "Crossover Series", type: "Ball-handle" },
-        { name: "Behind the Back Wrap", type: "Ball-handle" },
-        { name: "Spider Dribble", type: "Ball-handle" },
-        { name: "Tennis Ball Toss", type: "Ball-handle" },
-        { name: "Cone Weave", type: "Ball-handle" },
+if st.session_state.warmup_drills and not st.session_state.workout_finished:
+    with st.expander("🔥 PRE-WORKOUT WARMUP (Recommended)", expanded=False):
+        for w in st.session_state.warmup_drills:
+            st.markdown(f"**• {w.get('Exercise Name', 'Warmup Drill')}** - {w.get('Reps/Dist', '10 reps')}")
 
-        // Finish
-        { name: "Mikan Drill", type: "Finish" },
-        { name: "Reverse Layups", type: "Finish" },
-        { name: "Euro Step Finish", type: "Finish" },
-        { name: "Floater Series", type: "Finish" },
-        { name: "Contact Layups", type: "Finish" },
-
-        // Defense
-        { name: "Lane Agility", type: "Defense" },
-        { name: "Closeouts", type: "Defense" },
-        { name: "Box Out Drills", type: "Defense" },
-        { name: "Full Court Slides", type: "Defense" },
-
-        // Footwork
-        { name: "Pivot Series", type: "Footwork" },
-        { name: "Drop Steps", type: "Footwork" },
-        { name: "Jab Step Series", type: "Footwork" },
-
-        // Movement
-        { name: "V-Cuts", type: "Movement" },
-        { name: "L-Cuts", type: "Movement" },
-        { name: "Backdoor Cuts", type: "Movement" },
-
-        // Other (Conditioning, Mental, etc - for fallback)
-        { name: "Suicides", type: "Conditioning" },
-        { name: "17s", type: "Conditioning" },
-        { name: "Visualization", type: "Mental" },
-        { name: "Film Study", type: "Mental" },
-        
-        // Excluded from Algorithm
-        { name: "Bench Press", type: "W_room" },
-        { name: "Squats", type: "W_room" }
-    ];
-
-    // --- 2. GENERATION LOGIC ---
-
-    function generateWorkout() {
-        const targetCount = parseInt(document.getElementById('drillCount').value);
-        
-        // A. Handle Warmups (6-10 random)
-        const allWarmups = basketballData.filter(d => d.type.toLowerCase() === 'warmup');
-        const warmupCount = Math.floor(Math.random() * (10 - 6 + 1)) + 6; // Random between 6 and 10
-        const selectedWarmups = getRandomItems(allWarmups, warmupCount);
-        renderList('warmupList', selectedWarmups);
-        document.getElementById('warmupSection').style.display = 'block';
-
-        // B. Handle Main Workout
-        // 1. Define Core Types
-        const coreTypes = ['Shooting', 'Movement', 'Footwork', 'Ball-handle', 'Finish', 'Defense'];
-        
-        // 2. Randomly Select ONE Focus Type
-        const randomFocus = coreTypes[Math.floor(Math.random() * coreTypes.length)];
-        
-        // 3. Filter Data for that Focus
-        const focusDrills = basketballData.filter(d => d.type === randomFocus);
-        
-        let finalWorkout = [];
-        let focusText = "";
-
-        // 4. Algorithm Check
-        if (focusDrills.length >= targetCount) {
-            // Case 1: We have enough exercises in the random Focus Type
-            finalWorkout = getRandomItems(focusDrills, targetCount);
-            focusText = "Focus: " + randomFocus;
-        } else {
-            // Case 2: Not enough exercises -> Fallback 90/10 Logic
-            focusText = "Focus: Mixed (Fallback)";
+if st.session_state.current_session and not st.session_state.workout_finished:
+    for i, drill in enumerate(st.session_state.current_session):
+        with st.expander(f"**{i+1}. {drill['ex']}** | {drill['category']}", expanded=(i==0)):
+            m1, m2, m3, m4 = st.columns(4)
+            m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
+            m2.markdown(f"<p class='metric-label'>🔄 Reps</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
+            m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
+            m4.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
             
-            // Calculate Split
-            const countCore = Math.round(targetCount * 0.90);
-            const countOther = targetCount - countCore;
-
-            // Pool A: All Core Types (Shooting, Movement, etc.)
-            const poolA = basketballData.filter(d => coreTypes.includes(d.type));
+            st.info(f"**✨ Proper Form:** {drill['proper_form']}")
             
-            // Pool B: Others (excluding Warmup, W_room, and Core Types)
-            const excludedTypes = ['Warmup', 'W_room', ...coreTypes];
-            const poolB = basketballData.filter(d => !excludedTypes.includes(d.type));
+            col_left, col_right = st.columns(2)
+            with col_left:
+                curr = st.session_state.set_counts.get(i, 0)
+                if st.button(f"✅ Log Set ({curr}/{drill['sets']})", key=f"log_{i}", use_container_width=True):
+                    st.session_state.set_counts[i] += 1
+                    st.rerun()
+                
+                if drill['demo']:
+                    st.video(drill['demo'])
 
-            // Select
-            const selectedCore = getRandomItems(poolA, countCore);
-            const selectedOther = getRandomItems(poolB, countOther);
+            with col_right:
+                st.markdown("#### ⏱️ Timers")
+                t_col1, t_col2 = st.columns(2)
+                
+                if t_col1.button("Start Timer", key=f"t_start_{i}", use_container_width=True):
+                    ph = st.empty()
+                    for t in range(60, -1, -1):
+                        ph.markdown(f"**Time Left: {t}s**")
+                        time.sleep(1)
+                    ph.success("Done!")
 
-            finalWorkout = [...selectedCore, ...selectedOther];
-        }
+                # --- STOPWATCH FEATURE ---
+                if f"sw_{i}" not in st.session_state: st.session_state[f"sw_{i}"] = 0
+                
+                sw_btn = t_col2.button("Start Stopwatch" if not st.session_state.stopwatch_running.get(i) else "Stop", key=f"sw_btn_{i}", use_container_width=True)
+                
+                if sw_btn:
+                    st.session_state.stopwatch_running[i] = not st.session_state.stopwatch_running.get(i, False)
+                    if st.session_state.stopwatch_running[i]:
+                        st.session_state[f"sw_start_{i}"] = time.time()
+                
+                if st.session_state.stopwatch_running.get(i):
+                    elapsed = time.time() - st.session_state[f"sw_start_{i}"]
+                    st.markdown(f"**Elapsed:** {elapsed:.1f}s")
+                    time.sleep(0.1)
+                    st.rerun()
 
-        renderList('workoutList', finalWorkout, true);
-        document.getElementById('focusBadge').innerText = focusText;
-        document.getElementById('mainWorkoutSection').style.display = 'block';
-    }
+    if st.button("🏁 FINISH WORKOUT", use_container_width=True):
+        st.session_state.workout_finished = True
+        st.rerun()
 
-    // Helper: Select n random items from array
-    function getRandomItems(arr, n) {
-        const shuffled = [...arr].sort(() => 0.5 - Math.random());
-        // If n is larger than array length, return whole array (or duplicate if you wanted strict counts, but usually returning max available is safer)
-        return shuffled.slice(0, n);
-    }
-
-    // Helper: Render to HTML
-    function renderList(elementId, items, addLogButton = false) {
-        const list = document.getElementById(elementId);
-        list.innerHTML = '';
-        
-        items.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'drill-item';
-            
-            let html = `
-                <div class="drill-info">
-                    <h4>${item.name}</h4>
-                    <div class="drill-meta">
-                        <span class="tag">${item.type}</span>
-                    </div>
-                </div>
-            `;
-            
-            if (addLogButton) {
-                // Ensure Log Set button is also Black text in dark mode
-                html += `<button class="btn-black-text" onclick="alert('Set Logged for ${item.name}')">Log Set</button>`;
-            }
-            
-            li.innerHTML = html;
-            list.appendChild(li);
-        });
-    }
-
-    // --- 3. TOOLS LOGIC (Timer/Stopwatch) ---
-
-    // Timer Variables
-    let timerInterval;
-    let timerSeconds = 0;
-
-    function startTimer() {
-        clearInterval(timerInterval);
-        const input = document.getElementById('timerInput').value;
-        if(timerSeconds === 0 && input) {
-            timerSeconds = parseInt(input) * 60;
-        }
-        
-        if (timerSeconds <= 0) return;
-
-        timerInterval = setInterval(() => {
-            timerSeconds--;
-            updateTimerDisplay();
-            if (timerSeconds <= 0) {
-                clearInterval(timerInterval);
-                alert("Time's up!");
-            }
-        }, 1000);
-    }
-
-    function stopTimer() {
-        clearInterval(timerInterval);
-    }
-
-    function resetTimer() {
-        stopTimer();
-        timerSeconds = 0;
-        updateTimerDisplay();
-    }
-
-    function updateTimerDisplay() {
-        const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-        const s = (timerSeconds % 60).toString().padStart(2, '0');
-        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-    }
-
-    // Stopwatch Variables
-    let stopwatchInterval;
-    let stopwatchStartTime;
-    let stopwatchElapsedTime = 0;
-
-    function startStopwatch() {
-        // Prevent multiple intervals
-        clearInterval(stopwatchInterval); 
-        stopwatchStartTime = Date.now() - stopwatchElapsedTime;
-        
-        stopwatchInterval = setInterval(() => {
-            stopwatchElapsedTime = Date.now() - stopwatchStartTime;
-            updateStopwatchDisplay();
-        }, 10);
-    }
-
-    function stopStopwatch() {
-        clearInterval(stopwatchInterval);
-    }
-
-    function resetStopwatch() {
-        stopStopwatch();
-        stopwatchElapsedTime = 0;
-        updateStopwatchDisplay();
-    }
-
-    function updateStopwatchDisplay() {
-        const time = new Date(stopwatchElapsedTime);
-        const m = time.getUTCMinutes().toString().padStart(2, '0');
-        const s = time.getUTCSeconds().toString().padStart(2, '0');
-        const ms = Math.floor(time.getUTCMilliseconds() / 10).toString().padStart(2, '0');
-        document.getElementById('stopwatchDisplay').innerText = `${m}:${s}.${ms}`;
-    }
-
-    // --- 4. THEME LOGIC ---
-    function toggleTheme() {
-        document.body.classList.toggle('dark-mode');
-    }
-</script>
-
-</body>
-</html>
+elif st.session_state.workout_finished:
+    st.balloons()
+    st.success("Session Complete!")
+    if st.button("Start New Session"):
+        st.session_state.current_session = None
+        st.session_state.workout_finished = False
+        st.rerun()
