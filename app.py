@@ -40,6 +40,7 @@ with st.sidebar:
     dark_mode = st.toggle("Enable Dark Mode", value=True)
     
     st.divider()
+    
     st.header("📂 WORKOUT HISTORY")
     if st.session_state.archives:
         archive_names = [f"{a['date']} - {a['sport']}" for a in st.session_state.archives]
@@ -68,13 +69,13 @@ with st.sidebar:
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     location_filter = st.multiselect("Facility Location (Env.)", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Floor"])
     
-    # NEW: Toggle to select all drills
-    all_drills_toggle = st.checkbox("Select All Available Drills", value=True)
-    if not all_drills_toggle:
-        num_drills = st.slider("Target Drills", 5, 30, 13)
+    # Selection Mode: Slider vs Select All
+    select_all_drills = st.checkbox("Select All Drills from Category", value=True)
+    if not select_all_drills:
+        num_drills = st.slider("Target Drills", 5, 50, 13)
     else:
-        num_drills = 999  # Effectively unlimited
-    
+        num_drills = 999  # Large limit to include everything
+
     st.divider()
     st.header("📊 INTENSITY METER")
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
@@ -147,11 +148,13 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         row_loc = str(r.get('Env.', r.get('Location', 'General'))).strip().lower()
         if row_loc in clean_envs or "all" in row_loc:
             filtered_pool.append(r)
+    
     if not filtered_pool: return []
-
-    # FIX: Sort by Category to keep types together (Defense, P&R, Shoot, etc.)
+    
+    # NEW GROUPING LOGIC: Sort by Category to keep similar drills together
+    # This ensures DEF, P&R, Pass, Shoot are clustered
     filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
-
+    
     selected = []
     seen_names = set()
     for item in filtered_pool:
@@ -159,6 +162,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
         if name in seen_names: continue
         seen_names.add(name)
+        
         try: sets_val = int(float(item.get('Sets', 3)))
         except: sets_val = 3
         
@@ -191,7 +195,7 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 p = st.session_state.user_profile
 st.markdown(f"<div style='text-align: center; margin-bottom: 20px;'><h3>Athlete: {p['name']} | Age: {p['age']} | Weight: {p['weight']}lbs (Goal: {p['goal_weight']}lbs)</h3></div>", unsafe_allow_html=True)
 
-# Archive Logic
+# Archive View Logic
 if st.session_state.view_archive_index is not None:
     arch = st.session_state.archives[st.session_state.view_archive_index]
     st.info(f"📁 Viewing Archived Session: {arch['date']} ({arch['sport']})")
@@ -200,14 +204,15 @@ if st.session_state.view_archive_index is not None:
         st.session_state.view_archive_index = None
         st.rerun()
 
-# Current Session Logic
+# Active Workout Logic
 elif st.session_state.current_session and not st.session_state.workout_finished:
-    current_cat = ""
+    current_category = None
     for i, drill in enumerate(st.session_state.current_session):
-        # UI: Show Category Header to highlight the grouping
-        if drill['category'] != current_cat:
-            st.markdown(f"### 🎯 {drill['category']}")
-            current_cat = drill['category']
+        
+        # Heading for grouped categories
+        if drill['category'] != current_category:
+            st.markdown(f"### ⚡ Section: {drill['category'].upper()}")
+            current_category = drill['category']
 
         with st.expander(f"**{i+1}. {drill['ex']}** |  {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
@@ -225,6 +230,7 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
             m8.markdown(f"<p class='metric-label'>⚠️ Pre-Req</p><p class='metric-value'>{drill['pre_req']}</p>", unsafe_allow_html=True)
 
             st.write(f"**📝 Description:** {drill['desc']}")
+            
             st.divider()
             
             col_a, col_b = st.columns([1, 1])
@@ -234,6 +240,7 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
                     if curr < drill['sets']:
                         st.session_state.set_counts[i] += 1
                         st.rerun()
+                
                 if drill['demo']:
                     try: st.video(drill['demo'])
                     except: st.markdown(f"[🎥 Watch Video]({drill['demo']})")
@@ -260,13 +267,17 @@ elif st.session_state.current_session and not st.session_state.workout_finished:
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
-        st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "sport": sport_choice, "data": summary_data})
+        st.session_state.archives.append({
+            "date": get_now_est().strftime('%Y-%m-%d %H:%M'),
+            "sport": sport_choice,
+            "data": summary_data
+        })
         st.session_state.workout_finished = True
         st.rerun()
 
 elif st.session_state.workout_finished:
     st.balloons()
-    st.success("Workout Complete! Saved to History.")
+    st.success(f"Workout Complete! Saved to History.")
     summary_data = [{"Exercise": d['ex'], "Sets": d['sets'], "Reps": d['reps']} for d in st.session_state.current_session]
     st.table(pd.DataFrame(summary_data))
     if st.button("Start New Session"):
@@ -274,4 +285,4 @@ elif st.session_state.workout_finished:
         st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👈 Use the sidebar to set your profile, pull up history, or generate a session.")
+    st.info("👈 Use the sidebar to set your profile, pull up an archive, or generate a session.")
