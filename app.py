@@ -51,10 +51,10 @@ with st.sidebar:
     st.divider()
     st.header("📍 SESSION FILTERS")
     
-    # Sport Selection - Logic now includes softball-hitting.csv
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     
-    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Floor"])
+    # Updated default to include more locations so drills aren't filtered out by accident
+    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General"])
     
     num_drills = st.slider("Target Drills", 1, 50, 13)
 
@@ -74,7 +74,6 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
-    /* FORCE SIDEBAR TEXT TO BLACK */
     section[data-testid="stSidebar"] label, 
     section[data-testid="stSidebar"] .stMarkdown p,
     section[data-testid="stSidebar"] h1, 
@@ -84,34 +83,19 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
 
-    /* FORCE EXERCISE NAMES TO WHITE */
     div[data-testid="stExpander"] details summary span p,
     div[data-testid="stExpander"] details summary {{
         color: #FFFFFF !important;
         font-weight: 800 !important;
     }}
 
-    /* FORCE BLACK BUTTON TEXT */
     .stButton > button {{
         color: #000000 !important;
         font-weight: 600 !important;
     }}
     
-    .desc-bubble {{
-        background-color: {bubble_bg};
-        padding: 15px;
-        border-radius: 12px;
-        border-left: 5px solid {accent_color};
-        margin-bottom: 10px;
-    }}
-    .form-bubble {{
-        background-color: {form_bubble_bg};
-        color: {form_text_color} !important;
-        padding: 15px;
-        border-radius: 12px;
-        border-left: 5px solid #F59E0B;
-        margin-bottom: 10px;
-    }}
+    .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
+    .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
     
     div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; border-radius: 8px; }}
     div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; }}
@@ -136,7 +120,6 @@ def extract_clean_url(text):
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     
-    # UPDATED: Softball mapping to softball-hitting.csv
     mapping = {
         "Basketball": "basketball.csv", 
         "Softball": "softball-hitting.csv", 
@@ -146,7 +129,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     }
     
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
-    
     if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
     
@@ -158,14 +140,22 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             all_rows.extend(df.to_dict('records'))
         except: continue
     
+    if not all_rows: return []
+
+    # FIX: More inclusive filtering
     clean_envs = [s.strip().lower() for s in env_selections]
-    filtered_pool = [
-        r for r in all_rows 
-        if str(r.get('Env.', r.get('Location', 'General'))).strip().lower() in clean_envs 
-        or "all" in str(r.get('Env.', '')).lower()
-    ]
+    filtered_pool = []
+    for r in all_rows:
+        # Get location from 'Env.' or 'Location' column
+        raw_loc = str(r.get('Env.', r.get('Location', 'General'))).strip().lower()
+        
+        # Logic: Include if it matches the filter, OR if it is marked "all", OR if no specific location is set
+        if any(env in raw_loc for env in clean_envs) or "all" in raw_loc or raw_loc == "n/a" or raw_loc == "general":
+            filtered_pool.append(r)
     
-    if not filtered_pool: return []
+    if not filtered_pool: 
+        # Emergency Fallback: If filtering is too strict, just use the whole pool for that sport
+        filtered_pool = all_rows
     
     random.shuffle(filtered_pool)
     filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
@@ -175,19 +165,20 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     for item in filtered_pool:
         if len(selected) >= limit: break
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
-        if name in seen: continue
+        if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        # Robust Parsing
+        # Sets Parsing
         raw_sets = str(item.get('Sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         final_sets = int(round(base_sets * multiplier))
         
+        # URL Parsing
         raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
         clean_demo = extract_clean_url(raw_demo)
 
-        drill = {
+        selected.append({
             "ex": name, 
             "category": item.get('Category', 'Skill'),
             "sets": final_sets,
@@ -201,8 +192,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "form": item.get('Proper Form', 'Focus on technique.'),
             "equip": item.get('Equipment Needed', 'N/A'),
             "demo": clean_demo
-        }
-        selected.append(drill)
+        })
     return selected
 
 # --- 5. EXECUTION ---
@@ -215,6 +205,8 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.stopwatch_results = {}
         st.session_state.workout_finished = False
         st.rerun()
+    else:
+        st.sidebar.error("No exercises found for these settings. Try adding more Facility Locations.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
