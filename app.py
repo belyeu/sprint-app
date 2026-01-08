@@ -39,6 +39,14 @@ if 'user_profile' not in st.session_state:
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
+# Helper function to check if a URL is actually a video Streamlit can play
+def is_playable_video(url):
+    if not isinstance(url, str) or url == "N/A":
+        return False
+    # Streamlit natively supports YouTube, Vimeo, and direct links ending in media extensions
+    video_patterns = [r'youtube\.com', r'youtu\.be', r'vimeo\.com', r'\.mp4$', r'\.mov$', r'\.webm$']
+    return any(re.search(pattern, url.lower()) for pattern in video_patterns)
+
 # --- 2. SIDEBAR & FILTERS ---
 with st.sidebar:
     st.header("🎨 APPEARANCE")
@@ -68,7 +76,7 @@ with st.sidebar:
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
-# --- 3. DYNAMIC THEMING (Blue Text on White Buttons) ---
+# --- 3. DYNAMIC THEMING ---
 primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
 text_color = "#F8FAFC" if dark_mode else "#1E293B"
 accent_blue = "#3B82F6"
@@ -76,8 +84,6 @@ accent_blue = "#3B82F6"
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    
-    /* Button Style: White Background, Blue Text, Bold Border */
     div.stButton > button {{
         color: {accent_blue} !important;
         background-color: #FFFFFF !important;
@@ -86,11 +92,8 @@ st.markdown(f"""
         border-radius: 8px;
         width: 100%;
     }}
-    
-    /* Info Bubbles */
     .desc-bubble {{ background-color: #1e293b; padding: 12px; border-radius: 8px; border-left: 4px solid {accent_blue}; margin-bottom: 8px; color: #f8fafc; }}
     .form-bubble {{ background-color: #064e3b; padding: 12px; border-radius: 8px; border-left: 4px solid #10b981; margin-bottom: 12px; color: #ecfdf5; }}
-    
     .metric-label {{ font-size: 0.7rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin: 0; }}
     .metric-value {{ font-size: 1rem; color: {accent_blue}; font-weight: 700; margin: 0; }}
     </style>
@@ -122,8 +125,6 @@ def build_workout(pool, multiplier, env_selections, limit):
     warmups = random.sample(warmup_pool, min(len(warmup_pool), random.randint(6, 8))) if warmup_pool else []
 
     mains = [r for r in filtered if "warmup" not in str(r.get('type', '')).lower()]
-    
-    # Random Type Selection
     types = list(set([str(r.get('type', '')) for r in mains if r.get('type') != 'N/A']))
     chosen_type = random.choice(types) if types else None
     type_matches = [r for r in mains if str(r.get('type', '')) == chosen_type]
@@ -139,7 +140,6 @@ def build_workout(pool, multiplier, env_selections, limit):
         final_mains.append(d)
         seen.add(name)
         
-        # Pairing Logic
         for p1, p2 in [("left", "right"), ("(l)", "(r)"), ("inside", "outside")]:
             pair_name = None
             if p1 in name.lower(): pair_name = name.lower().replace(p1, p2)
@@ -189,15 +189,18 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             if drill.get('Proper Form') != "N/A":
                 st.markdown(f"<div class='form-bubble'><b>✨ Proper Form:</b> {drill['Proper Form']}</div>", unsafe_allow_html=True)
             
-            # Demo Video
-            demo = drill.get('Demo', drill.get('Demo_URL', 'N/A'))
-            if demo != "N/A": st.video(demo)
+            # FIXED VIDEO LOGIC
+            demo_url = drill.get('Demo', drill.get('Demo_URL', 'N/A'))
+            if is_playable_video(demo_url):
+                st.video(demo_url)
+            elif demo_url != "N/A":
+                st.info(f"🔗 [Click here to watch the Demo Video]({demo_url})")
             
             # File Upload
             up = st.file_uploader(f"Upload Clip", key=f"up_{i}")
             if up: st.session_state.uploaded_media[i] = up.name
 
-            # Metadata Row (Removed Number, Demo Col, Rank)
+            # Metadata Row
             cols = st.columns(4)
             exclude = ['Exercise Name', 'Exercise', 'Demo', 'Demo_URL', 'Rank', 'Description', 'Proper Form', 'Sets_S', 'Reps_S', 'Sets', 'Reps', 'Reps/Dist']
             visible = [k for k in drill.keys() if k not in exclude]
