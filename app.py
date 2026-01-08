@@ -89,7 +89,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA LOGIC & GROUPING ENGINE ---
+# --- 4. DATA LOGIC & BASKETBALL CATEGORY ENGINE ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -102,15 +102,22 @@ def extract_clean_url(text):
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
-def sequence_drills(drill_list):
-    """Sorts drills so paired types (L/R, In/Out, Front/Back) stay together."""
+def sequence_drills(drill_list, sport):
+    """Sorts drills for grouping (L/R etc) and applies Basketball 'same type' rule."""
+    if not drill_list: return []
+    
+    if sport == "Basketball":
+        # Rule: First is random, then all must be same Category
+        first_drill = drill_list[0]
+        target_category = first_drill.get('category', 'General')
+        filtered_by_type = [d for d in drill_list if d.get('category') == target_category]
+        return filtered_by_type
+    
+    # Standard logic for other sports (Group L/R, In/Out)
     def get_group_key(name):
         name = name.lower()
-        # Remove directional keywords to find the 'base' exercise name
         base = re.sub(r'\b(left|right|l/|r/|inside|outside|front|back|l |r )\b', '', name).strip()
         return base
-
-    # Sort by the base name so "Left Drill" and "Right Drill" end up next to each other
     return sorted(drill_list, key=lambda x: get_group_key(x['ex']))
 
 def load_and_build_workout(sport, multiplier, env_selections, limit):
@@ -140,12 +147,11 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     
     if not filtered_pool: filtered_pool = all_rows
     
-    random.shuffle(filtered_pool)
+    random.shuffle(filtered_pool) # Randomize the entire pool first
     
     selected_raw = []
     seen = set()
     for item in filtered_pool:
-        if len(selected_raw) >= limit: break
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
         if name in seen or name == "Unknown": continue
         seen.add(name)
@@ -156,6 +162,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         
         selected_raw.append({
             "ex": name, 
+            "category": item.get('Category', 'Skill'), # Critical for Basketball rule
             "sets": int(round(base_sets * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
             "env": item.get('Environment', item.get('Env.', 'General')),
@@ -169,8 +176,9 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "demo": extract_clean_url(str(item.get('Demo', item.get('Demo_URL', ''))))
         })
     
-    # Apply Grouping Logic before returning
-    return sequence_drills(selected_raw)
+    # Apply Grouping/Category logic and then apply the 'Target Drills' limit
+    final_drills = sequence_drills(selected_raw, sport)
+    return final_drills[:limit]
 
 # --- 5. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
@@ -187,6 +195,11 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
+    # Display the Category focus if it's Basketball
+    if sport_choice == "Basketball":
+        focus_cat = st.session_state.current_session[0]['category']
+        st.markdown(f"<p style='text-align:center; color:{accent_color}; font-weight:bold;'>🏀 SESSION FOCUS: {focus_cat.upper()}</p>", unsafe_allow_html=True)
+
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
