@@ -37,11 +37,7 @@ def get_now_est():
 
 # --- SOUND EFFECT HELPERS ---
 def play_sound(url):
-    st.markdown(f"""
-        <audio autoplay>
-            <source src="{url}" type="audio/mp3">
-        </audio>
-        """, unsafe_allow_html=True)
+    st.markdown(f"""<audio autoplay><source src="{url}" type="audio/mp3"></audio>""", unsafe_allow_html=True)
 
 # --- 2. SIDEBAR & FILTERS ---
 with st.sidebar:
@@ -93,7 +89,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA LOGIC ---
+# --- 4. DATA LOGIC & GROUPING ENGINE ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -106,15 +102,20 @@ def extract_clean_url(text):
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
+def sequence_drills(drill_list):
+    """Sorts drills so paired types (L/R, In/Out, Front/Back) stay together."""
+    def get_group_key(name):
+        name = name.lower()
+        # Remove directional keywords to find the 'base' exercise name
+        base = re.sub(r'\b(left|right|l/|r/|inside|outside|front|back|l |r )\b', '', name).strip()
+        return base
+
+    # Sort by the base name so "Left Drill" and "Right Drill" end up next to each other
+    return sorted(drill_list, key=lambda x: get_group_key(x['ex']))
+
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
-    mapping = {
-        "Basketball": "basketball.csv", 
-        "Softball": "softball.csv", 
-        "Track": "track.csv", 
-        "Pilates": "pilates.csv", 
-        "General": "general.csv"
-    }
+    mapping = {"Basketball": "basketball.csv", "Softball": "softball.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
     
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
     if "Weight Room" in env_selections:
@@ -133,7 +134,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
     for r in all_rows:
-        # Check 'Environment' column specifically for Softball
         row_loc = str(r.get('Environment', r.get('Env.', r.get('Location', 'All')))).strip().lower()
         if any(env in row_loc for env in clean_envs) or row_loc in ["all", "n/a", "general", ""]:
             filtered_pool.append(r)
@@ -141,12 +141,11 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     if not filtered_pool: filtered_pool = all_rows
     
     random.shuffle(filtered_pool)
-    filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
     
-    selected = []
+    selected_raw = []
     seen = set()
     for item in filtered_pool:
-        if len(selected) >= limit: break
+        if len(selected_raw) >= limit: break
         name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
         if name in seen or name == "Unknown": continue
         seen.add(name)
@@ -155,7 +154,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         
-        selected.append({
+        selected_raw.append({
             "ex": name, 
             "sets": int(round(base_sets * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
@@ -169,7 +168,9 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "equip": item.get('Equipment Needed', 'N/A'),
             "demo": extract_clean_url(str(item.get('Demo', item.get('Demo_URL', ''))))
         })
-    return selected
+    
+    # Apply Grouping Logic before returning
+    return sequence_drills(selected_raw)
 
 # --- 5. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
@@ -210,12 +211,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    if st.button("🛑 Stop", key=f"stop_{i}", use_container_width=True):
-                        elapsed = time.time() - st.session_state.stopwatch_start[i]
-                        st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
+                    elapsed_now = time.time() - st.session_state.stopwatch_start[i]
+                    if st.button(f"🛑 Stop ({elapsed_now:.1f}s)", key=f"stop_{i}", use_container_width=True):
+                        st.session_state.stopwatch_results[i] = f"{elapsed_now:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
-                    st.write(f"⏱️ {time.time() - st.session_state.stopwatch_start[i]:.1f}s")
 
             if drill['demo']:
                 st.markdown("---")
