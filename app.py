@@ -136,11 +136,18 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if name in seen: continue
         seen.add(name)
         
-        # Capture ALL columns
+        # --- FIX: ROBUST SETS PARSING ---
+        raw_sets = str(item.get('Sets', 3))
+        # Find first number in string (e.g., '3-4' -> 3), default to 3 if fails
+        found_digits = re.findall(r'\d+', raw_sets)
+        base_sets = int(found_digits[0]) if found_digits else 3
+        final_sets = int(round(base_sets * multiplier))
+        # --------------------------------
+
         drill = {
             "ex": name, 
             "category": item.get('Category', 'Skill'),
-            "sets": int(round(int(float(item.get('Sets', 3))) * multiplier)),
+            "sets": final_sets,
             "reps": scale_text(item.get('Reps/Dist', '10'), multiplier),
             "env": item.get('Env.', 'General'),
             "cns": item.get('CNS', 'N/A'),
