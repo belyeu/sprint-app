@@ -50,11 +50,14 @@ with st.sidebar:
 
     st.divider()
     st.header("📍 SESSION FILTERS")
+    
+    # Sport Selection - Confirmed logic for all sports including Pilates
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
+    
     location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Floor"])
     
-    select_all = st.checkbox("Select All Drills", value=True)
-    num_drills = 999 if select_all else st.slider("Target Drills", 5, 50, 13)
+    # "Select All" Removed as requested. Target Drills now controls total output.
+    num_drills = st.slider("Target Drills", 1, 50, 13)
 
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
@@ -71,15 +74,30 @@ form_text_color = "#FCD34D" if dark_mode else "#92400E"
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    .stTable, [data-testid="stMarkdownContainer"] p, h1, h2, h3 {{ color: {text_color} !important; }}
     
+    /* FORCE SIDEBAR TEXT TO BLACK IN DARK MODE */
+    section[data-testid="stSidebar"] label, 
+    section[data-testid="stSidebar"] .stMarkdown p,
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] span {{
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }}
+
+    /* FORCE EXERCISE NAMES TO WHITE */
+    div[data-testid="stExpander"] details summary span p,
+    div[data-testid="stExpander"] details summary {{
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
+    }}
+
     /* FORCE BLACK BUTTON TEXT */
     .stButton > button {{
         color: #000000 !important;
         font-weight: 600 !important;
     }}
     
-    /* Bubble Styling */
     .desc-bubble {{
         background-color: {bubble_bg};
         padding: 15px;
@@ -96,7 +114,7 @@ st.markdown(f"""
         margin-bottom: 10px;
     }}
     
-    div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; color: white !important; border-radius: 8px; }}
+    div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; border-radius: 8px; }}
     div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; }}
     .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin: 0; }}
     .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; margin: 0; }}
@@ -118,8 +136,19 @@ def extract_clean_url(text):
 
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
-    mapping = {"Basketball": "basketball.csv", "Softball": "softball.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
+    
+    # Mapping confirmed: All sports direct to correct file names
+    mapping = {
+        "Basketball": "basketball.csv", 
+        "Softball": "softball.csv", 
+        "Track": "track.csv", 
+        "Pilates": "pilates.csv", 
+        "General": "general.csv"
+    }
+    
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
+    
+    # Add supplementary equipment files if "Weight Room" is active
     if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
     
@@ -131,10 +160,18 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             all_rows.extend(df.to_dict('records'))
         except: continue
     
+    # Logic verification: Ensure location filtering works for Pilates/Floor/Gym etc.
     clean_envs = [s.strip().lower() for s in env_selections]
-    filtered_pool = [r for r in all_rows if str(r.get('Env.', r.get('Location', 'General'))).strip().lower() in clean_envs or "all" in str(r.get('Env.', '')).lower()]
+    filtered_pool = [
+        r for r in all_rows 
+        if str(r.get('Env.', r.get('Location', 'General'))).strip().lower() in clean_envs 
+        or "all" in str(r.get('Env.', '')).lower()
+    ]
     
     if not filtered_pool: return []
+    
+    # Randomize to ensure variety since "Select All" is off
+    random.shuffle(filtered_pool)
     filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
     
     selected = []
@@ -145,10 +182,12 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if name in seen: continue
         seen.add(name)
         
+        # Robust Parsing for all columns requested
         raw_sets = str(item.get('Sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         final_sets = int(round(base_sets * multiplier))
+        
         raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
         clean_demo = extract_clean_url(raw_demo)
 
@@ -156,14 +195,15 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "ex": name, 
             "category": item.get('Category', 'Skill'),
             "sets": final_sets,
-            "reps": scale_text(item.get('Reps/Dist', '10'), multiplier),
+            "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
             "env": item.get('Env.', 'General'),
-            "cns": item.get('CNS', 'N/A'),
             "focus": item.get('Primary Focus', 'N/A'),
-            "hs": item.get('HS Goals', 'N/A'),
-            "coll": item.get('College Goals', 'N/A'),
-            "desc": item.get('Description', 'No description provided.'),
+            "stars": item.get('Stars', '⭐⭐⭐'),
+            "hs": item.get('High School Goals (Time/Dist.)', item.get('HS Goals', 'N/A')),
+            "coll": item.get('College Goals (Time/Dist.)', item.get('College Goals', 'N/A')),
+            "desc": item.get('Detailed Description', item.get('Description', 'No description provided.')),
             "form": item.get('Proper Form', 'Focus on technique.'),
+            "equip": item.get('Equipment Needed', 'N/A'),
             "demo": clean_demo
         }
         selected.append(drill)
@@ -185,24 +225,25 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
-        with st.expander(f"**{i+1}. {drill['ex']}** ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", expanded=(i==0)):
+        # White Text Header via CSS classes
+        with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
-            m2.markdown(f"<p class='metric-label'>🔄 Reps</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
-            m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
-            m4.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
+            m2.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
+            m3.markdown(f"<p class='metric-label'>🎯 Primary Focus</p><p class='metric-value'>{drill['focus']}</p>", unsafe_allow_html=True)
+            m4.markdown(f"<p class='metric-label'>🛠️ Equipment</p><p class='metric-value'>{drill['equip']}</p>", unsafe_allow_html=True)
 
             c1, c2 = st.columns(2)
-            if drill['hs'] != "N/A": c1.info(f"**HS Goal:** {drill['hs']}")
-            if drill['coll'] != "N/A": c2.success(f"**College Goal:** {drill['coll']}")
+            if drill['hs'] != "N/A": c1.info(f"**High School Goals:** {drill['hs']}")
+            if drill['coll'] != "N/A": c2.success(f"**College Goals:** {drill['coll']}")
             
-            st.markdown(f"""<div class='desc-bubble'><strong>📝 Description:</strong><br>{drill['desc']}</div>
+            st.markdown(f"""<div class='desc-bubble'><strong>📝 Detailed Description:</strong><br>{drill['desc']}</div>
                             <div class='form-bubble'><strong>✨ Proper Form:</strong><br>{drill['form']}</div>""", unsafe_allow_html=True)
             st.divider()
 
             col_actions, col_watch = st.columns([1, 1])
             with col_actions:
-                if st.button(f"✅ Log Set", key=f"log_{i}", use_container_width=True):
+                if st.button(f"✅ Log Set ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
                     st.rerun()
                 st.file_uploader("📤 Upload Form Video", type=['mp4', 'mov'], key=f"up_{i}")
@@ -219,23 +260,25 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
+                    
                     start_time = st.session_state.stopwatch_start[i]
                     placeholder = st.empty()
                     while True:
                         curr_elapsed = time.time() - start_time
                         placeholder.markdown(f"<h1 style='text-align:center; color:#EF4444;'>{curr_elapsed:.1f}s</h1>", unsafe_allow_html=True)
                         time.sleep(0.1)
+                
                 if i in st.session_state.stopwatch_results:
                     st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
 
-            # --- RESTORE SMALL SIZE DEMO VIDEO ---
+            # Small sized demo video logic preserved
             if drill['demo']:
                 st.markdown("---")
-                v_col1, v_col2, v_col3 = st.columns([1, 2, 1]) # Center the video in a smaller middle column
+                v_col1, v_col2, v_col3 = st.columns([1, 2, 1])
                 with v_col2:
                     st.caption("🎥 Exercise Demo")
                     try: st.video(drill['demo'])
-                    except: st.error(f"Could not load video. Link: {drill['demo']}")
+                    except: st.error(f"Video unavailable.")
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
