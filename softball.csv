@@ -1,4 +1,4 @@
-number,Category,Exercise Name,Description,Env.,CNS,Sets,Reps,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,demo,Equipment,sport,Exercise Name,Description,Proper Form
+number,Category,Exercise Name,Description,Enviroment,CNS,Sets,Reps,Time,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,demo,Equipment,sport,Exercise Name,Description,Proper Form
 1,Footwork,Shuffle Step,Instep to instep; point toward throw.,Field,Low,3,10r,--,Lat. Alignment,⭐,None,Fluid; no click,Sub-1.5s release,Watch Demo,Glove/ Ball,sofrball/ baseball,Shuffle Step,Instep to instep; point toward throw.,Stay low; replace feet quickly without crossing. Keep momentum moving toward the target.
 2,Footwork,Instep Kick,Kick throwing foot instep over glove.,Field,Low,3,10r,--,Momentum Trans,⭐⭐,https://www.google.com/search?q=%231,Target on line,65+ MPH Velo,Watch Demo,Glove/ Ball,sofrball/ baseball,Instep Kick,Kick throwing foot instep over glove.,Drive back foot through the ball's location to create direction and power for the throw.
 3,Footwork,Power Step,Instep to ball; move around ball.,Field,Med,3,10r,--,Force Prod.,⭐⭐⭐,https://www.google.com/search?q=%232,Clean trans.,Pro-Step Mech,Watch Demo,Glove/ Ball,sofrball/ baseball,Power Step,Instep to ball; move around ball.,Step to the side of the ball to create an angle that leads your body toward first base.
@@ -55,3 +55,4 @@ number,Category,Exercise Name,Description,Env.,CNS,Sets,Reps,Time,Primary Focus,
 55,Tagging,Drop And Up,Block base; apply tag.,Field,Med,3,10r,--,Tag Strength,⭐⭐,None,Block base,Avoid slide,,Glove/ Ball,sofrball/ baseball,,,
 56,Tagging,Sweep Tag,Maximal reach lateral tag.,Field,High,4,8r,--,Range,⭐⭐⭐,None,Full reach,Fast snap tag,,Glove/ Ball,sofrball/ baseball,Would you like me to create a personalized training schedule using these exercises to help you prepare for your next season?,,
 56,Tagging,Sweep Tag,Maximal reach lateral tag.,Field,High,4,8r,--,Extension Range,⭐⭐⭐,None,Full reach,Fast snap tag,,Glove/ Ball,sofrball/ baseball,,,
+
