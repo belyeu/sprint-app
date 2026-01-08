@@ -53,8 +53,8 @@ with st.sidebar:
     
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     
-    # Updated default to include more locations so drills aren't filtered out by accident
-    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General"])
+    # Locations available to the user
+    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General", "Cages"])
     
     num_drills = st.slider("Target Drills", 1, 50, 13)
 
@@ -74,6 +74,7 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
+    /* FORCE SIDEBAR TEXT TO BLACK */
     section[data-testid="stSidebar"] label, 
     section[data-testid="stSidebar"] .stMarkdown p,
     section[data-testid="stSidebar"] h1, 
@@ -83,12 +84,14 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
 
+    /* FORCE EXERCISE NAMES TO WHITE */
     div[data-testid="stExpander"] details summary span p,
     div[data-testid="stExpander"] details summary {{
         color: #FFFFFF !important;
         font-weight: 800 !important;
     }}
 
+    /* FORCE BLACK BUTTON TEXT */
     .stButton > button {{
         color: #000000 !important;
         font-weight: 600 !important;
@@ -142,19 +145,23 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     
     if not all_rows: return []
 
-    # FIX: More inclusive filtering
+    # REFINED FILTERING: Added "Environment" column support and partial matching
     clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
+    
     for r in all_rows:
-        # Get location from 'Env.' or 'Location' column
-        raw_loc = str(r.get('Env.', r.get('Location', 'General'))).strip().lower()
+        # Check all possible location column names
+        row_loc = str(r.get('Environment', r.get('Env.', r.get('Location', 'All')))).strip().lower()
         
-        # Logic: Include if it matches the filter, OR if it is marked "all", OR if no specific location is set
-        if any(env in raw_loc for env in clean_envs) or "all" in raw_loc or raw_loc == "n/a" or raw_loc == "general":
+        # Include if:
+        # 1. Any selected location is PART of the row's location (e.g., "cages" in "cages/field")
+        # 2. Row is marked "all" or "general"
+        # 3. Row has no location set
+        if any(env in row_loc for env in clean_envs) or row_loc in ["all", "n/a", "general", ""]:
             filtered_pool.append(r)
     
-    if not filtered_pool: 
-        # Emergency Fallback: If filtering is too strict, just use the whole pool for that sport
+    # Safety Check: If filtering resulted in zero, bypass location check for that sport
+    if not filtered_pool:
         filtered_pool = all_rows
     
     random.shuffle(filtered_pool)
@@ -168,13 +175,11 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        # Sets Parsing
         raw_sets = str(item.get('Sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         final_sets = int(round(base_sets * multiplier))
         
-        # URL Parsing
         raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
         clean_demo = extract_clean_url(raw_demo)
 
@@ -183,7 +188,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "category": item.get('Category', 'Skill'),
             "sets": final_sets,
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
-            "env": item.get('Env.', 'General'),
+            "env": item.get('Environment', item.get('Env.', 'General')),
             "focus": item.get('Primary Focus', 'N/A'),
             "stars": item.get('Stars', '⭐⭐⭐'),
             "hs": item.get('High School Goals (Time/Dist.)', item.get('HS Goals', 'N/A')),
@@ -206,7 +211,7 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.workout_finished = False
         st.rerun()
     else:
-        st.sidebar.error("No exercises found for these settings. Try adding more Facility Locations.")
+        st.sidebar.error("Could not find exercises. Try broadening the Location filter.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
