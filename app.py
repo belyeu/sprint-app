@@ -51,12 +51,11 @@ with st.sidebar:
     st.divider()
     st.header("📍 SESSION FILTERS")
     
-    # Sport Selection - Confirmed logic for all sports including Pilates
+    # Sport Selection - Logic now includes softball-hitting.csv
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     
     location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Floor"])
     
-    # "Select All" Removed as requested. Target Drills now controls total output.
     num_drills = st.slider("Target Drills", 1, 50, 13)
 
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
@@ -75,7 +74,7 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
-    /* FORCE SIDEBAR TEXT TO BLACK IN DARK MODE */
+    /* FORCE SIDEBAR TEXT TO BLACK */
     section[data-testid="stSidebar"] label, 
     section[data-testid="stSidebar"] .stMarkdown p,
     section[data-testid="stSidebar"] h1, 
@@ -137,10 +136,10 @@ def extract_clean_url(text):
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     
-    # Mapping confirmed: All sports direct to correct file names
+    # UPDATED: Softball mapping to softball-hitting.csv
     mapping = {
         "Basketball": "basketball.csv", 
-        "Softball": "softball.csv", 
+        "Softball": "softball-hitting.csv", 
         "Track": "track.csv", 
         "Pilates": "pilates.csv", 
         "General": "general.csv"
@@ -148,7 +147,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
     
-    # Add supplementary equipment files if "Weight Room" is active
     if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
     
@@ -160,7 +158,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             all_rows.extend(df.to_dict('records'))
         except: continue
     
-    # Logic verification: Ensure location filtering works for Pilates/Floor/Gym etc.
     clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = [
         r for r in all_rows 
@@ -170,7 +167,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     
     if not filtered_pool: return []
     
-    # Randomize to ensure variety since "Select All" is off
     random.shuffle(filtered_pool)
     filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
     
@@ -182,7 +178,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if name in seen: continue
         seen.add(name)
         
-        # Robust Parsing for all columns requested
+        # Robust Parsing
         raw_sets = str(item.get('Sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
@@ -225,7 +221,6 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
-        # White Text Header via CSS classes
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
@@ -271,7 +266,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 if i in st.session_state.stopwatch_results:
                     st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
 
-            # Small sized demo video logic preserved
             if drill['demo']:
                 st.markdown("---")
                 v_col1, v_col2, v_col3 = st.columns([1, 2, 1])
