@@ -31,9 +31,6 @@ if 'set_counts' not in st.session_state:
 if 'workout_finished' not in st.session_state:
     st.session_state.workout_finished = False
 
-def get_now_est():
-    return datetime.now(pytz.timezone('US/Eastern'))
-
 # --- 2. SIDEBAR & FILTERS ---
 with st.sidebar:
     st.header("🎨 APPEARANCE")
@@ -79,10 +76,20 @@ st.markdown(f"""
     section[data-testid="stSidebar"] {{ background-color: {primary_bg}; }}
     section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2 {{ color: {sidebar_text} !important; }}
 
-    /* CHANGE: Specific Buttons to Black Text */
+    /* Mandatory Black Button Text */
     div.stButton > button {{
         color: black !important;
         font-weight: 700 !important;
+        background-color: #F8FAFC !important;
+    }}
+
+    /* Proper Form Bubble */
+    .form-bubble {{
+        background-color: rgba(59, 130, 246, 0.1);
+        border-left: 5px solid {accent_color};
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0px;
     }}
 
     div[data-testid="stExpander"] details summary {{
@@ -130,55 +137,62 @@ def load_and_build_workout(sport, multiplier, env_selections, limit, intensity):
     if intensity != "Elite":
         pool = [r for r in pool if "advance" not in str(r.get('type', '')).lower()]
 
-    # Warmups (6-10 Drills)
+    # 1. Warmups (6-10 Drills) - Excluded from target count
     warmup_pool = [r for r in pool if "warmup" in str(r.get('type', '')).lower()]
     warmups = random.sample(warmup_pool, min(len(warmup_pool), random.randint(6, 10))) if warmup_pool else []
 
-    # Main Exercises
+    # 2. Main Selection Logic
     main_pool = [r for r in pool if "warmup" not in str(r.get('type', '')).lower()]
     selected_main = []
 
     if main_pool:
-        # Basketball specific type logic or random selection for other sports
+        # Type-based selection
         available_types = list(set([str(r.get('type', '')) for r in main_pool if r.get('type') != 'N/A']))
         chosen_type = random.choice(available_types) if available_types else None
-        
         type_matches = [r for r in main_pool if str(r.get('type', '')) == chosen_type]
         
-        if len(type_matches) >= limit:
-            selected_main = random.sample(type_matches, limit)
-        else:
-            # 90/10 Fallback Algorithm
+        # 90/10 Logic if chosen type is small
+        if len(type_matches) < limit:
             core = ['shooting', 'movement', 'footwork', 'ball-handle', 'finish', 'defense']
             core_pool = [r for r in main_pool if str(r.get('type', '')).lower() in core]
             other_pool = [r for r in main_pool if str(r.get('type', '')).lower() not in core]
-            
             n_core = int(limit * 0.9)
-            selected_main = random.sample(core_pool, min(len(core_pool), n_core)) + \
-                           random.sample(other_pool, min(len(other_pool), max(0, limit - len(core_pool))))
+            type_matches = random.sample(core_pool, min(len(core_pool), n_core)) + \
+                           random.sample(other_pool, min(len(other_pool), max(0, limit - n_core)))
 
-    # L/R Pairing
-    final_workout = []
-    seen_names = set()
-    for drill in selected_main:
-        name = str(drill.get('Exercise Name', drill.get('Exercise', '')))
-        if name in seen_names: continue
-        final_workout.append(drill)
-        seen_names.add(name)
+        # Pairing Logic (L/R, Left/Right, Inside/Outside)
+        final_list = []
+        seen_names = set()
         
-        if "left" in name.lower() or "(L)" in name:
-            pair_name = name.replace("left", "right").replace("Left", "Right").replace("(L)", "(R)")
-            pair = next((r for r in main_pool if str(r.get('Exercise Name', r.get('Exercise', ''))) == pair_name), None)
-            if pair: 
-                final_workout.append(pair)
-                seen_names.add(pair_name)
+        for drill in type_matches:
+            if len(final_list) >= limit: break
+            name = str(drill.get('Exercise Name', drill.get('Exercise', '')))
+            if name in seen_names: continue
+            
+            final_list.append(drill)
+            seen_names.add(name)
+            
+            # Define pairs
+            pairs = [("left", "right"), ("(L)", "(R)"), ("inside", "outside")]
+            for p1, p2 in pairs:
+                search_name = None
+                if p1 in name.lower(): search_name = name.lower().replace(p1, p2)
+                elif p2 in name.lower(): search_name = name.lower().replace(p2, p1)
+                
+                if search_name:
+                    pair_drill = next((r for r in main_pool if str(r.get('Exercise Name', r.get('Exercise', ''))).lower() == search_name), None)
+                    if pair_drill and str(pair_drill.get('Exercise Name')) not in seen_names:
+                        final_list.append(pair_drill)
+                        seen_names.add(str(pair_drill.get('Exercise Name')))
+        
+        selected_main = final_list[:limit]
 
-    # Apply Scaling
-    for d in final_workout + warmups:
+    # Scaling
+    for d in selected_main + warmups:
         d['Sets_S'] = int(round(int(float(d.get('Sets', 3))) * multiplier))
         d['Reps_S'] = scale_text(d.get('Reps/Dist', d.get('Reps', '10')), multiplier)
     
-    return warmups, final_workout[:limit]
+    return warmups, selected_main
 
 # --- 5. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
@@ -192,27 +206,30 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
-    # Warmups
+    # 🏋️ Warmup Suggestion List
     if st.session_state.warmup_drills:
-        with st.expander("🔥 SUGGESTED WARMUP (6-10 Drills)", expanded=False):
-            for wd in st.session_state.warmup_drills:
-                st.write(f"• **{wd.get('Exercise Name', 'Drill')}**: {wd.get('Reps_S', '10')}")
+        st.subheader("🔥 Recommended Warmup")
+        warmup_text = ""
+        for wd in st.session_state.warmup_drills:
+            warmup_text += f"• **{wd.get('Exercise Name', 'Drill')}** ({wd.get('Reps_S', '10')})  \n"
+        st.info(warmup_text)
 
-    # Exercises
+    # 📝 Exercise Display
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"**{i+1}. {drill.get('Exercise Name', 'Drill')}**", expanded=(i==0)):
-            # Show ALL columns
+            
+            # Proper Form Bubble (Separate and First)
+            if drill.get('Proper Form') and drill.get('Proper Form') != "N/A":
+                st.markdown(f"""<div class='form-bubble'><b>✨ Proper Form:</b><br>{drill['Proper Form']}</div>""", unsafe_allow_html=True)
+            
+            # Information Grid (Removing Description from text wall)
             cols = st.columns(4)
-            all_cols = [k for k in drill.keys() if k not in ['Sets_S', 'Reps_S']]
-            for idx, k in enumerate(all_cols):
+            keys_to_show = [k for k in drill.keys() if k not in ['Sets_S', 'Reps_S', 'Description', 'Proper Form', 'Sets', 'Reps/Dist']]
+            for idx, k in enumerate(keys_to_show):
                 with cols[idx % 4]:
                     st.markdown(f"<p class='metric-label'>{k}</p><p class='metric-value'>{drill[k]}</p>", unsafe_allow_html=True)
             
             st.divider()
-            
-            # Restore Proper Form
-            if drill.get('Proper Form') and drill.get('Proper Form') != "N/A":
-                st.warning(f"**✨ Proper Form:** {drill['Proper Form']}")
             
             c1, c2 = st.columns(2)
             with c1:
@@ -220,6 +237,9 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 if st.button(f"✅ Log Set ({curr}/{drill['Sets_S']})", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
                     st.rerun()
+                
+                if "http" in str(drill.get('Demo', '')):
+                    st.markdown(f"[🎥 Video Demo]({drill['Demo']})")
 
             with c2:
                 st.markdown("#### ⏱️ Tools")
