@@ -15,8 +15,8 @@ state_keys = {
     'archives': [],
     'view_archive_index': None,
     'set_counts': {},
-    'stopwatch_start': {},  # Stores start timestamps for each drill
-    'stopwatch_results': {}, # Stores final times
+    'stopwatch_start': {},
+    'stopwatch_results': {},
     'workout_finished': False,
     'user_profile': {
         "name": "Elite Athlete", 
@@ -73,6 +73,12 @@ st.markdown(f"""
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     .stTable, [data-testid="stMarkdownContainer"] p, h1, h2, h3 {{ color: {text_color} !important; }}
     
+    /* FORCE BLACK BUTTON TEXT */
+    .stButton > button {{
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }}
+    
     /* Bubble Styling */
     .desc-bubble {{
         background-color: {bubble_bg};
@@ -89,7 +95,6 @@ st.markdown(f"""
         border-left: 5px solid #F59E0B;
         margin-bottom: 10px;
     }}
-    .form-bubble strong {{ color: {form_text_color} !important; }}
     
     div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; color: white !important; border-radius: 8px; }}
     div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; }}
@@ -107,16 +112,13 @@ def scale_text(val_str, multiplier):
     return new_str
 
 def extract_clean_url(text):
-    """Safe extraction of URL from text to prevent st.video crashes."""
     if not isinstance(text, str): return None
-    # Look for http or https starting strings
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     mapping = {"Basketball": "basketball.csv", "Softball": "softball.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
-    
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
     if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
@@ -143,13 +145,10 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if name in seen: continue
         seen.add(name)
         
-        # --- ROBUST SETS PARSING ---
         raw_sets = str(item.get('Sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         final_sets = int(round(base_sets * multiplier))
-        
-        # --- ROBUST URL PARSING ---
         raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
         clean_demo = extract_clean_url(raw_demo)
 
@@ -187,96 +186,61 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"**{i+1}. {drill['ex']}** ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", expanded=(i==0)):
-            
-            # 1. All Columns / Metrics
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>🔄 Reps</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
             m3.markdown(f"<p class='metric-label'>🧠 CNS</p><p class='metric-value'>{drill['cns']}</p>", unsafe_allow_html=True)
             m4.markdown(f"<p class='metric-label'>📍 Env</p><p class='metric-value'>{drill['env']}</p>", unsafe_allow_html=True)
 
-            # Secondary Metrics
             c1, c2 = st.columns(2)
             if drill['hs'] != "N/A": c1.info(f"**HS Goal:** {drill['hs']}")
             if drill['coll'] != "N/A": c2.success(f"**College Goal:** {drill['coll']}")
             
-            # 2. Description & Proper Form in Bubbles
-            st.markdown(f"""
-                <div class='desc-wrapper'>
-                    <div class='desc-bubble'>
-                        <strong>📝 Description:</strong><br>{drill['desc']}
-                    </div>
-                </div>
-                <div class='form-wrapper'>
-                    <div class='form-bubble'>
-                        <strong>✨ Proper Form:</strong><br>{drill['form']}
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-
+            st.markdown(f"""<div class='desc-bubble'><strong>📝 Description:</strong><br>{drill['desc']}</div>
+                            <div class='form-bubble'><strong>✨ Proper Form:</strong><br>{drill['form']}</div>""", unsafe_allow_html=True)
             st.divider()
 
-            # 3. Stopwatch & Actions
             col_actions, col_watch = st.columns([1, 1])
-            
             with col_actions:
-                # Log Set Button
                 if st.button(f"✅ Log Set", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
                     st.rerun()
-                
-                # Upload Button
                 st.file_uploader("📤 Upload Form Video", type=['mp4', 'mov'], key=f"up_{i}")
 
             with col_watch:
                 st.markdown("#### ⏱️ Stopwatch")
-                # If not currently running
                 if i not in st.session_state.stopwatch_start:
                     if st.button("Start", key=f"start_{i}", use_container_width=True):
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    # STOP Button (Clicking this interrupts the loop below)
                     if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
                         elapsed = time.time() - st.session_state.stopwatch_start[i]
                         st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
-                    
-                    # Live Counting Visual
                     start_time = st.session_state.stopwatch_start[i]
                     placeholder = st.empty()
-                    # Run a loop to update the UI
                     while True:
                         curr_elapsed = time.time() - start_time
                         placeholder.markdown(f"<h1 style='text-align:center; color:#EF4444;'>{curr_elapsed:.1f}s</h1>", unsafe_allow_html=True)
                         time.sleep(0.1)
-
-                # Show saved time if exists
                 if i in st.session_state.stopwatch_results:
                     st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
 
-            # 4. Demo Video (At Bottom) - with Safe Logic
+            # --- RESTORE SMALL SIZE DEMO VIDEO ---
             if drill['demo']:
-                st.caption("🎥 Exercise Demo")
-                try:
-                    st.video(drill['demo'])
-                except Exception as e:
-                    st.error(f"Could not load video. Link: {drill['demo']}")
+                st.markdown("---")
+                v_col1, v_col2, v_col3 = st.columns([1, 2, 1]) # Center the video in a smaller middle column
+                with v_col2:
+                    st.caption("🎥 Exercise Demo")
+                    try: st.video(drill['demo'])
+                    except: st.error(f"Could not load video. Link: {drill['demo']}")
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
-        final = [{
-            "Exercise": d['ex'], 
-            "Sets": st.session_state.set_counts.get(idx, 0), 
-            "Time": st.session_state.stopwatch_results.get(idx, "N/A")
-        } for idx, d in enumerate(st.session_state.current_session)]
-        
-        st.session_state.archives.append({
-            "date": get_now_est().strftime('%Y-%m-%d %H:%M'), 
-            "sport": sport_choice, 
-            "data": final
-        })
+        final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
+        st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "sport": sport_choice, "data": final})
         st.session_state.workout_finished = True
         st.rerun()
 
@@ -288,6 +252,5 @@ elif st.session_state.workout_finished:
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
-
 else:
     st.info("👈 Please use the sidebar to generate a new workout session.")
