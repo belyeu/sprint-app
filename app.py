@@ -138,12 +138,12 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
     if not filtered_pool: filtered_pool = all_rows
     
     random.shuffle(filtered_pool)
-
-    # BASKETBALL LOGIC: Type Lock
+    
+    # BASKETBALL TYPE LOCK LOGIC
     if sport == "Basketball" and filtered_pool:
-        first_drill_cat = filtered_pool[0].get('Category', 'Skill')
-        # Only keep drills from the same category as the first random drill
-        filtered_pool = [r for r in filtered_pool if r.get('Category') == first_drill_cat]
+        first_drill = filtered_pool[0]
+        lock_type = str(first_drill.get('Type', 'General')).strip()
+        filtered_pool = [r for r in filtered_pool if str(r.get('Type', 'General')).strip() == lock_type]
 
     selected_raw = []
     seen = set()
@@ -159,7 +159,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         
         selected_raw.append({
             "ex": name, 
-            "category": item.get('Category', 'Skill'),
             "sets": int(round(base_sets * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
             "env": item.get('Environment', item.get('Env.', 'General')),
@@ -187,11 +186,13 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.rerun()
 
 # --- 6. MAIN INTERFACE ---
-if st.session_state.current_session:
-    current_cat = st.session_state.current_session[0]['category']
-    st.markdown(f"<h3 style='text-align: center; color: #3B82F6;'>Focus Session: {current_cat}</h3>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
+    # Display the active focus type for Basketball
+    if sport_choice == "Basketball":
+        st.info(f"🏀 **BASKETBALL FOCUS SESH:** All drills locked to the same category.")
+
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
             m1, m2, m3, m4 = st.columns(4)
