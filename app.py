@@ -5,9 +5,19 @@ import time
 import re
 from datetime import datetime
 import pytz
+import base64
 
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
+
+# Audio Functionality
+def play_sound(sound_url):
+    sound_html = f"""
+    <audio autoplay>
+        <source src="{sound_url}" type="audio/mp3">
+    </audio>
+    """
+    st.components.v1.html(sound_html, height=0, width=0)
 
 # Initialize Session State
 state_keys = {
@@ -50,14 +60,9 @@ with st.sidebar:
 
     st.divider()
     st.header("📍 SESSION FILTERS")
-    
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
-    
-    # Locations available to the user
     location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General", "Cages"])
-    
     num_drills = st.slider("Target Drills", 1, 50, 13)
-
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
@@ -122,15 +127,7 @@ def extract_clean_url(text):
 
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
-    
-    mapping = {
-        "Basketball": "basketball.csv", 
-        "Softball": "softball-hitting.csv", 
-        "Track": "track.csv", 
-        "Pilates": "pilates.csv", 
-        "General": "general.csv"
-    }
-    
+    mapping = {"Basketball": "basketball.csv", "Softball": "softball-hitting.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
     if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
@@ -144,26 +141,14 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         except: continue
     
     if not all_rows: return []
-
-    # REFINED FILTERING: Added "Environment" column support and partial matching
     clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
-    
     for r in all_rows:
-        # Check all possible location column names
         row_loc = str(r.get('Environment', r.get('Env.', r.get('Location', 'All')))).strip().lower()
-        
-        # Include if:
-        # 1. Any selected location is PART of the row's location (e.g., "cages" in "cages/field")
-        # 2. Row is marked "all" or "general"
-        # 3. Row has no location set
         if any(env in row_loc for env in clean_envs) or row_loc in ["all", "n/a", "general", ""]:
             filtered_pool.append(r)
     
-    # Safety Check: If filtering resulted in zero, bypass location check for that sport
-    if not filtered_pool:
-        filtered_pool = all_rows
-    
+    if not filtered_pool: filtered_pool = all_rows
     random.shuffle(filtered_pool)
     filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
     
@@ -178,15 +163,11 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         raw_sets = str(item.get('Sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
-        final_sets = int(round(base_sets * multiplier))
         
-        raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
-        clean_demo = extract_clean_url(raw_demo)
-
         selected.append({
             "ex": name, 
             "category": item.get('Category', 'Skill'),
-            "sets": final_sets,
+            "sets": int(round(base_sets * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
             "env": item.get('Environment', item.get('Env.', 'General')),
             "focus": item.get('Primary Focus', 'N/A'),
@@ -196,7 +177,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "desc": item.get('Detailed Description', item.get('Description', 'No description provided.')),
             "form": item.get('Proper Form', 'Focus on technique.'),
             "equip": item.get('Equipment Needed', 'N/A'),
-            "demo": clean_demo
+            "demo": extract_clean_url(str(item.get('Demo', item.get('Demo_URL', ''))))
         })
     return selected
 
@@ -210,8 +191,6 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.stopwatch_results = {}
         st.session_state.workout_finished = False
         st.rerun()
-    else:
-        st.sidebar.error("Could not find exercises. Try broadening the Location filter.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
@@ -237,6 +216,8 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             with col_actions:
                 if st.button(f"✅ Log Set ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
+                    # Play "Bling" Sound
+                    play_sound("https://www.soundjay.com/buttons/sounds/button-37.mp3")
                     st.rerun()
                 st.file_uploader("📤 Upload Form Video", type=['mp4', 'mov'], key=f"up_{i}")
 
@@ -255,10 +236,8 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                     
                     start_time = st.session_state.stopwatch_start[i]
                     placeholder = st.empty()
-                    while True:
-                        curr_elapsed = time.time() - start_time
-                        placeholder.markdown(f"<h1 style='text-align:center; color:#EF4444;'>{curr_elapsed:.1f}s</h1>", unsafe_allow_html=True)
-                        time.sleep(0.1)
+                    curr_elapsed = time.time() - start_time
+                    placeholder.markdown(f"<h1 style='text-align:center; color:#EF4444;'>{curr_elapsed:.1f}s</h1>", unsafe_allow_html=True)
                 
                 if i in st.session_state.stopwatch_results:
                     st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
@@ -269,10 +248,12 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 with v_col2:
                     st.caption("🎥 Exercise Demo")
                     try: st.video(drill['demo'])
-                    except: st.error(f"Video unavailable.")
+                    except: st.error("Video unavailable.")
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
+        # Play "Boxing Bell" Sound
+        play_sound("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3")
         final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
         st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "sport": sport_choice, "data": final})
         st.session_state.workout_finished = True
