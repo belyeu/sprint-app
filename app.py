@@ -5,19 +5,9 @@ import time
 import re
 from datetime import datetime
 import pytz
-import base64
 
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
-
-# Audio Functionality
-def play_sound(sound_url):
-    sound_html = f"""
-    <audio autoplay>
-        <source src="{sound_url}" type="audio/mp3">
-    </audio>
-    """
-    st.components.v1.html(sound_html, height=0, width=0)
 
 # Initialize Session State
 state_keys = {
@@ -45,6 +35,14 @@ for key, val in state_keys.items():
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
+# --- SOUND EFFECT HELPERS ---
+def play_sound(url):
+    st.markdown(f"""
+        <audio autoplay>
+            <source src="{url}" type="audio/mp3">
+        </audio>
+        """, unsafe_allow_html=True)
+
 # --- 2. SIDEBAR & FILTERS ---
 with st.sidebar:
     st.header("🎨 APPEARANCE")
@@ -61,7 +59,7 @@ with st.sidebar:
     st.divider()
     st.header("📍 SESSION FILTERS")
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
-    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General", "Cages"])
+    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Cages"])
     num_drills = st.slider("Target Drills", 1, 50, 13)
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
@@ -78,33 +76,16 @@ form_text_color = "#FCD34D" if dark_mode else "#92400E"
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    
-    /* FORCE SIDEBAR TEXT TO BLACK */
-    section[data-testid="stSidebar"] label, 
-    section[data-testid="stSidebar"] .stMarkdown p,
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] span {{
-        color: #000000 !important;
-        font-weight: 700 !important;
+    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] .stMarkdown p,
+    section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] span {{
+        color: #000000 !important; font-weight: 700 !important;
     }}
-
-    /* FORCE EXERCISE NAMES TO WHITE */
-    div[data-testid="stExpander"] details summary span p,
-    div[data-testid="stExpander"] details summary {{
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
+    div[data-testid="stExpander"] details summary span p, div[data-testid="stExpander"] details summary {{
+        color: #FFFFFF !important; font-weight: 800 !important;
     }}
-
-    /* FORCE BLACK BUTTON TEXT */
-    .stButton > button {{
-        color: #000000 !important;
-        font-weight: 600 !important;
-    }}
-    
+    .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
-    
     div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; border-radius: 8px; }}
     div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; }}
     .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin: 0; }}
@@ -127,7 +108,14 @@ def extract_clean_url(text):
 
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
-    mapping = {"Basketball": "basketball.csv", "Softball": "softball-hitting.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
+    mapping = {
+        "Basketball": "basketball.csv", 
+        "Softball": "softball.csv", 
+        "Track": "track.csv", 
+        "Pilates": "pilates.csv", 
+        "General": "general.csv"
+    }
+    
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
     if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
@@ -141,14 +129,17 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         except: continue
     
     if not all_rows: return []
+
     clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
     for r in all_rows:
+        # Check 'Environment' column specifically for Softball
         row_loc = str(r.get('Environment', r.get('Env.', r.get('Location', 'All')))).strip().lower()
         if any(env in row_loc for env in clean_envs) or row_loc in ["all", "n/a", "general", ""]:
             filtered_pool.append(r)
     
     if not filtered_pool: filtered_pool = all_rows
+    
     random.shuffle(filtered_pool)
     filtered_pool.sort(key=lambda x: str(x.get('Category', 'General')))
     
@@ -166,7 +157,6 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         
         selected.append({
             "ex": name, 
-            "category": item.get('Category', 'Skill'),
             "sets": int(round(base_sets * multiplier)),
             "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
             "env": item.get('Environment', item.get('Env.', 'General')),
@@ -201,68 +191,48 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
-            m3.markdown(f"<p class='metric-label'>🎯 Primary Focus</p><p class='metric-value'>{drill['focus']}</p>", unsafe_allow_html=True)
-            m4.markdown(f"<p class='metric-label'>🛠️ Equipment</p><p class='metric-value'>{drill['equip']}</p>", unsafe_allow_html=True)
+            m3.markdown(f"<p class='metric-label'>🎯 Focus</p><p class='metric-value'>{drill['focus']}</p>", unsafe_allow_html=True)
+            m4.markdown(f"<p class='metric-label'>🛠️ Equip</p><p class='metric-value'>{drill['equip']}</p>", unsafe_allow_html=True)
 
-            c1, c2 = st.columns(2)
-            if drill['hs'] != "N/A": c1.info(f"**High School Goals:** {drill['hs']}")
-            if drill['coll'] != "N/A": c2.success(f"**College Goals:** {drill['coll']}")
-            
-            st.markdown(f"""<div class='desc-bubble'><strong>📝 Detailed Description:</strong><br>{drill['desc']}</div>
-                            <div class='form-bubble'><strong>✨ Proper Form:</strong><br>{drill['form']}</div>""", unsafe_allow_html=True)
-            st.divider()
+            st.markdown(f"<div class='desc-bubble'><strong>📝 Description:</strong> {drill['desc']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='form-bubble'><strong>✨ Proper Form:</strong> {drill['form']}</div>", unsafe_allow_html=True)
 
             col_actions, col_watch = st.columns([1, 1])
             with col_actions:
                 if st.button(f"✅ Log Set ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
-                    # Play "Bling" Sound
-                    play_sound("https://www.soundjay.com/buttons/sounds/button-37.mp3")
+                    play_sound("https://www.myinstants.com/media/sounds/ding-sound-effect_1.mp3")
                     st.rerun()
-                st.file_uploader("📤 Upload Form Video", type=['mp4', 'mov'], key=f"up_{i}")
 
             with col_watch:
-                st.markdown("#### ⏱️ Stopwatch")
                 if i not in st.session_state.stopwatch_start:
-                    if st.button("Start", key=f"start_{i}", use_container_width=True):
+                    if st.button("⏱️ Start Clock", key=f"start_{i}", use_container_width=True):
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
+                    if st.button("🛑 Stop", key=f"stop_{i}", use_container_width=True):
                         elapsed = time.time() - st.session_state.stopwatch_start[i]
                         st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
-                    
-                    start_time = st.session_state.stopwatch_start[i]
-                    placeholder = st.empty()
-                    curr_elapsed = time.time() - start_time
-                    placeholder.markdown(f"<h1 style='text-align:center; color:#EF4444;'>{curr_elapsed:.1f}s</h1>", unsafe_allow_html=True)
-                
-                if i in st.session_state.stopwatch_results:
-                    st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
+                    st.write(f"⏱️ {time.time() - st.session_state.stopwatch_start[i]:.1f}s")
 
             if drill['demo']:
                 st.markdown("---")
                 v_col1, v_col2, v_col3 = st.columns([1, 2, 1])
                 with v_col2:
-                    st.caption("🎥 Exercise Demo")
                     try: st.video(drill['demo'])
                     except: st.error("Video unavailable.")
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
-        # Play "Boxing Bell" Sound
-        play_sound("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3")
-        final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
-        st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "sport": sport_choice, "data": final})
+        play_sound("https://www.myinstants.com/media/sounds/referee-whistle.mp3")
         st.session_state.workout_finished = True
         st.rerun()
 
 elif st.session_state.workout_finished:
     st.balloons()
     st.header("📊 Session Summary")
-    st.table(pd.DataFrame(st.session_state.archives[-1]['data']))
     if st.button("Start New Session", use_container_width=True):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
