@@ -106,6 +106,13 @@ def scale_text(val_str, multiplier):
         new_str = new_str.replace(n, str(int(round(int(n) * multiplier))), 1)
     return new_str
 
+def extract_clean_url(text):
+    """Safe extraction of URL from text to prevent st.video crashes."""
+    if not isinstance(text, str): return None
+    # Look for http or https starting strings
+    match = re.search(r'(https?://[^\s]+)', text)
+    return match.group(1) if match else None
+
 def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     mapping = {"Basketball": "basketball.csv", "Softball": "softball.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
@@ -136,13 +143,15 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
         if name in seen: continue
         seen.add(name)
         
-        # --- FIX: ROBUST SETS PARSING ---
+        # --- ROBUST SETS PARSING ---
         raw_sets = str(item.get('Sets', 3))
-        # Find first number in string (e.g., '3-4' -> 3), default to 3 if fails
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         final_sets = int(round(base_sets * multiplier))
-        # --------------------------------
+        
+        # --- ROBUST URL PARSING ---
+        raw_demo = str(item.get('Demo', item.get('Demo_URL', '')))
+        clean_demo = extract_clean_url(raw_demo)
 
         drill = {
             "ex": name, 
@@ -156,7 +165,7 @@ def load_and_build_workout(sport, multiplier, env_selections, limit):
             "coll": item.get('College Goals', 'N/A'),
             "desc": item.get('Description', 'No description provided.'),
             "form": item.get('Proper Form', 'Focus on technique.'),
-            "demo": str(item.get('Demo', item.get('Demo_URL', '')))
+            "demo": clean_demo
         }
         selected.append(drill)
     return selected
@@ -247,10 +256,13 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                 if i in st.session_state.stopwatch_results:
                     st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
 
-            # 4. Demo Video (At Bottom)
-            if drill['demo'] and "http" in drill['demo']:
+            # 4. Demo Video (At Bottom) - with Safe Logic
+            if drill['demo']:
                 st.caption("🎥 Exercise Demo")
-                st.video(drill['demo'])
+                try:
+                    st.video(drill['demo'])
+                except Exception as e:
+                    st.error(f"Could not load video. Link: {drill['demo']}")
 
     st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
