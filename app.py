@@ -18,7 +18,14 @@ state_keys = {
     'stopwatch_start': {},
     'stopwatch_results': {},
     'workout_finished': False,
-    'user_profile': {"name": "Elite Athlete", "age": 17, "weight": 180}
+    'user_profile': {
+        "name": "Elite Athlete", 
+        "age": 17, 
+        "weight": 180, 
+        "goal_weight": 190, 
+        "hs_goal": "Elite Performance", 
+        "college_goal": "D1 Scholarship"
+    }
 }
 
 for key, val in state_keys.items():
@@ -28,7 +35,7 @@ for key, val in state_keys.items():
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
-# --- 2. DATA LOADING HELPER (PRE-SCAN) ---
+# --- 2. DATA LOADING HELPER ---
 @st.cache_data
 def get_csv_data(sport):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
@@ -42,20 +49,12 @@ def get_csv_data(sport):
     url = f"{base}{mapping.get(sport, 'general.csv')}"
     try:
         df = pd.read_csv(url).fillna("N/A")
-        # Clean whitespace from headers
         df.columns = [c.strip() for c in df.columns]
         return df
     except:
         return pd.DataFrame()
 
-def find_column_ignore_case(df, target_name):
-    """Finds the actual column name in the DF that matches target_name (case-insensitive)."""
-    for col in df.columns:
-        if col.lower() == target_name.lower():
-            return col
-    return None
-
-# --- 3. SIDEBAR & DYNAMIC FILTERS ---
+# --- 3. SIDEBAR & FILTERS ---
 with st.sidebar:
     st.header("🎨 APPEARANCE")
     dark_mode = st.toggle("Enable Dark Mode", value=True)
@@ -64,44 +63,39 @@ with st.sidebar:
     st.header("📍 SESSION FILTERS")
     
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
+    
+    # Facility Location as Dropdown
     location_choice = st.selectbox("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"])
+    
+    # Determine the correct column based on sport
+    if sport_choice == "General": type_col = "Primary Muscle"
+    elif sport_choice in ["Track", "Basketball"]: type_col = "type" # FIXED: Lowercase 'type'
+    elif sport_choice == "Softball": type_col = "Category"
+    else: type_col = "Category"
 
-    # Define the mapping of Sport -> Desired Column Name
-    col_map = {
-        "General": "Primary Muscle",
-        "Track": "type",
-        "Basketball": "type",
-        "Softball": "Category"
-    }
-    requested_col = col_map.get(sport_choice, "Category")
-
-    # PRE-SCAN CSV FOR FILTER OPTIONS
+    # Pre-scan for dynamic options
     df_preview = get_csv_data(sport_choice)
-    filter_options = ["All"]
-    actual_col_name = None
+    if not df_preview.empty and type_col in df_preview.columns:
+        raw_opts = df_preview[type_col].unique().tolist()
+        filter_options = ["All"] + sorted([str(o) for o in raw_opts if str(o) != "N/A"])
+    else:
+        filter_options = ["All"]
 
-    if not df_preview.empty:
-        # Find the actual column in the CSV (e.g., if 'type' is 'Type' or 'type')
-        actual_col_name = find_column_ignore_case(df_preview, requested_col)
-        
-        if actual_col_name:
-            raw_options = df_preview[actual_col_name].unique().tolist()
-            # Filter out N/A and clean up strings
-            clean_opts = sorted([str(opt) for opt in raw_options if str(opt) != "N/A"])
-            filter_options += clean_opts
-        else:
-            st.sidebar.warning(f"Column '{requested_col}' not found in file.")
-
-    type_filter = st.selectbox(f"Filter by {requested_col}", filter_options)
+    type_filter = st.selectbox(f"Filter by {type_col}", filter_options)
     
     num_drills = st.slider("Target Drills", 1, 50, 13)
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
 # --- 4. DYNAMIC THEMING ---
+primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
+card_bg = "#1E293B" if dark_mode else "#F8FAFC"
+text_color = "#F8FAFC" if dark_mode else "#1E293B"
+accent_color = "#3B82F6"
+
 st.markdown(f"""
     <style>
-    .stApp {{ background-color: {"#0F172A" if dark_mode else "#FFFFFF"}; color: {"#F8FAFC" if dark_mode else "#1E293B"}; }}
+    .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
     
     /* SIDEBAR TEXT TO BLACK */
     section[data-testid="stSidebar"] label, 
@@ -113,27 +107,31 @@ st.markdown(f"""
     }}
     section[data-testid="stSidebar"] {{ background-color: #F1F5F9 !important; }}
 
-    /* FACILITY NAME BACKGROUND BLUE, TEXT WHITE */
+    /* FACILITY HEADER: BLUE BG, WHITE TEXT */
     div[data-testid="stExpander"] details summary {{
         background-color: #1E40AF !important;
         color: #FFFFFF !important;
-        border-radius: 8px; padding: 10px;
+        border-radius: 8px;
+        padding: 10px;
     }}
     
-    /* EXERCISE NAMES TO WHITE */
+    /* FORCE EXPANDER TEXT TO WHITE */
     div[data-testid="stExpander"] details summary span p {{
-        color: #FFFFFF !important; font-weight: 800 !important;
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
     }}
 
     /* BLACK BUTTON TEXT */
     .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     
-    .desc-bubble {{ background-color: #334155; padding: 15px; border-radius: 12px; border-left: 5px solid #3B82F6; margin-bottom: 10px; }}
+    .desc-bubble {{ background-color: #334155; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: #422006; color: #FCD34D !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
+    .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin: 0; }}
+    .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; margin: 0; }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 5. WORKOUT BUILDER ---
+# --- 5. DATA LOGIC ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -141,22 +139,28 @@ def scale_text(val_str, multiplier):
         new_str = new_str.replace(n, str(int(round(int(n) * multiplier))), 1)
     return new_str
 
-def load_and_build_workout(sport, multiplier, location, limit, type_filter, target_col_name):
+def load_and_build_workout(sport, multiplier, location, limit, type_f, t_col):
     df = get_csv_data(sport)
     if df.empty: return []
 
     all_rows = df.to_dict('records')
-    actual_col = find_column_ignore_case(df, target_col_name)
+    
+    # Optional Weight Room extras
+    if location == "Weight Room":
+        base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
+        for extra in ["barbell.csv", "general-dumbell.csv", "general-kettlebell.csv"]:
+            try:
+                ex_df = pd.read_csv(f"{base_url}{extra}").fillna("N/A")
+                all_rows.extend(ex_df.to_dict('records'))
+            except: continue
 
     filtered_pool = []
     for r in all_rows:
-        # Standardize location check
         row_loc = str(r.get('Environment', r.get('Env.', r.get('Location', 'All')))).strip().lower()
-        # Standardize type check using actual column name found
-        row_type = str(r.get(actual_col, 'General')).strip().lower() if actual_col else "general"
+        row_type = str(r.get(t_col, 'General')).strip().lower()
         
         loc_match = (location.lower() in row_loc) or row_loc in ["all", "general", "n/a", ""]
-        type_match = (type_filter.lower() == "all") or (type_filter.lower() == row_type)
+        type_match = (type_f.lower() == "all") or (type_f.lower() == row_type)
         
         if loc_match and type_match:
             filtered_pool.append(r)
@@ -193,7 +197,7 @@ def load_and_build_workout(sport, multiplier, location, limit, type_filter, targ
 
 # --- 6. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
-    res = load_and_build_workout(sport_choice, mult, location_choice, num_drills, type_filter, requested_col)
+    res = load_and_build_workout(sport_choice, mult, location_choice, num_drills, type_filter, type_col)
     if res:
         st.session_state.current_session = res
         st.session_state.set_counts = {i: 0 for i in range(len(res))}
@@ -208,7 +212,6 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
-            # Metric Columns
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
@@ -235,7 +238,10 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
                     st.error(f"Timer Running: {time.time() - st.session_state.stopwatch_start[i]:.1f}s")
-    
+                
+                if i in st.session_state.stopwatch_results:
+                    st.success(f"Recorded: {st.session_state.stopwatch_results[i]}")
+
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
         st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "data": final})
@@ -248,6 +254,7 @@ elif st.session_state.workout_finished:
     df_summary = pd.DataFrame(st.session_state.archives[-1]['data'])
     st.table(df_summary)
     
+    # Download Button
     csv = df_summary.to_csv(index=False).encode('utf-8')
     st.download_button(label="📥 Download CSV", data=csv, file_name=f"workout_{get_now_est().strftime('%Y%m%d')}.csv", mime='text/csv')
     
@@ -256,4 +263,4 @@ elif st.session_state.workout_finished:
         st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👈 Please use the sidebar to generate a new workout session.")
+    st.info("👈 Use the sidebar to generate a new workout.")
