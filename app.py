@@ -10,7 +10,7 @@ import pytz
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
 
-# Initialize Session State
+# Initialize Session State with all base keys
 state_keys = {
     'current_session': None,
     'archives': [],
@@ -36,7 +36,7 @@ for key, val in state_keys.items():
 def get_now_est():
     return datetime.now(pytz.timezone('US/Eastern'))
 
-# --- 2. SIDEBAR & FILTERS ---
+# --- 2. SIDEBAR & DYNAMIC FILTERS ---
 with st.sidebar:
     st.header("🎨 APPEARANCE")
     dark_mode = st.toggle("Enable Dark Mode", value=True)
@@ -53,37 +53,31 @@ with st.sidebar:
     st.header("📍 SESSION FILTERS")
     
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
-    
-    # Facility Location Dropdown
     location_choice = st.selectbox("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"])
     
-    # Dynamic Column Mapping for Type Filter
+    # Dynamic Column Mapping
     if sport_choice == "General": type_col = "primary muscle"
     elif sport_choice in ["Track", "Basketball"]: type_col = "type"
     elif sport_choice == "Softball": type_col = "category"
     else: type_col = "type"
 
-    # Pre-fetch data for dynamic dropdown options
     base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     mapping = {"Basketball": "basketball.csv", "Softball": "softball-hitting.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
     
+    # Pre-scan for dynamic options
     try:
         df_temp = pd.read_csv(f"{base_url}{mapping.get(sport_choice)}").fillna("N/A")
         df_temp.columns = [c.strip().lower() for c in df_temp.columns]
-        if type_col in df_temp.columns:
-            opts = ["All"] + sorted([str(x) for x in df_temp[type_col].unique() if str(x) != "N/A"])
-        else:
-            opts = ["All"]
+        opts = ["All"] + sorted([str(x) for x in df_temp[type_col].unique() if str(x) != "N/A"])
     except:
         opts = ["All"]
 
     selected_type = st.selectbox(f"Filter by {type_col.title()}", opts)
-    
     num_drills = st.slider("Target Drills", 1, 50, 13)
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
-# --- 3. DYNAMIC THEMING ---
+# --- 3. DYNAMIC THEMING (CSS) ---
 primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
 card_bg = "#1E293B" if dark_mode else "#F8FAFC"
 text_color = "#F8FAFC" if dark_mode else "#1E293B"
@@ -95,27 +89,15 @@ form_text_color = "#FCD34D" if dark_mode else "#92400E"
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    
-    /* FORCE SIDEBAR TEXT TO BLACK */
-    section[data-testid="stSidebar"] label, 
-    section[data-testid="stSidebar"] .stMarkdown p,
-    section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] span {{ color: #000000 !important; font-weight: 700 !important; }}
+    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] p {{
+        color: #000000 !important; font-weight: 700 !important;
+    }}
     section[data-testid="stSidebar"] {{ background-color: #F1F5F9 !important; }}
-
-    /* FORCE EXERCISE HEADERS BLUE, TEXT WHITE */
     div[data-testid="stExpander"] details summary {{
-        background-color: #1E40AF !important;
-        color: #FFFFFF !important;
-        border-radius: 8px;
-        font-weight: 800 !important;
+        background-color: #1E40AF !important; color: #FFFFFF !important; border-radius: 8px; font-weight: 800 !important;
     }}
     div[data-testid="stExpander"] details summary span p {{ color: #FFFFFF !important; }}
-
-    /* SUMMARY PAGE TEXT TO WHITE */
-    .summary-text {{ color: #FFFFFF !important; }}
     [data-testid="stTable"] td, [data-testid="stTable"] th {{ color: {text_color} !important; }}
-
     .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
@@ -124,7 +106,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA LOGIC ---
+# --- 4. DATA PROCESSING LOGIC ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -138,9 +120,11 @@ def extract_clean_url(text):
     return match.group(1) if match else None
 
 def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
-    df = pd.read_csv(f"{base_url}{mapping.get(sport)}").fillna("N/A")
-    df.columns = [c.strip().lower() for c in df.columns]
-    all_rows = df.to_dict('records')
+    try:
+        df = pd.read_csv(f"{base_url}{mapping.get(sport)}").fillna("N/A")
+        df.columns = [c.strip().lower() for c in df.columns]
+        all_rows = df.to_dict('records')
+    except: return []
     
     if location == "Weight Room":
         for extra in ["barbell.csv", "general-dumbell.csv", "general-kettlebell.csv"]:
@@ -155,15 +139,14 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
         row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
         row_type = str(r.get(t_col, 'skill')).strip().lower()
         
+        # STRICT TYPE FILTERING
         loc_match = (location.lower() in row_loc) or row_loc in ["all", "n/a", "general", ""]
         type_match = (t_filter.lower() == "all") or (t_filter.lower() == row_type)
         
         if loc_match and type_match:
             filtered_pool.append(r)
     
-    if not filtered_pool: filtered_pool = all_rows
     random.shuffle(filtered_pool)
-    
     selected = []
     seen = set()
     for item in filtered_pool:
@@ -200,6 +183,8 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.stopwatch_results = {}
         st.session_state.workout_finished = False
         st.rerun()
+    else:
+        st.sidebar.warning("No exercises found for this Type/Location.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
@@ -229,12 +214,12 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
+                    elapsed = time.time() - st.session_state.stopwatch_start[i]
+                    st.error(f"Timer: {elapsed:.1f}s")
                     if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
-                        elapsed = time.time() - st.session_state.stopwatch_start[i]
                         st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
-                    st.error(f"Timer Running: {time.time() - st.session_state.stopwatch_start[i]:.1f}s")
 
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
@@ -244,14 +229,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
 elif st.session_state.workout_finished:
     st.balloons()
-    st.markdown("<h2 class='summary-text'>📊 Session Summary</h2>", unsafe_allow_html=True)
-    df_summary = pd.DataFrame(st.session_state.archives[-1]['data'])
-    st.table(df_summary)
-    
-    csv = df_summary.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Summary CSV", data=csv, file_name=f"workout_{get_now_est().strftime('%Y%m%d')}.csv", mime='text/csv')
-    
+    st.header("📊 Session Summary")
+    st.table(pd.DataFrame(st.session_state.archives[-1]['data']))
     if st.button("Start New Session", use_container_width=True):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
         st.rerun()
+else:
+    st.info("👈 Please use the sidebar to generate a new workout session.")
