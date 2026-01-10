@@ -96,7 +96,6 @@ def load_drills_from_csv():
                 
                 drill_data = {
                     "Sport": sport_name,
-                    # Added 'Type' column extraction (defaults to 'General' if missing)
                     "Type": row.get('Type', row.get('Category', 'General')), 
                     "Exercise": row.get('Exercise Name', row.get('Exercise', 'Unknown')),
                     "Description": row.get('Description', 'N/A'),
@@ -123,21 +122,40 @@ def get_workout(df, sport, locs, types, multiplier):
     
     drills = []
     for _, row in filtered.iterrows():
-        raw_goal = str(row['Base_Goal'])
-        nums = re.findall(r'\d+', raw_goal)
-        scaled_goal = raw_goal
-        for n in nums:
-            scaled_val = str(int(round(int(n) * multiplier)))
-            scaled_goal = scaled_goal.replace(n, scaled_val, 1)
+        # SCALING LOGIC
+        try:
+            raw_goal = str(row['Base_Goal'])
+            nums = re.findall(r'\d+', raw_goal)
+            scaled_goal = raw_goal
+            for n in nums:
+                scaled_val = str(int(round(int(n) * multiplier)))
+                scaled_goal = scaled_goal.replace(n, scaled_val, 1)
+        except:
+            scaled_goal = str(row['Base_Goal'])
+
+        # SETS LOGIC
+        try:
+            base_sets = int(row['Base_Sets'])
+        except:
+            base_sets = 3
+            
+        # REST LOGIC (FIXED)
+        # Safely extract integer from Rest column (handles "60s", "45", or empty)
+        try:
+            raw_rest = str(row['Rest'])
+            rest_nums = re.findall(r'\d+', raw_rest)
+            rest_val = int(rest_nums[0]) if rest_nums else 60
+        except:
+            rest_val = 60
 
         drills.append({
             "ex": row['Exercise'],
             "type": row['Type'],
             "desc": row['Description'],
-            "sets": int(round(int(row['Base_Sets']) * multiplier)),
+            "sets": int(round(base_sets * multiplier)),
             "goal": scaled_goal,
             "unit": row['Unit'],
-            "rest": int(row['Rest']),
+            "rest": rest_val,  # Using the safe value
             "loc": row['Location'],
             "demo": row['Demo_URL'],
             "focus": row['Focus_Points']
@@ -315,4 +333,4 @@ else:
                 {log['sport']} ({log['intensity']}) - {log['drills']} Drills
                 </div>""", unsafe_allow_html=True)
 
-st.sidebar.caption("v5.1.0 | Type Filters & Summary")
+st.sidebar.caption("v5.1.1 | Fixed Integer Conversion Bug")
