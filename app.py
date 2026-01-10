@@ -3,7 +3,6 @@ import pandas as pd
 import random
 import time
 import re
-import io
 from datetime import datetime
 import pytz
 
@@ -54,16 +53,7 @@ with st.sidebar:
     
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     
-    # Facility Location - Change to Dropdown (Selectbox)
-    location_choice = st.selectbox("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"])
-    
-    # Handle the Dynamic Column Mapping for "Type" Filter
-    if sport_choice == "General": type_col = "Primary Muscle"
-    elif sport_choice in ["Track", "Basketball"]: type_col = "type" # Fixed: forced lowercase 'type'
-    elif sport_choice == "Softball": type_col = "Category"
-    else: type_col = "Category"
-
-    type_filter = st.selectbox(f"Filter by {type_col}", ["All", "Speed", "Power", "Skill", "Strength", "Conditioning", "Agility"])
+    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General", "Cages"])
     
     num_drills = st.slider("Target Drills", 1, 50, 13)
 
@@ -88,27 +78,16 @@ st.markdown(f"""
     section[data-testid="stSidebar"] .stMarkdown p,
     section[data-testid="stSidebar"] h1, 
     section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] h3,
     section[data-testid="stSidebar"] span {{
         color: #000000 !important;
         font-weight: 700 !important;
     }}
-    
-    /* Sidebar container visibility improvement */
-    section[data-testid="stSidebar"] {{
-        background-color: #F1F5F9 !important;
-    }}
 
-    /* FORCE EXERCISE NAMES TO WHITE & BLUE BACKGROUND FOR FACILITY HEADER */
+    /* FORCE EXERCISE NAMES TO WHITE */
+    div[data-testid="stExpander"] details summary span p,
     div[data-testid="stExpander"] details summary {{
-        background-color: #1E40AF !important; 
         color: #FFFFFF !important;
-        border-radius: 8px;
         font-weight: 800 !important;
-    }}
-    
-    div[data-testid="stExpander"] details summary span p {{
-        color: #FFFFFF !important;
     }}
 
     /* FORCE BLACK BUTTON TEXT */
@@ -116,15 +95,16 @@ st.markdown(f"""
         color: #000000 !important;
         font-weight: 600 !important;
     }}
-    
-    /* Summary Page White Text Fix */
+
+    /* SUMMARY TABLE TEXT FIX */
     [data-testid="stTable"] td, [data-testid="stTable"] th {{
-        color: #FFFFFF !important;
+        color: {text_color} !important;
     }}
     
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
     
+    div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; border-radius: 8px; }}
     div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; }}
     .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin: 0; }}
     .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; margin: 0; }}
@@ -144,7 +124,7 @@ def extract_clean_url(text):
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
-def load_and_build_workout(sport, multiplier, location, limit, type_filter, type_col):
+def load_and_build_workout(sport, multiplier, env_selections, limit):
     base = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     
     mapping = {
@@ -156,65 +136,73 @@ def load_and_build_workout(sport, multiplier, location, limit, type_filter, type
     }
     
     load_list = [f"{base}{mapping.get(sport, 'general.csv')}"]
-    if location == "Weight Room":
+    if "Weight Room" in env_selections:
         load_list += [f"{base}barbell.csv", f"{base}general-dumbell.csv", f"{base}general-kettlebell.csv"]
     
     all_rows = []
     for url in load_list:
         try:
             df = pd.read_csv(url).fillna("N/A")
-            df.columns = [c.strip() for c in df.columns]
+            # FIX: Normalize column names to lowercase to handle "type" vs "Type"
+            df.columns = [c.strip().lower() for c in df.columns]
             all_rows.extend(df.to_dict('records'))
         except: continue
     
     if not all_rows: return []
 
+    clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
+    
     for r in all_rows:
-        row_loc = str(r.get('Environment', r.get('Env.', r.get('Location', 'All')))).strip().lower()
-        # FIXED: Look for the specific type_col mapped above
-        row_type = str(r.get(type_col, 'Skill')).strip().lower()
-        
-        loc_match = (location.lower() in row_loc) or row_loc in ["all", "general", "n/a", ""]
-        type_match = (type_filter.lower() == "all") or (type_filter.lower() in row_type)
-        
-        if loc_match and type_match:
+        # Check normalized location columns
+        row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
+        if any(env in row_loc for env in clean_envs) or row_loc in ["all", "n/a", "general", ""]:
             filtered_pool.append(r)
     
-    if not filtered_pool: filtered_pool = all_rows
+    if not filtered_pool:
+        filtered_pool = all_rows
     
     random.shuffle(filtered_pool)
+    # FIX: Sorting by normalized 'category' or 'type' column
+    filtered_pool.sort(key=lambda x: str(x.get('category', x.get('type', 'general'))))
+    
     selected = []
     seen = set()
     for item in filtered_pool:
         if len(selected) >= limit: break
-        name = item.get('Exercise Name', item.get('Exercise', 'Unknown'))
+        # Normalize exercise name lookup
+        name = item.get('exercise name', item.get('exercise', 'Unknown'))
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        raw_sets = str(item.get('Sets', 3))
+        raw_sets = str(item.get('sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
         final_sets = int(round(base_sets * multiplier))
         
+        raw_demo = str(item.get('demo', item.get('demo_url', '')))
+        clean_demo = extract_clean_url(raw_demo)
+
         selected.append({
             "ex": name, 
+            "category": item.get('category', item.get('type', 'Skill')),
             "sets": final_sets,
-            "reps": scale_text(item.get('Reps/Dist', item.get('Reps/Dist.', '10')), multiplier),
-            "focus": item.get('Primary Focus', 'N/A'),
-            "stars": item.get('Stars', '⭐⭐⭐'),
-            "hs": item.get('High School Goals (Time/Dist.)', item.get('HS Goals', 'N/A')),
-            "coll": item.get('College Goals (Time/Dist.)', item.get('College Goals', 'N/A')),
-            "desc": item.get('Detailed Description', item.get('Description', 'N/A')),
-            "form": item.get('Proper Form', 'Focus on technique.'),
-            "equip": item.get('Equipment Needed', 'N/A'),
-            "demo": extract_clean_url(str(item.get('Demo', item.get('Demo_URL', ''))))
+            "reps": scale_text(item.get('reps/dist', item.get('reps/dist.', '10')), multiplier),
+            "env": item.get('environment', item.get('env.', 'General')),
+            "focus": item.get('primary focus', 'N/A'),
+            "stars": item.get('stars', '⭐⭐⭐'),
+            "hs": item.get('high school goals (time/dist.)', item.get('hs goals', 'N/A')),
+            "coll": item.get('college goals (time/dist.)', item.get('college goals', 'N/A')),
+            "desc": item.get('detailed description', item.get('description', 'No description provided.')),
+            "form": item.get('proper form', 'Focus on technique.'),
+            "equip": item.get('equipment needed', 'N/A'),
+            "demo": clean_demo
         })
     return selected
 
 # --- 5. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
-    res = load_and_build_workout(sport_choice, mult, location_choice, num_drills, type_filter, type_col)
+    res = load_and_build_workout(sport_choice, mult, location_filter, num_drills)
     if res:
         st.session_state.current_session = res
         st.session_state.set_counts = {i: 0 for i in range(len(res))}
@@ -222,6 +210,8 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.stopwatch_results = {}
         st.session_state.workout_finished = False
         st.rerun()
+    else:
+        st.sidebar.error("Could not find exercises. Try broadening the Location filter.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
@@ -229,6 +219,11 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
+            # Video integrated directly into the card top
+            if drill['demo']:
+                try: st.video(drill['demo'])
+                except: st.caption("Video link found but unavailable.")
+            
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
             m2.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
@@ -236,17 +231,11 @@ if st.session_state.current_session and not st.session_state.workout_finished:
             m4.markdown(f"<p class='metric-label'>🛠️ Equipment</p><p class='metric-value'>{drill['equip']}</p>", unsafe_allow_html=True)
 
             c1, c2 = st.columns(2)
-            if drill['hs'] != "N/A": c1.info(f"**High School Goals:** {drill['hs']}")
+            if drill['hs'] != "N/A": c1.info(f"**HS Goals:** {drill['hs']}")
             if drill['coll'] != "N/A": c2.success(f"**College Goals:** {drill['coll']}")
             
             st.markdown(f"""<div class='desc-bubble'><strong>📝 Detailed Description:</strong><br>{drill['desc']}</div>
                             <div class='form-bubble'><strong>✨ Proper Form:</strong><br>{drill['form']}</div>""", unsafe_allow_html=True)
-            
-            # FIXED: Demo video moved inside the card structure
-            if drill['demo']:
-                try: st.video(drill['demo'])
-                except: st.caption("Video demo unavailable.")
-            
             st.divider()
 
             col_actions, col_watch = st.columns([1, 1])
@@ -269,7 +258,10 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
                     
-                    st.error(f"Timer Running: {time.time() - st.session_state.stopwatch_start[i]:.1f}s")
+                    start_time = st.session_state.stopwatch_start[i]
+                    curr_elapsed = time.time() - start_time
+                    st.markdown(f"<h1 style='text-align:center; color:#EF4444;'>{curr_elapsed:.1f}s</h1>", unsafe_allow_html=True)
+                    if st.button("🔄 Refresh Clock", key=f"ref_{i}"): st.rerun()
                 
                 if i in st.session_state.stopwatch_results:
                     st.success(f"⏱️ Recorded: {st.session_state.stopwatch_results[i]}")
@@ -284,20 +276,8 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 elif st.session_state.workout_finished:
     st.balloons()
     st.header("📊 Session Summary")
-    df_summary = pd.DataFrame(st.session_state.archives[-1]['data'])
-    
-    # CSS injection ensures table text is white in dark mode
-    st.table(df_summary)
-    
-    # Download Button
-    csv = df_summary.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 Download Session Summary CSV",
-        data=csv,
-        file_name=f"workout_summary_{get_now_est().strftime('%Y%m%d')}.csv",
-        mime='text/csv',
-    )
-    
+    # Summary Table is now governed by the CSS fix above to show text in white
+    st.table(pd.DataFrame(st.session_state.archives[-1]['data']))
     if st.button("Start New Session", use_container_width=True):
         st.session_state.current_session = None
         st.session_state.workout_finished = False
