@@ -192,7 +192,9 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
-            if drill['demo']: st.video(drill['demo']) # VIDEO INSIDE CARD
+            # --- VIDEO DEMO AT TOP OF CARD ---
+            if drill['demo']:
+                st.video(drill['demo'])
             
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
