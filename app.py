@@ -75,7 +75,7 @@ with st.sidebar:
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
-# --- 3. DYNAMIC THEMING (CSS) ---
+# --- 3. DYNAMIC THEMING ---
 primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
 card_bg = "#1E293B" if dark_mode else "#F8FAFC"
 text_color = "#F8FAFC" if dark_mode else "#1E293B"
@@ -95,7 +95,6 @@ st.markdown(f"""
         background-color: #1E40AF !important; color: #FFFFFF !important; border-radius: 8px; font-weight: 800 !important;
     }}
     div[data-testid="stExpander"] details summary span p {{ color: #FFFFFF !important; }}
-    [data-testid="stTable"] td, [data-testid="stTable"] th {{ color: {text_color} !important; }}
     .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
@@ -104,7 +103,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA PROCESSING LOGIC ---
+# --- 4. DATA LOGIC ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -114,7 +113,8 @@ def scale_text(val_str, multiplier):
 
 def extract_clean_url(text):
     if not isinstance(text, str) or text == "N/A": return None
-    match = re.search(r'(https?://[^\s]+)', text)
+    # Matches http or https links
+    match = re.search(r'(https?://[^\s,><"\'|]+)', text)
     return match.group(1) if match else None
 
 def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
@@ -136,8 +136,10 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
     for r in all_rows:
         row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
         row_type = str(r.get(t_col, 'skill')).strip().lower()
+        
         loc_match = (location.lower() in row_loc) or row_loc in ["all", "n/a", "general", ""]
         type_match = (t_filter.lower() == "all") or (t_filter.lower() == row_type)
+        
         if loc_match and type_match:
             filtered_pool.append(r)
     
@@ -150,16 +152,16 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        # Enhanced Video Discovery
+        # FIX: Greedy Search for Video Links
         video_url = None
-        for key in ['demo', 'video', 'url', 'demo_url']:
-            if item.get(key) and item.get(key) != "N/A":
-                video_url = extract_clean_url(str(item.get(key)))
-                if video_url: break
+        for key in item.keys():
+            if any(term in key for term in ['demo', 'video', 'url', 'link']):
+                potential_url = extract_clean_url(str(item[key]))
+                if potential_url:
+                    video_url = potential_url
+                    break
 
-        raw_sets = str(item.get('sets', 3))
-        found_digits = re.findall(r'\d+', raw_sets)
-        base_sets = int(found_digits[0]) if found_digits else 3
+        base_sets = int(re.findall(r'\d+', str(item.get('sets', 3)))[0]) if re.findall(r'\d+', str(item.get('sets', 3))) else 3
         
         selected.append({
             "ex": name, "sets": int(round(base_sets * multiplier)),
@@ -213,7 +215,7 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    # LIVE TIMER DISPLAY
+                    # LIVE TIMER
                     timer_placeholder = st.empty()
                     start_val = st.session_state.stopwatch_start[i]
                     
@@ -223,7 +225,6 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
                     
-                    # Updates the display every 0.1s
                     elapsed = time.time() - start_val
                     timer_placeholder.error(f"LIVE TIMER: {elapsed:.1f}s")
                     time.sleep(0.1)
