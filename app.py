@@ -3,7 +3,6 @@ import pandas as pd
 import random
 import time
 import re
-import io
 from datetime import datetime
 import pytz
 
@@ -95,6 +94,7 @@ st.markdown(f"""
         background-color: #1E40AF !important; color: #FFFFFF !important; border-radius: 8px; font-weight: 800 !important;
     }}
     div[data-testid="stExpander"] details summary span p {{ color: #FFFFFF !important; }}
+    [data-testid="stTable"] td, [data-testid="stTable"] th {{ color: {text_color} !important; }}
     .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
@@ -103,7 +103,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA LOGIC ---
+# --- 4. DATA PROCESSING LOGIC ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -112,9 +112,11 @@ def scale_text(val_str, multiplier):
     return new_str
 
 def extract_clean_url(text):
-    if not isinstance(text, str) or text == "N/A": return None
-    # Matches http or https links
-    match = re.search(r'(https?://[^\s,><"\'|]+)', text)
+    """Aggressive URL extraction to catch links inside complex strings."""
+    if not isinstance(text, str) or text.strip() == "" or text == "N/A": 
+        return None
+    # Look for standard http/https or youtube/vimeo signatures
+    match = re.search(r'(https?://[^\s\'"<>]+)', text)
     return match.group(1) if match else None
 
 def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
@@ -136,10 +138,8 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
     for r in all_rows:
         row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
         row_type = str(r.get(t_col, 'skill')).strip().lower()
-        
         loc_match = (location.lower() in row_loc) or row_loc in ["all", "n/a", "general", ""]
         type_match = (t_filter.lower() == "all") or (t_filter.lower() == row_type)
-        
         if loc_match and type_match:
             filtered_pool.append(r)
     
@@ -152,16 +152,17 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        # FIX: Greedy Search for Video Links
+        # --- FIXED VIDEO DISCOVERY FOR GENERAL CSV ---
         video_url = None
-        for key in item.keys():
-            if any(term in key for term in ['demo', 'video', 'url', 'link']):
-                potential_url = extract_clean_url(str(item[key]))
-                if potential_url:
-                    video_url = potential_url
-                    break
+        # Check every possible column name for a video link
+        for key in ['demo', 'video', 'url', 'demo_url', 'link', 'youtube']:
+            raw_val = str(item.get(key, ''))
+            video_url = extract_clean_url(raw_val)
+            if video_url: break
 
-        base_sets = int(re.findall(r'\d+', str(item.get('sets', 3)))[0]) if re.findall(r'\d+', str(item.get('sets', 3))) else 3
+        raw_sets = str(item.get('sets', 3))
+        found_digits = re.findall(r'\d+', raw_sets)
+        base_sets = int(found_digits[0]) if found_digits else 3
         
         selected.append({
             "ex": name, "sets": int(round(base_sets * multiplier)),
@@ -192,8 +193,11 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
+            # Demo Video Placement
             if drill['demo']:
                 st.video(drill['demo'])
+            else:
+                st.caption("No demo video available for this exercise.")
             
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
@@ -215,22 +219,18 @@ if st.session_state.current_session and not st.session_state.workout_finished:
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    # LIVE TIMER
                     timer_placeholder = st.empty()
                     start_val = st.session_state.stopwatch_start[i]
-                    
                     if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
                         final_time = time.time() - start_val
                         st.session_state.stopwatch_results[i] = f"{final_time:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
-                    
                     elapsed = time.time() - start_val
                     timer_placeholder.error(f"LIVE TIMER: {elapsed:.1f}s")
                     time.sleep(0.1)
                     st.rerun()
 
-    st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
         st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "data": final})
