@@ -12,7 +12,6 @@ st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="�
 state_keys = {
     'current_session': None,
     'archives': [],
-    'view_archive_index': None,
     'set_counts': {},
     'stopwatch_start': {},
     'stopwatch_results': {},
@@ -53,14 +52,20 @@ with st.sidebar:
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
     location_choice = st.selectbox("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"])
     
-    # Dynamic Column Mapping
+    # Map column names based on CSV structure
     if sport_choice == "General": type_col = "primary muscle"
     elif sport_choice == "Softball": type_col = "category"
     elif sport_choice in ["Track", "Basketball"]: type_col = "type"
     else: type_col = "type"
 
     base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
-    mapping = {"Basketball": "basketball.csv", "Softball": "softball-hitting.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
+    mapping = {
+        "Basketball": "basketball.csv", 
+        "Softball": "softball-hitting.csv", 
+        "Track": "track.csv", 
+        "Pilates": "pilates.csv", 
+        "General": "general.csv"
+    }
     
     try:
         df_temp = pd.read_csv(f"{base_url}{mapping.get(sport_choice)}").fillna("N/A")
@@ -94,7 +99,6 @@ st.markdown(f"""
         background-color: #1E40AF !important; color: #FFFFFF !important; border-radius: 8px; font-weight: 800 !important;
     }}
     div[data-testid="stExpander"] details summary span p {{ color: #FFFFFF !important; }}
-    [data-testid="stTable"] td, [data-testid="stTable"] th {{ color: {text_color} !important; }}
     .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
@@ -103,7 +107,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA PROCESSING LOGIC ---
+# --- 4. DATA LOGIC ---
 def scale_text(val_str, multiplier):
     nums = re.findall(r'\d+', str(val_str))
     new_str = str(val_str)
@@ -112,11 +116,8 @@ def scale_text(val_str, multiplier):
     return new_str
 
 def extract_clean_url(text):
-    """Aggressive URL extraction to catch links inside complex strings."""
-    if not isinstance(text, str) or text.strip() == "" or text == "N/A": 
-        return None
-    # Look for standard http/https or youtube/vimeo signatures
-    match = re.search(r'(https?://[^\s\'"<>]+)', text)
+    if not isinstance(text, str) or text.lower() == "n/a" or len(text) < 5: return None
+    match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
 def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
@@ -136,10 +137,14 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
     
     filtered_pool = []
     for r in all_rows:
+        # Check all possible location column headers
         row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
         row_type = str(r.get(t_col, 'skill')).strip().lower()
+        
+        # Partial match for environment (e.g. "Cages" matches "Cages/Field")
         loc_match = (location.lower() in row_loc) or row_loc in ["all", "n/a", "general", ""]
         type_match = (t_filter.lower() == "all") or (t_filter.lower() == row_type)
+        
         if loc_match and type_match:
             filtered_pool.append(r)
     
@@ -152,10 +157,9 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        # --- FIXED VIDEO DISCOVERY FOR GENERAL CSV ---
+        # Robust video link discovery
         video_url = None
-        # Check every possible column name for a video link
-        for key in ['demo', 'video', 'url', 'demo_url', 'link', 'youtube']:
+        for key in ['demo', 'video', 'url', 'demo_url', 'link']:
             raw_val = str(item.get(key, ''))
             video_url = extract_clean_url(raw_val)
             if video_url: break
@@ -193,11 +197,9 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
-            # Demo Video Placement
+            # Video Demo
             if drill['demo']:
                 st.video(drill['demo'])
-            else:
-                st.caption("No demo video available for this exercise.")
             
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
@@ -207,27 +209,28 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
             st.markdown(f"<div class='desc-bubble'><strong>📝 Description:</strong><br>{drill['desc']}</div><div class='form-bubble'><strong>✨ Proper Form:</strong><br>{drill['form']}</div>", unsafe_allow_html=True)
 
-            col_actions, col_watch = st.columns([1, 1])
-            with col_actions:
+            c_act, c_watch = st.columns([1, 1])
+            with c_act:
                 if st.button(f"✅ Log Set ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
                     st.rerun()
 
-            with col_watch:
+            with c_watch:
                 if i not in st.session_state.stopwatch_start:
                     if st.button("⏱️ Start Timer", key=f"start_{i}", use_container_width=True):
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    timer_placeholder = st.empty()
-                    start_val = st.session_state.stopwatch_start[i]
+                    timer_box = st.empty()
                     if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
-                        final_time = time.time() - start_val
-                        st.session_state.stopwatch_results[i] = f"{final_time:.1f}s"
+                        elapsed = time.time() - st.session_state.stopwatch_start[i]
+                        st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
-                    elapsed = time.time() - start_val
-                    timer_placeholder.error(f"LIVE TIMER: {elapsed:.1f}s")
+                    
+                    # Live counting display
+                    curr = time.time() - st.session_state.stopwatch_start[i]
+                    timer_box.error(f"COUNTING: {curr:.1f}s")
                     time.sleep(0.1)
                     st.rerun()
 
@@ -246,4 +249,4 @@ elif st.session_state.workout_finished:
         st.session_state.workout_finished = False
         st.rerun()
 else:
-    st.info("👈 Please use the sidebar to generate a new workout session.")
+    st.info("👈 Use the sidebar to set your goals and generate a workout.")
