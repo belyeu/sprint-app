@@ -10,7 +10,6 @@ import pytz
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
 
-# Initialize Session State with all base keys
 state_keys = {
     'current_session': None,
     'archives': [],
@@ -57,18 +56,17 @@ with st.sidebar:
     
     # Dynamic Column Mapping
     if sport_choice == "General": type_col = "primary muscle"
-    elif sport_choice in ["Track", "Basketball"]: type_col = "type"
     elif sport_choice == "Softball": type_col = "category"
+    elif sport_choice in ["Track", "Basketball"]: type_col = "type"
     else: type_col = "type"
 
     base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     mapping = {"Basketball": "basketball.csv", "Softball": "softball-hitting.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
     
-    # Pre-scan for dynamic options
     try:
         df_temp = pd.read_csv(f"{base_url}{mapping.get(sport_choice)}").fillna("N/A")
         df_temp.columns = [c.strip().lower() for c in df_temp.columns]
-        opts = ["All"] + sorted([str(x) for x in df_temp[type_col].unique() if str(x) != "N/A"])
+        opts = ["All"] + sorted([str(x).title() for x in df_temp[type_col].unique() if str(x) != "N/A"])
     except:
         opts = ["All"]
 
@@ -115,7 +113,7 @@ def scale_text(val_str, multiplier):
     return new_str
 
 def extract_clean_url(text):
-    if not isinstance(text, str): return None
+    if not isinstance(text, str) or text == "N/A": return None
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
@@ -138,11 +136,8 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
     for r in all_rows:
         row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
         row_type = str(r.get(t_col, 'skill')).strip().lower()
-        
-        # STRICT TYPE FILTERING
         loc_match = (location.lower() in row_loc) or row_loc in ["all", "n/a", "general", ""]
         type_match = (t_filter.lower() == "all") or (t_filter.lower() == row_type)
-        
         if loc_match and type_match:
             filtered_pool.append(r)
     
@@ -155,6 +150,13 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
+        # Enhanced Video Discovery
+        video_url = None
+        for key in ['demo', 'video', 'url', 'demo_url']:
+            if item.get(key) and item.get(key) != "N/A":
+                video_url = extract_clean_url(str(item.get(key)))
+                if video_url: break
+
         raw_sets = str(item.get('sets', 3))
         found_digits = re.findall(r'\d+', raw_sets)
         base_sets = int(found_digits[0]) if found_digits else 3
@@ -164,12 +166,10 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
             "reps": scale_text(item.get('reps/dist', item.get('reps/dist.', '10')), multiplier),
             "focus": item.get('primary focus', 'N/A'),
             "stars": item.get('stars', '⭐⭐⭐'),
-            "hs": item.get('high school goals (time/dist.)', item.get('hs goals', 'N/A')),
-            "coll": item.get('college goals (time/dist.)', item.get('college goals', 'N/A')),
             "desc": item.get('detailed description', item.get('description', 'N/A')),
             "form": item.get('proper form', 'Focus on technique.'),
             "equip": item.get('equipment needed', 'N/A'),
-            "demo": extract_clean_url(str(item.get('demo', item.get('demo_url', ''))))
+            "demo": video_url
         })
     return selected
 
@@ -183,8 +183,6 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.stopwatch_results = {}
         st.session_state.workout_finished = False
         st.rerun()
-    else:
-        st.sidebar.warning("No exercises found for this Type/Location.")
 
 # --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
@@ -192,7 +190,6 @@ st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>",
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
-            # --- VIDEO DEMO AT TOP OF CARD ---
             if drill['demo']:
                 st.video(drill['demo'])
             
@@ -212,17 +209,27 @@ if st.session_state.current_session and not st.session_state.workout_finished:
 
             with col_watch:
                 if i not in st.session_state.stopwatch_start:
-                    if st.button("Start Timer", key=f"start_{i}", use_container_width=True):
+                    if st.button("⏱️ Start Timer", key=f"start_{i}", use_container_width=True):
                         st.session_state.stopwatch_start[i] = time.time()
                         st.rerun()
                 else:
-                    elapsed = time.time() - st.session_state.stopwatch_start[i]
-                    st.error(f"Timer: {elapsed:.1f}s")
+                    # LIVE TIMER DISPLAY
+                    timer_placeholder = st.empty()
+                    start_val = st.session_state.stopwatch_start[i]
+                    
                     if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
-                        st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
+                        final_time = time.time() - start_val
+                        st.session_state.stopwatch_results[i] = f"{final_time:.1f}s"
                         del st.session_state.stopwatch_start[i]
                         st.rerun()
+                    
+                    # Updates the display every 0.1s
+                    elapsed = time.time() - start_val
+                    timer_placeholder.error(f"LIVE TIMER: {elapsed:.1f}s")
+                    time.sleep(0.1)
+                    st.rerun()
 
+    st.divider()
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
         st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "data": final})
