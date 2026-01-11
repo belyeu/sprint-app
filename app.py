@@ -3,13 +3,13 @@ import pandas as pd
 import random
 import time
 import re
-import io
 from datetime import datetime
 import pytz
 
 # --- 1. APP CONFIG & SESSION STATE ---
 st.set_page_config(page_title="Pro-Athlete Tracker", layout="wide", page_icon="🏆")
 
+# Initialize Session State
 state_keys = {
     'current_session': None,
     'archives': [],
@@ -52,30 +52,35 @@ with st.sidebar:
     st.header("📍 SESSION FILTERS")
     
     sport_choice = st.selectbox("Select Sport", ["Basketball", "Softball", "Track", "Pilates", "General"])
-    location_choice = st.selectbox("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"])
     
+    # 1. Determine the Correct Filtering Column based on Sport
     if sport_choice == "General": type_col = "primary muscle"
     elif sport_choice in ["Track", "Basketball"]: type_col = "type"
     elif sport_choice == "Softball": type_col = "category"
     else: type_col = "type"
 
+    # 2. Pre-fetch CSV to populate the Type Filter options
     base_url = "https://raw.githubusercontent.com/belyeu/sprint-app/refs/heads/main/"
     mapping = {"Basketball": "basketball.csv", "Softball": "softball-hitting.csv", "Track": "track.csv", "Pilates": "pilates.csv", "General": "general.csv"}
     
     try:
         df_temp = pd.read_csv(f"{base_url}{mapping.get(sport_choice)}").fillna("N/A")
         df_temp.columns = [c.strip().lower() for c in df_temp.columns]
-        opts = ["All"] + sorted([str(x) for x in df_temp[type_col].unique() if str(x) != "N/A"])
+        type_opts = ["All"] + sorted([str(x).title() for x in df_temp[type_col].unique() if str(x) != "N/A"])
     except:
-        opts = ["All"]
+        type_opts = ["All"]
 
-    selected_type = st.selectbox(f"Filter by {type_col.title()}", opts)
+    selected_type = st.selectbox(f"Filter by {type_col.title()}", type_opts)
+    
+    location_filter = st.multiselect("Facility Location", ["Gym", "Field", "Cages", "Weight Room", "Track", "Outdoor", "Floor", "General"], default=["Gym", "Field", "Track", "Floor", "General", "Cages"])
+    
     num_drills = st.slider("Target Drills", 1, 50, 13)
     effort = st.select_slider("Effort Level", options=["Low", "Moderate", "High", "Elite"], value="Moderate")
     mult = {"Low": 0.8, "Moderate": 1.0, "High": 1.2, "Elite": 1.4}[effort]
 
-# --- 3. DYNAMIC THEMING (STRICTLY RETAINED) ---
+# --- 3. DYNAMIC THEMING ---
 primary_bg = "#0F172A" if dark_mode else "#FFFFFF"
+card_bg = "#1E293B" if dark_mode else "#F8FAFC"
 text_color = "#F8FAFC" if dark_mode else "#1E293B"
 accent_color = "#3B82F6"
 bubble_bg = "#334155" if dark_mode else "#E2E8F0"
@@ -85,18 +90,15 @@ form_text_color = "#FCD34D" if dark_mode else "#92400E"
 st.markdown(f"""
     <style>
     .stApp {{ background-color: {primary_bg}; color: {text_color}; }}
-    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] p {{
-        color: #000000 !important; font-weight: 700 !important;
-    }}
-    section[data-testid="stSidebar"] {{ background-color: #F1F5F9 !important; }}
-    div[data-testid="stExpander"] details summary {{
-        background-color: #1E40AF !important; color: #FFFFFF !important; border-radius: 8px; font-weight: 800 !important;
-    }}
-    div[data-testid="stExpander"] details summary span p {{ color: #FFFFFF !important; }}
-    [data-testid="stTable"] td, [data-testid="stTable"] th {{ color: {text_color} !important; }}
+    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] .stMarkdown p,
+    section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] span {{ color: #000000 !important; font-weight: 700 !important; }}
+    div[data-testid="stExpander"] details summary span p, div[data-testid="stExpander"] details summary {{ color: #FFFFFF !important; font-weight: 800 !important; }}
     .stButton > button {{ color: #000000 !important; font-weight: 600 !important; }}
     .desc-bubble {{ background-color: {bubble_bg}; padding: 15px; border-radius: 12px; border-left: 5px solid {accent_color}; margin-bottom: 10px; }}
     .form-bubble {{ background-color: {form_bubble_bg}; color: {form_text_color} !important; padding: 15px; border-radius: 12px; border-left: 5px solid #F59E0B; margin-bottom: 10px; }}
+    div[data-testid="stExpander"] details summary {{ background-color: {accent_color} !important; border-radius: 8px; }}
+    div[data-testid="stExpander"] {{ background-color: {card_bg} !important; border: 1px solid {accent_color} !important; }}
     .metric-label {{ font-size: 0.75rem; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin: 0; }}
     .metric-value {{ font-size: 1.1rem; color: {accent_color}; font-weight: 700; margin: 0; }}
     </style>
@@ -111,35 +113,40 @@ def scale_text(val_str, multiplier):
     return new_str
 
 def extract_clean_url(text):
-    if not isinstance(text, str) or text == "N/A": return None
+    if not isinstance(text, str): return None
     match = re.search(r'(https?://[^\s]+)', text)
     return match.group(1) if match else None
 
-def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
-    try:
-        df = pd.read_csv(f"{base_url}{mapping.get(sport)}").fillna("N/A")
-        df.columns = [c.strip().lower() for c in df.columns]
-        all_rows = df.to_dict('records')
-    except: return []
+def load_and_build_workout(sport, multiplier, env_selections, limit, t_filter, t_col_name):
+    load_list = [f"{base_url}{mapping.get(sport, 'general.csv')}"]
+    if "Weight Room" in env_selections:
+        load_list += [f"{base_url}barbell.csv", f"{base_url}general-dumbell.csv", f"{base_url}general-kettlebell.csv"]
     
-    if location == "Weight Room":
-        for extra in ["barbell.csv", "general-dumbell.csv", "general-kettlebell.csv"]:
-            try:
-                ex_df = pd.read_csv(f"{base_url}{extra}").fillna("N/A")
-                ex_df.columns = [c.strip().lower() for c in ex_df.columns]
-                all_rows.extend(ex_df.to_dict('records'))
-            except: continue
+    all_rows = []
+    for url in load_list:
+        try:
+            df = pd.read_csv(url).fillna("N/A")
+            df.columns = [c.strip().lower() for c in df.columns]
+            all_rows.extend(df.to_dict('records'))
+        except: continue
     
+    if not all_rows: return []
+
+    clean_envs = [s.strip().lower() for s in env_selections]
     filtered_pool = []
+    
     for r in all_rows:
         row_loc = str(r.get('environment', r.get('env.', r.get('location', 'all')))).strip().lower()
-        row_type = str(r.get(t_col, 'skill')).strip().lower()
+        row_type = str(r.get(t_col_name, 'skill')).strip().lower()
         
-        loc_match = (location.lower() in row_loc) or row_loc in ["all", "n/a", "general", ""]
+        # Check Location and Type Requirements
+        loc_match = any(env in row_loc for env in clean_envs) or row_loc in ["all", "n/a", "general", ""]
         type_match = (t_filter.lower() == "all") or (t_filter.lower() == row_type)
         
         if loc_match and type_match:
             filtered_pool.append(r)
+    
+    if not filtered_pool: filtered_pool = all_rows
     
     random.shuffle(filtered_pool)
     selected = []
@@ -150,28 +157,26 @@ def load_and_build_workout(sport, multiplier, location, limit, t_filter, t_col):
         if name in seen or name == "Unknown": continue
         seen.add(name)
         
-        # Enhanced Video Search for General Workouts
-        video_url = None
-        for key in ['demo', 'video', 'demo_url', 'url', 'link']:
-            if item.get(key) and item.get(key) != "N/A":
-                video_url = extract_clean_url(str(item.get(key)))
-                if video_url: break
-
+        base_sets = int(re.findall(r'\d+', str(item.get('sets', 3)))[0]) if re.findall(r'\d+', str(item.get('sets', 3))) else 3
+        
         selected.append({
-            "ex": name, "sets": int(round(int(re.findall(r'\d+', str(item.get('sets', 3)))[0] if re.findall(r'\d+', str(item.get('sets', 3))) else 3) * multiplier)),
+            "ex": name, 
+            "sets": int(round(base_sets * multiplier)),
             "reps": scale_text(item.get('reps/dist', item.get('reps/dist.', '10')), multiplier),
             "focus": item.get('primary focus', 'N/A'),
             "stars": item.get('stars', '⭐⭐⭐'),
+            "hs": item.get('high school goals (time/dist.)', item.get('hs goals', 'N/A')),
+            "coll": item.get('college goals (time/dist.)', item.get('college goals', 'N/A')),
             "desc": item.get('detailed description', item.get('description', 'N/A')),
             "form": item.get('proper form', 'Focus on technique.'),
             "equip": item.get('equipment needed', 'N/A'),
-            "demo": video_url
+            "demo": extract_clean_url(str(item.get('demo', item.get('demo_url', ''))))
         })
     return selected
 
-# --- 5. EXECUTION & INTERFACE ---
+# --- 5. EXECUTION ---
 if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
-    res = load_and_build_workout(sport_choice, mult, location_choice, num_drills, selected_type, type_col)
+    res = load_and_build_workout(sport_choice, mult, location_filter, num_drills, selected_type, type_col)
     if res:
         st.session_state.current_session = res
         st.session_state.set_counts = {i: 0 for i in range(len(res))}
@@ -180,47 +185,54 @@ if st.sidebar.button("🚀 GENERATE WORKOUT", use_container_width=True):
         st.session_state.workout_finished = False
         st.rerun()
 
+# --- 6. MAIN INTERFACE ---
 st.markdown("<h1 style='text-align: center;'>🏆 PRO-ATHLETE PERFORMANCE</h1>", unsafe_allow_html=True)
 
 if st.session_state.current_session and not st.session_state.workout_finished:
     for i, drill in enumerate(st.session_state.current_session):
         with st.expander(f"EXERCISE: {drill['ex'].upper()} | {drill['stars']}", expanded=(i==0)):
-            if drill['demo']:
-                st.video(drill['demo']) # VIDEO INSIDE CARD
-            
+            if drill['demo']: st.video(drill['demo'])
+
             m1, m2, m3, m4 = st.columns(4)
             m1.markdown(f"<p class='metric-label'>🔢 Sets</p><p class='metric-value'>{drill['sets']}</p>", unsafe_allow_html=True)
-            m2.markdown(f"<p class='metric-label'>🔄 Reps/Dist</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
+            m2.markdown(f"<p class='metric-label'>🔄 Reps</p><p class='metric-value'>{drill['reps']}</p>", unsafe_allow_html=True)
             m3.markdown(f"<p class='metric-label'>🎯 Focus</p><p class='metric-value'>{drill['focus']}</p>", unsafe_allow_html=True)
             m4.markdown(f"<p class='metric-label'>🛠️ Equipment</p><p class='metric-value'>{drill['equip']}</p>", unsafe_allow_html=True)
 
             st.markdown(f"<div class='desc-bubble'><strong>📝 Description:</strong><br>{drill['desc']}</div><div class='form-bubble'><strong>✨ Proper Form:</strong><br>{drill['form']}</div>", unsafe_allow_html=True)
-            
-            # Log & Timer Logic (Retained)
+
             col_actions, col_watch = st.columns([1, 1])
             with col_actions:
                 if st.button(f"✅ Log Set ({st.session_state.set_counts.get(i,0)}/{drill['sets']})", key=f"log_{i}", use_container_width=True):
                     st.session_state.set_counts[i] += 1
                     st.rerun()
+
             with col_watch:
                 if i not in st.session_state.stopwatch_start:
                     if st.button("Start Timer", key=f"start_{i}", use_container_width=True):
-                        st.session_state.stopwatch_start[i] = time.time(); st.rerun()
+                        st.session_state.stopwatch_start[i] = time.time()
+                        st.rerun()
                 else:
                     elapsed = time.time() - st.session_state.stopwatch_start[i]
                     st.error(f"Timer: {elapsed:.1f}s")
                     if st.button("🛑 Stop & Save", key=f"stop_{i}", use_container_width=True):
-                        st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"; del st.session_state.stopwatch_start[i]; st.rerun()
+                        st.session_state.stopwatch_results[i] = f"{elapsed:.1f}s"
+                        del st.session_state.stopwatch_start[i]
+                        st.rerun()
 
     if st.button("🏁 FINISH WORKOUT", use_container_width=True):
         final = [{"Exercise": d['ex'], "Sets": st.session_state.set_counts.get(idx, 0), "Time": st.session_state.stopwatch_results.get(idx, "N/A")} for idx, d in enumerate(st.session_state.current_session)]
         st.session_state.archives.append({"date": get_now_est().strftime('%Y-%m-%d %H:%M'), "data": final})
-        st.session_state.workout_finished = True; st.rerun()
+        st.session_state.workout_finished = True
+        st.rerun()
 
 elif st.session_state.workout_finished:
-    st.balloons(); st.header("📊 Session Summary")
+    st.balloons()
+    st.header("📊 Session Summary")
     st.table(pd.DataFrame(st.session_state.archives[-1]['data']))
     if st.button("Start New Session", use_container_width=True):
-        st.session_state.current_session = None; st.session_state.workout_finished = False; st.rerun()
+        st.session_state.current_session = None
+        st.session_state.workout_finished = False
+        st.rerun()
 else:
     st.info("👈 Please use the sidebar to generate a new workout session.")
