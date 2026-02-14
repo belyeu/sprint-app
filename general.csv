@@ -1,4 +1,4 @@
-Rank,Exercise Name,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo ,Env
+Rank,Exercise,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo ,Env
 S,Hack Squat,Inter,Quads,High,3,8-12,--,3m,Stretch/Mass,⭐⭐⭐,Goblet Sq,Leg Str,Quad Sweep,Machine squat.,Back flat against pad; deep depth.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=276s,Gym
 S,Back Squat,Inter,Quads,High,3,5-8,--,3-5m,Overload,⭐⭐⭐,Goblet Sq,Base Str,Power,Barbell squat.,Break parallel; chest up.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=566s,Free
 S,Pendulum Squat,Inter,Quads,High,3,8-12,--,3m,Stretch,⭐⭐⭐,Hack Sq,Leg Str,Quad Detail,Arced machine squat.,Deep knee flexion.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=533s,Gym
@@ -86,3 +86,4 @@ B,Bent Over Fly,Beg,Rear Delt,Low,3,15-20,--,60s,Isolation,⭐,None,Posture,Rear
 B,Super ROM Lat,Adv,Side Delt,Low,3,15-20,--,90s,ROM,⭐,Lateral,Mobility,ROM,High raise.,Raise DBs all the way overhead.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=410s,Free
 B,Step Up,Beg,Quads,Med,3,10ea,--,90s,Unilateral,--,Lunge,Stability,Balance,Box step.,Drive through lead leg.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=88s,Free
 B,Lat Band Walk,Beg,Glutes,Low,3,15ea,--,60s,Warmup,--,None,Warmup,Activation,Band side step.,Band knees/ankles; step side.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=152s,Home
+
