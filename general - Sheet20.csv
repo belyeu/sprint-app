@@ -1,0 +1,88 @@
+Rank,Exercise Name,Level,Primary Muscle,CNS,Sets,Reps,Time Goal,Rest,Primary Focus,Stars,Pre-Req,HS Goals,College Goals,Description,Proper Form,Demo ,Env
+S,Hack Squat,Inter,Quads,High,3,8-12,--,3m,Stretch/Mass,⭐⭐⭐,Goblet Sq,Leg Str,Quad Sweep,Machine squat.,Back flat against pad; deep depth.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=276s,Gym
+S,Back Squat,Inter,Quads,High,3,5-8,--,3-5m,Overload,⭐⭐⭐,Goblet Sq,Base Str,Power,Barbell squat.,Break parallel; chest up.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=566s,Free
+S,Pendulum Squat,Inter,Quads,High,3,8-12,--,3m,Stretch,⭐⭐⭐,Hack Sq,Leg Str,Quad Detail,Arced machine squat.,Deep knee flexion.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=533s,Gym
+S,Smith Squat,Beg,Quads,Med,3,10-12,--,2m,Failure Safe,⭐⭐⭐,None,Hypertrophy,Intensity,Fixed path squat.,Lean back; feet forward.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=275s,Gym
+S,Bulgarian Split,Inter,Quads/Glutes,High,3,8-10,--,2m,Unilateral,⭐⭐⭐,Lunge,Balance,Imbalances,Single leg squat.,Rear foot up; deep knee bend.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=477s,Free
+S,Walking Lunge,Beg,Glutes,Med,3,12ea,--,2m,Stretch,⭐⭐⭐,Split Sq,Conditioning,Glute Tie-in,Dynamic lunge.,Lean 30° forward; long stride.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=628s,Free
+S,Hip Abduction,Beg,Glute Med,Low,3,15-20,--,60s,Upper Glute,⭐⭐⭐,None,Activation,Upper Shelf,Seated machine.,Lean forward; controlled eccentric.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=193s,Gym
+S,45° Back Ext,Beg,Glutes,Low,3,12-15,--,90s,Shortened,⭐⭐⭐,None,Posture,Glute/Ham,Angled extension.,Round upper back; chin tucked.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=121s,Gym
+S,Chest-Sup Row,Beg,Back,Low,3,10-12,--,90s,Stability,⭐⭐⭐,DB Row,Upper Back,Thickness,Supported row.,Drive elbows back; chest on pad.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=307s,Gym
+S,Lat Pulldown,Beg,Lats,Low,3,10-12,--,90s,Width,⭐⭐⭐,None,Lat Width,Taper,Vertical cable pull.,Elbows to ribs; slight lean.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=325s,Gym
+S,Cable Row,Beg,Back,Low,3,10-12,--,90s,Stretch,⭐⭐⭐,None,Thickness,Low Lat,Seated row.,Stretch forward; pull to waist.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=574s,Gym
+S,Meadows Row,Inter,Back,Med,3,10ea,--,2m,Unilateral,⭐⭐⭐,DB Row,Strength,Upper Back,Landmine row.,Elbow out; strap up; deep stretch.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=500s,Free
+S,Machine Press,Beg,Chest,Low,3,8-12,--,2m,Stability,⭐⭐⭐,Pushup,Base Press,Hypertrophy,Seated press.,Retract blades; full lockout.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=728s,Gym
+S,Seated Cable Fly,Inter,Chest,Low,3,12-15,--,90s,Isolation,⭐⭐⭐,Pec Deck,Isolation,Inner Pec,Cable adduction.,Arms wide; squeeze at center.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=209s,Gym
+S,Bayesian Curl,Inter,Biceps,Low,3,12-15,--,60s,Stretch,⭐⭐⭐,DB Curl,Arms,Long Head,Face-away curl.,Arm behind torso; curl forward.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=562s,Gym
+S,Preacher Curl,Beg,Biceps,Low,3,10-12,--,90s,Shortened,⭐⭐⭐,None,Size,Peak,Supported curl.,Armpit over pad; full ext.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=388s,Free
+S,Overhead Ext,Beg,Triceps,Low,3,10-15,--,90s,Stretch,⭐⭐⭐,Pushdown,Arms,Long Head,Cable overhead.,Elbows high; deep bend.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=649s,Gym
+S,Skullcrusher,Inter,Triceps,Med,3,8-12,--,2m,Mass,⭐⭐⭐,Pushdown,Size,Strength,Lying extension.,Bar behind head; elbows in.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=721s,Free
+S,Cable Lateral,Beg,Side Delt,Low,3,12-15,--,60s,Tension,⭐⭐⭐,DB Lateral,Width,Cap,Cable raise.,Hand height cable; sweep out.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=629s,Gym
+S,Rev Cable Fly,Inter,Rear Delt,Low,3,15-20,--,90s,Stretch,⭐⭐⭐,Face Pull,Posture,3D Delts,Rear delts.,Cross arms; sweep wide.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=533s,Gym
+S,Rev Pec Deck,Beg,Rear Delt,Low,3,15-20,--,90s,Isolation,⭐⭐⭐,None,Posture,Detail,Machine fly.,Reverse sit; sweep back.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=265s,Gym
+A,Leg Extension,Beg,Quads,Low,3,12-15,--,60s,Isolation,⭐⭐,None,Definition,Rectus Fem,Seated ext.,Seat back; squeeze top.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=421s,Gym
+A,Front Squat,Adv,Quads,High,3,5-8,--,3m,Mass,⭐⭐,Back Sq,Power,Clean Tech,Front rack squat.,Vertical torso; elbows high.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=858s,Free
+A,45° Leg Press,Beg,Quads,Med,3,10-15,--,2m,Mass,⭐⭐,None,Strength,Volume,Plate loaded press.,Deep; no knee lock.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=410s,Gym
+A,Reverse Nordic,Inter,Quads,Low,3,8-12,--,90s,Stretch,⭐⭐,None,Mobility,Length,Kneeling lean.,Hips extended; lean back.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=425s,Home
+A,Hip Thrust Mach,Beg,Glutes,Med,3,8-12,--,2m,Shortened,⭐⭐,Bridge,Glute Str,Peak,Machine thrust.,Full lockout; chin tucked.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=184s,Gym
+A,RDL,Inter,Glutes,High,3,8-10,--,3m,Stretch,⭐⭐,Hinge,Chain Str,Mass,Hip hinge.,Flat back; mid-shin stop.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=350s,Free
+A,Single Leg Thrust,Inter,Glutes,Med,3,12ea,--,90s,Unilateral,⭐⭐,Bridge,Balance,Symmetry,1-leg thrust.,Level hips; drive heel.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=494s,Free
+A,Pull-Up,Inter,Back,High,3,AMRAP,--,2m,Width,⭐⭐,Lat Pull,Rel Str,Width,Bodyweight pull.,Chest to bar; full hang.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=230s,Home
+A,One Arm DB Row,Beg,Back,Med,3,10-12,--,90s,Thickness,⭐⭐,None,Back Str,Thickness,Bench support row.,Flat back; pull to hip.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=700s,Free
+A,Lat Prayer,Inter,Lats,Low,3,12-15,--,60s,Stretch,⭐⭐,Lat Pull,Isolation,Sweep,Straight arm pull.,Hinge hips; drive to thighs.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=323s,Gym
+A,Croc Row,Adv,Back,High,3,15-20,--,2m,Overload,⭐⭐,DB Row,Grip,Power,Heavy cheat row.,Explosive up; controlled down.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=376s,Free
+A,Neutral Lat Pull,Beg,Lats,Low,3,10-12,--,90s,Bias,⭐⭐,None,Width,Lats,Neutral grip pull.,Elbows tuck; chest high.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=443s,Gym
+A,Deficit Penlay,Adv,Back,High,3,8-10,--,2m,Stretch,⭐⭐,BB Row,Power,Explosive,Elevated row.,Stand on plate; explosive.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=478s,Free
+A,Face Pull (Lying),Beg,Rear Delt,Low,3,12-15,--,90s,Stability,⭐⭐,None,Posture,Health,Floor cable pull.,Pull to forehead; ext rotate.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=166s,Gym
+A,Bench Press,Inter,Chest,High,3,5-8,--,3m,Overload,⭐⭐,Pushup,Strength,Power,Barbell press.,Retract blades; touch chest.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=443s,Free
+A,Incline DB Press,Beg,Chest,Med,3,8-10,--,2m,Upper Pec,⭐⭐,DB Press,Aesthetics,Upper Shelf,Angled press.,30° bench; press vertical.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=637s,Free
+A,Dips,Inter,Chest,High,3,8-12,--,2m,Stretch,⭐⭐,Pushup,Strength,Lower Pec,Parallel bar dip.,Lean forward; deep stretch.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=476s,Home
+A,Deficit Pushup,Beg,Chest,Med,3,AMRAP,--,90s,Stretch,⭐⭐,Pushup,Base Str,ROM,Elevated pushup.,Hands on blocks; deep.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=105s,Home
+A,Smith Incline,Beg,Chest,Med,3,8-12,--,2m,Upper Pec,⭐⭐,None,Hypertrophy,Upper Chest,Fixed incline.,30° bench; press to lock.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=254s,Gym
+A,Cable Press-Around,Adv,Chest,Low,3,12-15,--,60s,Shortened,⭐⭐,Fly,Definition,Inner Pec,Single arm crossover.,Press past midline; squeeze.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=304s,Gym
+A,Pec Deck,Beg,Chest,Low,3,12-15,--,90s,Isolation,⭐⭐,None,Pump,Squeeze,Machine fly.,Elbows slight bend; squeeze.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=405s,Gym
+A,Hammer Curl,Beg,Brachialis,Low,3,10-12,--,90s,Width,⭐⭐,DB Curl,Forearms,Width,Neutral grip curl.,Thumbs up; elbows fixed.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=567s,Free
+A,EZ Bar Curl,Beg,Biceps,Med,3,8-10,--,90s,Overload,⭐⭐,None,Strength,Mass,Barbell curl.,Elbows tucked; no swing.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=352s,Free
+A,DB Curl,Beg,Biceps,Low,3,10-12,--,90s,Basics,⭐⭐,None,Basics,Symmetry,Supinated curl.,Palms up; full ROM.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=665s,Free
+A,Incline DB Curl,Inter,Biceps,Low,3,10-12,--,90s,Stretch,⭐⭐,DB Curl,Stretch,Long Head,Seated incline curl.,Arms back; curl w/o moving elbow.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=162s,Free
+A,Inv Zottman Curl,Inter,Biceps,Low,3,10-12,--,90s,Eccentric,⭐⭐,DB Curl,Forearms,Control,Grip switch curl.,Curl hammer; lower supinated.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=383s,Free
+A,Bar Pressdown,Beg,Triceps,Low,3,10-12,--,90s,Lateral Head,⭐⭐,None,Basics,Horseshoe,Cable pushdown.,Straight bar; lock out.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=328s,Gym
+A,Katana Ext,Adv,Triceps,Low,3,12-15,--,90s,Stretch,⭐⭐,Overhead,Mobility,Long Head,Dual cable overhead.,Cross arms; extend outward.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=788s,Gym
+A,Close Grip Bench,Inter,Triceps,High,3,6-10,--,3m,Overload,⭐⭐,Bench,Strength,Mass,Narrow bench press.,Hands shoulder width; tuck elbows.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=166s,Free
+A,Cable Kickback,Beg,Triceps,Low,3,12-15,--,60s,Shortened,⭐⭐,None,Definition,Long Head,Rear cable ext.,Hinge; elbow high; extend back.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=218s,Gym
+A,One Arm DB Ext,Beg,Triceps,Low,3,12-15,--,60s,Stretch,⭐⭐,None,Balance,Symmetry,Single arm overhead.,Elbow up; deep stretch.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=129s,Free
+A,Lean-In Lateral,Beg,Side Delt,Low,3,12-15,--,60s,Stretch,⭐⭐,DB Lateral,Width,Cap,Lean-away raise.,Lean on post; raise DB.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=294s,Free
+A,Machine Lateral,Beg,Side Delt,Low,3,12-15,--,60s,Constant,⭐⭐,None,Width,Isolation,Machine raise.,Elbows to pads; raise.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=728s,Gym
+A,DB Shoulder Press,Beg,Front Delt,Med,3,8-12,--,2m,Mass,⭐⭐,None,Strength,Mass,Seated press.,Full ROM; converge top.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=545s,Free
+A,Rope Face Pull,Beg,Rear Delt,Low,3,15-20,--,90s,Health,⭐⭐,None,Posture,Rear Delt,High cable pull.,Pull to eyes; ext rotate.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=399s,Gym
+A,Lying Side Raise,Inter,Side Delt,Low,3,12-15,--,60s,Stretch,⭐⭐,DB Lateral,Detail,Stretch,Incline bench raise.,Lie on side; raise to vertical.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=530s,Free
+A,Mach Shoulder Press,Beg,Front Delt,Med,3,8-12,--,2m,Overload,⭐⭐,None,Safety,Hypertrophy,Machine press.,Full ROM; control.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=656s,Gym
+B,Lunge,Beg,Quads,Med,3,10ea,--,90s,Movement,⭐,None,Conditioning,Stability,Static/Walking lunge.,Vertical torso; 90° knee bend.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=124s,Free
+B,Goblet Squat,Beg,Quads,Med,3,12-15,--,90s,Learning,⭐,None,Technique,Warmup,Front loaded squat.,Hold DB at chest; deep squat.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=678s,Free
+B,Sissy Squat,Adv,Quads,Low,3,AMRAP,--,90s,Stretch,⭐,Squat,Mobility,Isolation,Locked feet lean.,Lean back; knees forward.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=633s,Free
+B,Barbell Hip Thrust,Inter,Glutes,High,3,8-12,--,3m,Shortened,⭐,Bridge,Strength,Mass,Loaded bridge.,Back on bench; heavy drive.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=300s,Free
+B,Sumo Deadlift,Inter,Glutes,High,3,5-8,--,3m,Mass,⭐,Deadlift,Strength,Power,Wide stance pull.,Toes out; hips low.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=202s,Free
+B,Curtsy Lunge,Beg,Glutes,Med,3,10ea,--,90s,Glute Med,⭐,Lunge,Balance,Detail,Cross-leg lunge.,Step behind/across; hip square.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=591s,Free
+B,Glute Bridge,Beg,Glutes,Low,3,15-20,--,60s,Basics,⭐,None,Activation,Warmup,Floor bridge.,Squeeze glutes; lift hips.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=175s,Home
+B,Cable Pull Through,Beg,Glutes,Low,3,12-15,--,90s,Hinge,⭐,Hinge,Hinge Tech,Glute/Ham,Cable hinge.,Back to weight; hinge hips.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=350s,Gym
+B,Barbell Row,Inter,Back,High,3,8-10,--,2m,Mass,⭐,Hinge,Strength,Thickness,Bent over row.,45° torso; pull to waist.,http://www.youtube.com/watch?v=fGm-ef-4PVk&t=694s,Free
+B,Chin-Up,Beg,Back,Med,3,AMRAP,--,2m,Arms/Back,⭐,Pullup,Arms,Lats/Biceps,Underhand pull.,Chest to bar; palms face you.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=96s,Home
+B,Penlay Row,Inter,Back,High,3,6-8,--,2m,Power,⭐,BB Row,Power,Explosive,Dead stop row.,Floor to chest; explosive.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=231s,Free
+B,T-Bar Row,Inter,Back,High,3,8-12,--,2m,Mass,⭐,BB Row,Strength,Mid Back,Landmine/Mach row.,V-grip; pull to chest.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=599s,Gym
+B,Decline Bench,Inter,Chest,High,3,8-10,--,2m,Lower Pec,⭐,Bench,Strength,Lower Chest,Decline press.,Hook legs; lower to bottom chest.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=60s,Free
+B,Push-Up,Beg,Chest,Med,3,AMRAP,--,60s,Endurance,⭐,None,Fitness,Volume,Standard pushup.,Plank; chest to floor.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=477s,Home
+B,DB Fly,Inter,Chest,Low,3,12-15,--,90s,Stretch,⭐,None,Stretch,Pec Width,Flat bench fly.,Slight elbow bend; deep stretch.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=644s,Free
+B,Banded Pushup,Inter,Chest,Med,3,10-15,--,90s,Resistance,⭐,Pushup,Strength,Lockout,Resisted pushup.,Band over back; explode up.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=603s,Home
+B,Cable Curl,Beg,Biceps,Low,3,12-15,--,60s,Constant,⭐,None,Pump,Squeeze,Standing cable curl.,Elbows by side; squeeze top.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=625s,Gym
+B,Rope Pressdown,Beg,Triceps,Low,3,12-15,--,60s,Lateral Head,⭐,None,Pump,Definition,Rope pushdown.,Spread rope at bottom.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=640s,Gym
+B,JM Press,Adv,Triceps,High,3,8-10,--,2m,Power,⭐,Close Bench,Power,Hybrid,Press/Ext Hybrid.,Lower to neck; elbows forward.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=301s,Free
+B,Dip (Upright),Inter,Triceps,High,3,8-12,--,2m,Compound,⭐,Pushup,Strength,Mass,Tricep Dip.,Upright torso; elbows back.,http://www.youtube.com/watch?v=3ryh7PNhz3E&t=547s,Home
+B,French Press,Inter,Triceps,Low,3,10-12,--,90s,Stretch,⭐,DB Ext,Mass,Long Head,Seated DB overhead.,Two hands; elbows high.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=100s,Free
+B,Diamond Pushup,Inter,Triceps,Med,3,AMRAP,--,90s,Bodyweight,⭐,Pushup,Calisthenics,Endurance,Close hand pushup.,Hands in diamond; elbows tuck.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=416s,Home
+B,Standing DB Lat,Beg,Side Delt,Low,3,15-20,--,60s,Basics,⭐,None,Basics,Shoulders,Standard raise.,Raise to side; slight elbow bend.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=511s,Free
+B,OHP,Adv,Front Delt,High,3,5-8,--,3m,Strength,⭐,Press,Strength,Power,Military press.,Standing; bar to chin; lock out.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=491s,Free
+B,Upright Row,Inter,Delts/Traps,Med,3,10-12,--,90s,Width/Yoke,⭐,None,Traps,Width,Vertical row.,Wide grip/Rope; pull to chest.,http://www.youtube.com/watch?v=GNO4OtYoCYk&t=456s,Free
+B,Bent Over Fly,Beg,Rear Delt,Low,3,15-20,--,60s,Isolation,⭐,None,Posture,Rear Delt,Hinged fly.,Hips back; fly arms wide.,http://www.youtube.com/watch?v=OpRMRhr0Ycc&t=599s,Free
+B,Super ROM Lat,Adv,Side Delt,Low,3,15-20,--,90s,ROM,⭐,Lateral,Mobility,ROM,High raise.,Raise DBs all the way overhead.,http://www.youtube.com/watch?v=SgyUoY0IZ7A&t=410s,Free
+B,Step Up,Beg,Quads,Med,3,10ea,--,90s,Unilateral,--,Lunge,Stability,Balance,Box step.,Drive through lead leg.,http://www.youtube.com/watch?v=kIXcoivzGf8&t=88s,Free
+B,Lat Band Walk,Beg,Glutes,Low,3,15ea,--,60s,Warmup,--,None,Warmup,Activation,Band side step.,Band knees/ankles; step side.,http://www.youtube.com/watch?v=jLvqKgW-_G8&t=152s,Home
